@@ -1,4 +1,4 @@
-import { siteName } from "@/config";
+import { siteName, description } from "@/config";
 import { ImageResponse } from "next/og";
 
 export async function GET() {
@@ -6,18 +6,25 @@ export async function GET() {
     (
       <div
         style={{
-          fontSize: 40,
-          color: "black",
-          background: "white",
+          fontSize: 48,
+          color: "#3e2723",
+          background: "linear-gradient(135deg, #F7F5E6 0%, #E8DCC8 100%)",
           width: "100%",
           height: "100%",
-          padding: "50px 200px",
-          textAlign: "center",
+          padding: "60px 80px",
+          display: "flex",
+          flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          textAlign: "center",
         }}
       >
-        {siteName}
+        <div style={{ fontSize: 72, fontWeight: 700, color: "#A8B400", marginBottom: 20 }}>
+          {siteName}
+        </div>
+        <div style={{ fontSize: 28, color: "#6d4c41", maxWidth: 800 }}>
+          {description}
+        </div>
       </div>
     ),
     {

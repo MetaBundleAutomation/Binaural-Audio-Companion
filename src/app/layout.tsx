@@ -9,6 +9,19 @@ import { baseURL, description, siteName, title } from "@/config";
 export const metadata: Metadata = {
   title,
   description,
+  keywords: [
+    "binaural beats",
+    "brain waves",
+    "meditation",
+    "focus",
+    "relaxation",
+    "sleep",
+    "alpha waves",
+    "theta waves",
+    "delta waves",
+    "beta waves",
+    "audio therapy",
+  ],
   robots: {
     index: true,
     follow: true,
@@ -38,6 +51,9 @@ export const metadata: Metadata = {
       },
     ],
   },
+  other: {
+    "theme-color": "#A8B400",
+  },
 };
 
 export default function RootLayout({
@@ -49,12 +65,8 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Header />
-
         {children}
-
         <Footer />
-
-        {/* <Analytics /> */}
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
         )}

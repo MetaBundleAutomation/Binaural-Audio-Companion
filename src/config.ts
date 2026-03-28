@@ -1,23 +1,20 @@
 export const siteName =
-  process.env.NEXT_PUBLIC_SITE_NAME || "SEO Next.js Starter";
+  process.env.NEXT_PUBLIC_SITE_NAME || "MindFlow";
 
 export const title =
   process.env.NEXT_PUBLIC_TITLE ||
-  "SEO Next.js Starter - A Starter Template for SEO Optimized Next.js Projects";
+  "MindFlow - Binaural Beats for Focus, Relaxation & Sleep";
 
 export const description =
   process.env.NEXT_PUBLIC_DESCRIPTION ||
-  "A simple and easy-to-use starter template for building SEO optimized Next.js applications with best practices and performance in mind.";
+  "Synchronize your brain's neural activity for mental clarity, focus, relaxation or sleep. Enhance your mind with scientifically-designed binaural beats audio therapy.";
 
-// Last baseURL
-const defaultBaseURL = "https://seo-nextjs-starter.vercel.app";
+const defaultBaseURL = "https://mindflow.app";
 
-// Vercel baseURL, make sure it's a valid URL
 const VERCEL_URL =
   process.env.NEXT_PUBLIC_VERCEL_URL &&
   `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
 
-// meta base url
 export const baseURL =
   process.env.NEXT_PUBLIC_URL ||
   VERCEL_URL ||

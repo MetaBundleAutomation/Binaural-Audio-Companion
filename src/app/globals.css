@@ -1,17 +1,46 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @theme {
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-foreground: var(--text-primary);
+  --color-primary: #A8B400;
+  --color-primary-dark: #8B9900;
+  --color-primary-light: #C4D100;
+  --color-secondary: #D6C18A;
+  --color-accent: #6B4B3A;
+}
+
+:root {
+  --primary: #A8B400;
+  --primary-dark: #8B9900;
+  --primary-light: #C4D100;
+  --secondary: #D6C18A;
+  --accent: #6B4B3A;
+  --background: #F7F5E6;
+  --background-light: #FAF9F0;
+  --background-card: #F9F7EB;
+  --text-primary: #3e2723;
+  --text-secondary: #6d4c41;
+  --border-color: #E8DCC8;
+  --shadow: 0 10px 30px rgba(168, 180, 0, 0.2);
+  --shadow-lg: 0 20px 60px rgba(168, 180, 0, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1a1a14;
+    --background-light: #222218;
+    --background-card: #2a2a20;
+    --text-primary: #ededed;
+    --text-secondary: #b8a88a;
+    --border-color: #3d3d2e;
+    --shadow: 0 10px 30px rgba(168, 180, 0, 0.1);
+    --shadow-lg: 0 20px 60px rgba(168, 180, 0, 0.15);
+  }
 }
 
 /*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
+  Tailwind v4 compat: override default border color.
 */
 @layer base {
   *,
@@ -23,20 +52,67 @@
   }
 }
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  background: var(--background);
+  color: var(--text-primary);
+  line-height: 1.7;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom range slider styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--primary);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+  border: none;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--primary);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+  border: none;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  transform: scale(1.2);
+}
+
+.visualizer-bg {
+  background: linear-gradient(135deg, #fef6e4 0%, #f8ead0 100%);
+}
+
+@media (prefers-color-scheme: dark) {
+  .visualizer-bg {
+    background: linear-gradient(135deg, #2a2a20 0%, #1a1a14 100%);
+  }
 }

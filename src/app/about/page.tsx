@@ -3,129 +3,55 @@ import Link from "next/link";
 export default function About() {
   return (
     <main className="min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              About SEO Next.js Starter
-            </h1>
-            <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
-              Empowering developers to build SEO-optimized web applications with
-              Next.js
-            </p>
-          </div>
-        </div>
-      </section>
+      <section className="py-20 px-4">
+        <div className="max-w-3xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-6 text-center">
+            About MindFlow
+          </h1>
+          <p className="text-lg text-[var(--text-secondary)] mb-12 text-center max-w-2xl mx-auto">
+            Enhance your mental well-being with scientifically-designed binaural beats audio therapy.
+          </p>
 
-      {/* Mission Section */}
-      <section className="py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
-                Our Mission
-              </h2>
-              <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
-                We&apos;re on a mission to simplify the process of building
-                SEO-friendly web applications. Our starter template combines the
-                power of Next.js with best practices in SEO, performance, and
-                user experience.
-              </p>
-              <p className="text-lg text-gray-700 dark:text-gray-300">
-                By providing a solid foundation with pre-configured SEO
-                optimizations, we help developers focus on what matters most -
-                creating amazing content and features for their users.
+          <div className="space-y-8">
+            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What are Binaural Beats?</h2>
+              <p className="text-[var(--text-secondary)] leading-relaxed">
+                Binaural beats are an auditory illusion created when two slightly different frequencies are played in each ear.
+                Your brain perceives a third tone — the &quot;beat&quot; — equal to the difference between the two frequencies.
+                For example, if 200 Hz is played in the left ear and 210 Hz in the right ear, your brain perceives a 10 Hz binaural beat.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
-              <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
-                Key Benefits
-              </h3>
-              <ul className="space-y-4">
-                <li className="flex items-start">
-                  <svg
-                    className="w-6 h-6 text-blue-600 dark:text-blue-400 mr-2 mt-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-700 dark:text-gray-300">
-                    Pre-configured SEO optimizations
-                  </span>
-                </li>
-                <li className="flex items-start">
-                  <svg
-                    className="w-6 h-6 text-blue-600 dark:text-blue-400 mr-2 mt-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-700 dark:text-gray-300">
-                    Performance-first architecture
-                  </span>
-                </li>
-                <li className="flex items-start">
-                  <svg
-                    className="w-6 h-6 text-blue-600 dark:text-blue-400 mr-2 mt-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-700 dark:text-gray-300">
-                    Modern development experience
-                  </span>
-                </li>
+
+            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">Brain Wave Types</h2>
+              <ul className="space-y-3 text-[var(--text-secondary)]">
+                <li><strong className="text-[var(--text-primary)]">Delta (0.5-4 Hz):</strong> Deep sleep and relaxation</li>
+                <li><strong className="text-[var(--text-primary)]">Theta (4-8 Hz):</strong> Meditation, creativity, and light sleep</li>
+                <li><strong className="text-[var(--text-primary)]">Alpha (8-12 Hz):</strong> Relaxation with closed eyes, calm focus</li>
+                <li><strong className="text-[var(--text-primary)]">Beta (13-30 Hz):</strong> Active thinking, concentration, alertness</li>
+                <li><strong className="text-[var(--text-primary)]">Gamma (30-100 Hz):</strong> High-level cognition and problem solving</li>
+              </ul>
+            </div>
+
+            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">How to Use</h2>
+              <ul className="space-y-2 text-[var(--text-secondary)]">
+                <li>Use stereo headphones for the best effect</li>
+                <li>Find a comfortable, quiet environment</li>
+                <li>Select a track matching your desired mental state</li>
+                <li>Close your eyes and relax</li>
+                <li>Listen for at least 15-30 minutes for noticeable effects</li>
               </ul>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Community Section */}
-      <section className="bg-gray-50 dark:bg-gray-900 py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
-            Join Our Community
-          </h2>
-          <p className="text-xl text-gray-700 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-            We&apos;re building a community of developers who share our vision
-            for better web development. Join us in making the web faster, more
-            accessible, and more SEO-friendly.
-          </p>
-          <div className="flex justify-center gap-4">
+          <div className="text-center mt-12">
             <Link
-              href="/docs"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors"
+              href="/"
+              className="inline-block px-8 py-3 rounded-lg text-base font-semibold text-white transition-all duration-300 hover:-translate-y-0.5"
+              style={{ background: "var(--primary)", boxShadow: "var(--shadow)" }}
             >
-              Get Started
-            </Link>
-            <Link
-              href="https://github.com/yourusername/seo-nextjs-starter"
-              className="bg-gray-800 hover:bg-gray-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors"
-            >
-              GitHub
+              Start Listening
             </Link>
           </div>
         </div>
