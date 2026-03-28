@@ -1,4 +1,5 @@
 import Player from "@/components/Player";
+import Icon from "@/components/Icons";
 
 export default function Home() {
   return (
@@ -20,21 +21,27 @@ export default function Home() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-[var(--background-card)] rounded-2xl p-8 text-center border border-[var(--border-color)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--primary)] min-h-[280px] flex flex-col justify-start">
-              <div className="text-5xl mb-4">🧠</div>
+              <div className="flex justify-center mb-4 text-[var(--primary)]">
+                <Icon name="focus" size={48} />
+              </div>
               <h3 className="text-[23px] font-bold mb-3 text-[var(--text-primary)]">Focus</h3>
               <p className="text-base font-medium leading-relaxed text-[var(--text-secondary)]">
                 Beta waves (13-30 Hz) for concentration, attention and mental clarity. Gamma waves (30-100 Hz) for problem solving.
               </p>
             </div>
             <div className="bg-[var(--background-card)] rounded-2xl p-8 text-center border border-[var(--border-color)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--primary)] min-h-[280px] flex flex-col justify-start">
-              <div className="text-5xl mb-4">😌</div>
+              <div className="flex justify-center mb-4 text-[var(--primary)]">
+                <Icon name="relaxation" size={48} />
+              </div>
               <h3 className="text-[23px] font-bold mb-3 text-[var(--text-primary)]">Relaxation</h3>
               <p className="text-base font-medium leading-relaxed text-[var(--text-secondary)]">
                 Slow delta waves (0.5-4 Hz) for relaxation and meditation. Alpha waves (8-12 Hz) for relaxation with eyes shut.
               </p>
             </div>
             <div className="bg-[var(--background-card)] rounded-2xl p-8 text-center border border-[var(--border-color)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--primary)] min-h-[280px] flex flex-col justify-start">
-              <div className="text-5xl mb-4">😴</div>
+              <div className="flex justify-center mb-4 text-[var(--primary)]">
+                <Icon name="sleep" size={48} />
+              </div>
               <h3 className="text-[23px] font-bold mb-3 text-[var(--text-primary)]">Sleep</h3>
               <p className="text-base font-medium leading-relaxed text-[var(--text-secondary)]">
                 Theta waves (4-8 Hz) for drowsiness and light sleep. Delta waves (0.5-4 Hz) for deep relaxation and sleep onset.

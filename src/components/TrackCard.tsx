@@ -1,6 +1,7 @@
 "use client";
 
 import { Track } from "@/data/tracks";
+import Icon from "./Icons";
 
 interface TrackCardProps {
   track: Track;
@@ -10,10 +11,10 @@ interface TrackCardProps {
 }
 
 const gradients = [
-  "bg-gradient-to-br from-[#A8B400] to-[#C4D100]",
-  "bg-gradient-to-br from-[#D6C18A] to-[#E8DCC8]",
-  "bg-gradient-to-br from-[#F7F5E6] to-[#A8B400]",
-  "bg-gradient-to-br from-[#fa709a] to-[#fee140]",
+  "bg-gradient-to-br from-[#2B6B7F] to-[#3A8FA3]",
+  "bg-gradient-to-br from-[#4A5568] to-[#5A6B7A]",
+  "bg-gradient-to-br from-[#1E4F5E] to-[#2B6B7F]",
+  "bg-gradient-to-br from-[#8C9BAA] to-[#A0B0C0]",
 ];
 
 export default function TrackCard({ track, index, isActive, onClick }: TrackCardProps) {
@@ -28,11 +29,11 @@ export default function TrackCard({ track, index, isActive, onClick }: TrackCard
       style={{ boxShadow: isActive ? "var(--shadow)" : undefined }}
     >
       <div
-        className={`w-[60px] h-[60px] rounded-xl flex items-center justify-center text-[34px] mb-4 ${
+        className={`w-[60px] h-[60px] rounded-xl flex items-center justify-center mb-4 text-white ${
           gradients[index % gradients.length]
         }`}
       >
-        {track.icon}
+        <Icon name={track.icon} size={28} />
       </div>
       <h3 className="text-[21px] font-bold mb-2 tracking-tight text-[var(--text-primary)]">
         {track.name}

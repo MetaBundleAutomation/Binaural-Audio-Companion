@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     ],
   },
   other: {
-    "theme-color": "#A8B400",
+    "theme-color": "#2B6B7F",
   },
 };
 

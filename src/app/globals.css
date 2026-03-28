@@ -3,39 +3,44 @@
 @theme {
   --color-background: var(--background);
   --color-foreground: var(--text-primary);
-  --color-primary: #A8B400;
-  --color-primary-dark: #8B9900;
-  --color-primary-light: #C4D100;
-  --color-secondary: #D6C18A;
-  --color-accent: #6B4B3A;
+  --color-primary: #2B6B7F;
+  --color-primary-dark: #1E4F5E;
+  --color-primary-light: #3A8FA3;
+  --color-secondary: #8C9BAA;
+  --color-accent: #4A5568;
 }
 
 :root {
-  --primary: #A8B400;
-  --primary-dark: #8B9900;
-  --primary-light: #C4D100;
-  --secondary: #D6C18A;
-  --accent: #6B4B3A;
-  --background: #F7F5E6;
-  --background-light: #FAF9F0;
-  --background-card: #F9F7EB;
-  --text-primary: #3e2723;
-  --text-secondary: #6d4c41;
-  --border-color: #E8DCC8;
-  --shadow: 0 10px 30px rgba(168, 180, 0, 0.2);
-  --shadow-lg: 0 20px 60px rgba(168, 180, 0, 0.3);
+  --primary: #2B6B7F;
+  --primary-dark: #1E4F5E;
+  --primary-light: #3A8FA3;
+  --secondary: #8C9BAA;
+  --accent: #4A5568;
+  --background: #F5F7FA;
+  --background-light: #FAFBFC;
+  --background-card: #FFFFFF;
+  --text-primary: #1A2332;
+  --text-secondary: #5A6B7A;
+  --border-color: #E2E8F0;
+  --shadow: 0 10px 30px rgba(43, 107, 127, 0.12);
+  --shadow-lg: 0 20px 60px rgba(43, 107, 127, 0.18);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #1a1a14;
-    --background-light: #222218;
-    --background-card: #2a2a20;
-    --text-primary: #ededed;
-    --text-secondary: #b8a88a;
-    --border-color: #3d3d2e;
-    --shadow: 0 10px 30px rgba(168, 180, 0, 0.1);
-    --shadow-lg: 0 20px 60px rgba(168, 180, 0, 0.15);
+    --primary: #3A8FA3;
+    --primary-dark: #2B6B7F;
+    --primary-light: #4BA8BD;
+    --secondary: #7A8B9A;
+    --accent: #5A6B7A;
+    --background: #151A1E;
+    --background-light: #1C2228;
+    --background-card: #222A32;
+    --text-primary: #E8ECF0;
+    --text-secondary: #8C9BAA;
+    --border-color: #2D3748;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -108,11 +113,11 @@ input[type="range"]::-moz-range-thumb:hover {
 }
 
 .visualizer-bg {
-  background: linear-gradient(135deg, #fef6e4 0%, #f8ead0 100%);
+  background: linear-gradient(135deg, #F0F4F8 0%, #E2E8F0 100%);
 }
 
 @media (prefers-color-scheme: dark) {
   .visualizer-bg {
-    background: linear-gradient(135deg, #2a2a20 0%, #1a1a14 100%);
+    background: linear-gradient(135deg, #222A32 0%, #151A1E 100%);
   }
 }

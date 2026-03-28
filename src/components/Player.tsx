@@ -5,6 +5,7 @@ import { tracks, parseDuration, formatTime } from "@/data/tracks";
 import { useAudioEngine } from "@/hooks/useAudioEngine";
 import Visualizer from "./Visualizer";
 import TrackCard from "./TrackCard";
+import Icon from "./Icons";
 
 export default function Player() {
   const engine = useAudioEngine();
@@ -25,8 +26,8 @@ export default function Player() {
           <div className="mb-8">
             <div className="visualizer-bg rounded-2xl h-[200px] flex items-center justify-center overflow-hidden relative border-2 border-[var(--border-color)]">
               <Visualizer analyser={engine.analyser} isPlaying={engine.isPlaying} />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[2] text-[70px] drop-shadow-lg">
-                {track.icon}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[2] text-white/30 drop-shadow-lg">
+                <Icon name={track.icon} size={70} />
               </div>
             </div>
           </div>
@@ -94,7 +95,7 @@ export default function Player() {
                 className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all"
                 style={{
                   background: "var(--gradient-1)",
-                  boxShadow: "0 8px 24px rgba(168, 180, 0, 0.4)",
+                  boxShadow: "0 8px 24px rgba(43, 107, 127, 0.4)",
                 }}
                 aria-label={engine.isPlaying ? "Pause" : "Play"}
               >

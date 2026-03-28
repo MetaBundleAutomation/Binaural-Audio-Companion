@@ -7,7 +7,7 @@ interface VisualizerProps {
   isPlaying: boolean;
 }
 
-const COLORS = ["#e8a87c", "#5eb3cc", "#f5c99b", "#81c3d7", "#d4915f"];
+const COLORS = ["#2B6B7F", "#3A8FA3", "#4A5568", "#5A6B7A", "#1E4F5E"];
 
 export default function Visualizer({ analyser, isPlaying }: VisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -47,7 +47,7 @@ export default function Visualizer({ analyser, isPlaying }: VisualizerProps) {
 
       // Clear
       const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      ctx.fillStyle = isDark ? "#2a2a20" : "#FAF9F0";
+      ctx.fillStyle = isDark ? "#222A32" : "#F0F4F8";
       ctx.fillRect(0, 0, w, h);
 
       if (!isPlaying || !analyser || !dataArray) return;
