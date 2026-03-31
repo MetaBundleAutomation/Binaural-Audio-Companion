@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { tracks, parseDuration, formatTime } from "@/data/tracks";
 import { useAudioEngine } from "@/hooks/useAudioEngine";
 import Visualizer from "./Visualizer";
@@ -14,6 +14,7 @@ export default function Player() {
   const track = tracks[engine.currentTrackIndex];
   const totalSeconds = parseDuration(track.duration);
   const remaining = totalSeconds - engine.elapsed;
+  const progressPct = totalSeconds > 0 ? (engine.elapsed / totalSeconds) * 100 : 0;
 
   return (
     <>
@@ -46,7 +47,7 @@ export default function Player() {
           {/* Controls */}
           <div className="flex flex-col gap-5">
             {/* Progress */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 bg-[var(--background-light)] rounded-xl px-5 py-3 border border-[var(--border-color)]">
               <span className="text-[15px] font-semibold text-[var(--text-secondary)] min-w-[50px] tabular-nums">
                 {formatTime(engine.elapsed)}
               </span>
@@ -56,7 +57,8 @@ export default function Player() {
                 max={totalSeconds}
                 value={seekingRef.current ? undefined : engine.elapsed}
                 defaultValue={0}
-                className="flex-1 h-1.5"
+                className="flex-1"
+                style={{ '--fill': `${progressPct}%` } as React.CSSProperties}
                 onMouseDown={() => { seekingRef.current = true; }}
                 onMouseUp={(e) => {
                   seekingRef.current = false;
@@ -95,7 +97,7 @@ export default function Player() {
                 onClick={engine.togglePlay}
                 className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all"
                 style={{
-                  background: "var(--gradient-1)",
+                  background: "var(--primary)",
                   boxShadow: "0 8px 24px rgba(43, 107, 127, 0.4)",
                 }}
                 aria-label={engine.isPlaying ? "Pause" : "Play"}
@@ -123,8 +125,8 @@ export default function Player() {
             </div>
 
             {/* Volume */}
-            <div className="flex items-center justify-center gap-4">
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-[var(--text-secondary)]">
+            <div className="flex items-center gap-4 bg-[var(--background-light)] rounded-xl px-5 py-3 border border-[var(--border-color)]">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 shrink-0 text-[var(--text-secondary)]">
                 <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
               </svg>
               <input
@@ -133,7 +135,8 @@ export default function Player() {
                 max={100}
                 value={engine.volume}
                 onChange={(e) => engine.setVolume(Number(e.target.value))}
-                className="w-[120px] h-1.5"
+                className="flex-1"
+                style={{ '--fill': `${engine.volume}%` } as React.CSSProperties}
                 aria-label="Volume control"
               />
             </div>

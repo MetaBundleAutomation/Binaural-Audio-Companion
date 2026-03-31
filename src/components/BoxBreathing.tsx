@@ -173,22 +173,26 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
       ctx.fillText(PHASE_LABELS[i], labelPos[i][0], labelPos[i][1]);
     }
 
-    // Centre – phase name (small, sits well above the number)
+    // Centre – countdown with phase-colour glow
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.font = "600 18px Arial, sans-serif";
-    ctx.fillStyle = idle ? "#3a5a7a" : alpha(pc, 0.75);
-    ctx.fillText(idle ? "Ready" : PHASES[phase].name.toUpperCase(), C, C - 40);
 
-    // Centre – countdown (dominant focal point)
-    ctx.font = "100 44px Arial, sans-serif";
-    ctx.fillStyle = idle ? "#1e4a72" : "#c8e8f8";
-    ctx.fillText(countdown, C, C + 6);
-
-    // Centre – subtitle (muted, well below the number)
-    ctx.font = "15px Arial, sans-serif";
-    ctx.fillStyle = idle ? "#2a4a5a" : "#3a6070";
-    ctx.fillText(idle ? "press start" : PHASES[phase].subtitle, C, C + 52);
+    if (idle) {
+      ctx.font = "200 64px Arial, sans-serif";
+      ctx.fillStyle = "#1e4a72";
+      ctx.fillText("—", C, C - 12);
+      ctx.font = "15px Arial, sans-serif";
+      ctx.fillStyle = "#2a4a5a";
+      ctx.fillText("press start", C, C + 46);
+    } else {
+      ctx.shadowColor = pc;
+      ctx.shadowBlur = 28;
+      ctx.font = "200 72px Arial, sans-serif";
+      ctx.fillStyle = alpha(pc, 0.95);
+      ctx.fillText(countdown, C, C);
+      ctx.shadowBlur = 0;
+      ctx.shadowColor = "transparent";
+    }
   }
 
   // ── Animation loop ─────────────────────────────────────────────────────────
