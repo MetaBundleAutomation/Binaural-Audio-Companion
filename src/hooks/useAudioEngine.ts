@@ -272,8 +272,9 @@ export function useAudioEngine(): AudioEngine {
   useEffect(() => {
     return () => {
       stopAudio();
-      if (audioCtxRef.current) {
+      if (audioCtxRef.current && audioCtxRef.current.state !== "closed") {
         audioCtxRef.current.close();
+        audioCtxRef.current = null;
       }
     };
   }, [stopAudio]);
