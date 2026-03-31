@@ -15,9 +15,12 @@ const PHASE_MS     = 4000;
 const MIN_R        = 28;
 const MAX_R        = 108;
 const MID_R        = (MIN_R + MAX_R) / 2; // 68 – idle size
-const TRACK_R      = 148;
+const TRACK_R      = 175;
 const TRACK_W      = 8;
-const LABEL_R      = 182;
+// Top/bottom labels sit at LABEL_V; left/right pushed further out (LABEL_H)
+// to compensate for the perceptual crowding of horizontal text against a circle
+const LABEL_V      = 228; // vertical (Hold top/bottom)
+const LABEL_H      = 248; // horizontal (Inhale/Exhale) — extra clearance
 const S            = 600; // canvas internal px
 const C            = S / 2; // center = 300
 const SEG_GAP      = 0.04; // radian gap between arc segments
@@ -73,11 +76,12 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
     ctx.fillStyle = "#0f1e2e";
     ctx.fillRect(0, 0, S, S);
 
-    // Aura glow halos
+    // Aura glow halos – capped so they never reach the track ring
+    const maxAura = TRACK_R - 18;
     ([
-      [r + 22, 0.16],
-      [r + 38, 0.09],
-      [r + 54, 0.04],
+      [Math.min(r + 22, maxAura - 16), 0.16],
+      [Math.min(r + 38, maxAura - 8),  0.08],
+      [Math.min(r + 54, maxAura),       0.03],
     ] as [number, number][]).forEach(([ar, a]) => {
       ctx.beginPath();
       ctx.arc(C, C, ar, 0, Math.PI * 2);
@@ -153,38 +157,38 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
       ctx.fill();
     }
 
-    // Phase labels at compass positions
+    // Phase labels at compass positions — horizontal labels pushed further out
     const labelPos: [number, number][] = [
-      [C, C - LABEL_R],
-      [C + LABEL_R, C],
-      [C, C + LABEL_R],
-      [C - LABEL_R, C],
+      [C,            C - LABEL_V],  // Hold   (top)
+      [C + LABEL_H,  C],            // Inhale (right)
+      [C,            C + LABEL_V],  // Hold   (bottom)
+      [C - LABEL_H,  C],            // Exhale (left)
     ];
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.font = "bold 22px Arial, sans-serif";
+    ctx.font = "bold 26px Arial, sans-serif";
     for (let i = 0; i < 4; i++) {
       const isActive = !idle && i === phase;
       ctx.fillStyle = alpha(PHASES[i].color, idle ? 0.25 : isActive ? 1 : 0.28);
       ctx.fillText(PHASE_LABELS[i], labelPos[i][0], labelPos[i][1]);
     }
 
-    // Centre – phase name
+    // Centre – phase name (small, sits well above the number)
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.font = "bold 20px Arial, sans-serif";
-    ctx.fillStyle = idle ? "#4a6b8a" : alpha(pc, 0.9);
-    ctx.fillText(idle ? "Ready" : PHASES[phase].name.toUpperCase(), C, C - 30);
+    ctx.font = "600 18px Arial, sans-serif";
+    ctx.fillStyle = idle ? "#3a5a7a" : alpha(pc, 0.75);
+    ctx.fillText(idle ? "Ready" : PHASES[phase].name.toUpperCase(), C, C - 40);
 
-    // Centre – countdown
-    ctx.font = "200 38px Arial, sans-serif";
-    ctx.fillStyle = idle ? "#2a5a8a" : "#a8d8f0";
-    ctx.fillText(countdown, C, C + 8);
+    // Centre – countdown (dominant focal point)
+    ctx.font = "100 44px Arial, sans-serif";
+    ctx.fillStyle = idle ? "#1e4a72" : "#c8e8f8";
+    ctx.fillText(countdown, C, C + 6);
 
-    // Centre – subtitle
-    ctx.font = "16px Arial, sans-serif";
-    ctx.fillStyle = "#4a6a7a";
-    ctx.fillText(idle ? "press start" : PHASES[phase].subtitle, C, C + 42);
+    // Centre – subtitle (muted, well below the number)
+    ctx.font = "15px Arial, sans-serif";
+    ctx.fillStyle = idle ? "#2a4a5a" : "#3a6070";
+    ctx.fillText(idle ? "press start" : PHASES[phase].subtitle, C, C + 52);
   }
 
   // ── Animation loop ─────────────────────────────────────────────────────────
@@ -264,7 +268,7 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
           ref={canvasRef}
           width={S}
           height={S}
-          style={{ width: 300, height: 300, borderRadius: 16 }}
+          style={{ width: 380, height: 380, borderRadius: 20 }}
           aria-label="Box breathing animation"
         />
 
