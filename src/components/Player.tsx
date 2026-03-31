@@ -6,6 +6,7 @@ import { useAudioEngine } from "@/hooks/useAudioEngine";
 import Visualizer from "./Visualizer";
 import TrackCard from "./TrackCard";
 import Icon from "./Icons";
+import BoxBreathing from "./BoxBreathing";
 
 export default function Player() {
   const engine = useAudioEngine();
@@ -139,6 +140,9 @@ export default function Player() {
           </div>
         </div>
       </section>
+
+      {/* Box Breathing */}
+      <BoxBreathing isAudioPlaying={engine.isPlaying} />
 
       {/* Track Library */}
       <section id="library" className="my-20">
