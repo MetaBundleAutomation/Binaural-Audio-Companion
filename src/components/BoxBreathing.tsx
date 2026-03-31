@@ -299,13 +299,13 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
             role="switch"
             aria-checked={autoSync}
             onClick={() => setAutoSync((v) => !v)}
-            className={`relative w-11 h-6 rounded-full border-0 cursor-pointer transition-colors ${
+            className={`relative w-11 h-6 rounded-full border-0 cursor-pointer transition-colors overflow-hidden ${
               autoSync ? "bg-[var(--primary)]" : "bg-[var(--border-color)]"
             }`}
           >
             <span
-              className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                autoSync ? "translate-x-6" : "translate-x-1"
+              className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${
+                autoSync ? "translate-x-5" : "translate-x-0"
               }`}
             />
           </button>
