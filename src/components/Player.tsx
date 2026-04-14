@@ -1,20 +1,23 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import { tracks, parseDuration, formatTime } from "@/data/tracks";
 import { useAudioEngine } from "@/hooks/useAudioEngine";
 import Visualizer from "./Visualizer";
 import TrackCard from "./TrackCard";
 import Icon from "./Icons";
 import BoxBreathing from "./BoxBreathing";
+import NoiseGenerator from "./NoiseGenerator";
 
 export default function Player() {
   const engine = useAudioEngine();
-  const seekingRef = useRef(false);
+  // dragValue tracks slider position while user is scrubbing (keeps input always controlled)
+  const [dragValue, setDragValue] = useState<number | null>(null);
   const track = tracks[engine.currentTrackIndex];
   const totalSeconds = parseDuration(track.duration);
-  const remaining = totalSeconds - engine.elapsed;
-  const progressPct = totalSeconds > 0 ? (engine.elapsed / totalSeconds) * 100 : 0;
+  const displayElapsed = dragValue !== null ? dragValue : engine.elapsed;
+  const remaining = totalSeconds - displayElapsed;
+  const progressPct = totalSeconds > 0 ? (displayElapsed / totalSeconds) * 100 : 0;
 
   return (
     <>
@@ -49,30 +52,30 @@ export default function Player() {
             {/* Progress */}
             <div className="flex items-center gap-4 bg-[var(--background-light)] rounded-xl px-5 py-3 border border-[var(--border-color)]">
               <span className="text-[15px] font-semibold text-[var(--text-secondary)] min-w-[50px] tabular-nums">
-                {formatTime(engine.elapsed)}
+                {formatTime(displayElapsed)}
               </span>
               <input
                 type="range"
                 min={0}
                 max={totalSeconds}
-                value={seekingRef.current ? undefined : engine.elapsed}
-                defaultValue={0}
+                value={displayElapsed}
                 className="flex-1"
                 style={{ '--fill': `${progressPct}%` } as React.CSSProperties}
-                onMouseDown={() => { seekingRef.current = true; }}
+                onMouseDown={(e) => setDragValue(Number((e.target as HTMLInputElement).value))}
                 onMouseUp={(e) => {
-                  seekingRef.current = false;
-                  engine.seek(Number((e.target as HTMLInputElement).value));
+                  const v = Number((e.target as HTMLInputElement).value);
+                  engine.seek(v);
+                  setDragValue(null);
                 }}
-                onTouchStart={() => { seekingRef.current = true; }}
+                onTouchStart={(e) => setDragValue(Number((e.target as HTMLInputElement).value))}
                 onTouchEnd={(e) => {
-                  seekingRef.current = false;
-                  engine.seek(Number((e.target as HTMLInputElement).value));
+                  const v = Number((e.target as HTMLInputElement).value);
+                  engine.seek(v);
+                  setDragValue(null);
                 }}
                 onChange={(e) => {
-                  if (!seekingRef.current) {
-                    engine.seek(Number(e.target.value));
-                  }
+                  const v = Number(e.target.value);
+                  if (dragValue !== null) setDragValue(v);
                 }}
                 aria-label="Track progress"
               />
@@ -143,6 +146,9 @@ export default function Player() {
           </div>
         </div>
       </section>
+
+      {/* Noise Therapy */}
+      <NoiseGenerator isAudioPlaying={engine.isPlaying} />
 
       {/* Box Breathing */}
       <BoxBreathing isAudioPlaying={engine.isPlaying} />

@@ -317,6 +317,68 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
             Auto-sync with audio playback
           </span>
         </label>
+
+        {/* Benefits & How-To */}
+        <div className="w-full max-w-lg mt-2">
+          <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--background-light)] p-6 text-left">
+            <h3 className="text-[17px] font-bold mb-2 text-[var(--text-primary)]">
+              Used by Navy SEALs
+            </h3>
+            <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed mb-5">
+              Box breathing is a tactical breath control technique taught to special forces operators to stay calm and functional under extreme stress. It works by activating your parasympathetic nervous system — slowing your heart rate, lowering cortisol, and interrupting the hypervigilance or panic response before it takes hold. Four seconds at a time.
+            </p>
+
+            <div className="space-y-3">
+              {[
+                {
+                  step: "1",
+                  color: "#9ba8ff",
+                  label: "Hold",
+                  detail: "Start with empty lungs. Hold still for 4 seconds.",
+                },
+                {
+                  step: "2",
+                  color: "#4aa8e8",
+                  label: "Inhale",
+                  detail: "Breathe in slowly through your nose for 4 seconds.",
+                },
+                {
+                  step: "3",
+                  color: "#9ba8ff",
+                  label: "Hold",
+                  detail: "Lungs full. Hold steady for 4 seconds.",
+                },
+                {
+                  step: "4",
+                  color: "#56c9b5",
+                  label: "Exhale",
+                  detail: "Release slowly through your mouth for 4 seconds.",
+                },
+              ].map(({ step, color, label, detail }) => (
+                <div key={step} className="flex items-start gap-3">
+                  <span
+                    className="w-7 h-7 rounded-full text-[13px] font-bold flex items-center justify-center shrink-0"
+                    style={{
+                      background: `${color}18`,
+                      border: `1px solid ${color}40`,
+                      color,
+                    }}
+                  >
+                    {step}
+                  </span>
+                  <div className="text-[13px] leading-relaxed pt-0.5">
+                    <span className="font-bold text-[var(--text-primary)]">{label} </span>
+                    <span className="text-[var(--text-secondary)]">{detail}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p className="text-[12px] text-[var(--text-secondary)] opacity-60 mt-4">
+              Repeat 4–6 cycles. Most people notice a shift within 2 minutes.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );
