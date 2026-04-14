@@ -322,7 +322,7 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
         <div className="w-full max-w-lg mt-2">
           <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--background-light)] p-6 text-left">
             <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed mb-5">
-              Box breathing is a tactical breath control technique used by special forces operators to stay calm and functional under extreme stress. It activates your parasympathetic nervous system — slowing your heart rate, lowering cortisol, and interrupting the hypervigilance or panic response before it takes hold. Four seconds at a time.
+              Box breathing is a well-established technique for calming the mind and body when stress, anxiety, or sleeplessness becomes hard to manage. It works by activating your body's natural rest response — gently slowing your heart rate and easing the tension that builds when your thoughts won't settle.
             </p>
 
             <div className="space-y-3">
