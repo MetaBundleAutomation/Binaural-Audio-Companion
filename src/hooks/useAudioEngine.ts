@@ -73,6 +73,10 @@ export function useAudioEngine(): AudioEngine {
       cancelAnimationFrame(animFrameRef.current);
       animFrameRef.current = 0;
     }
+
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.playbackState = "none";
+    }
   }, [stopOscillators]);
 
   const updateProgress = useCallback(() => {
@@ -181,6 +185,16 @@ export function useAudioEngine(): AudioEngine {
     isPlayingRef.current = true;
     setIsPlaying(true);
     animFrameRef.current = requestAnimationFrame(updateProgress);
+
+    // Update OS media controls
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: track.name,
+        artist: "MindFlow",
+        album: "Binaural Audio",
+      });
+      navigator.mediaSession.playbackState = "playing";
+    }
   }, [getOrCreateContext, stopOscillators, updateProgress]);
 
   const pauseAudio = useCallback(() => {
@@ -197,6 +211,10 @@ export function useAudioEngine(): AudioEngine {
       cancelAnimationFrame(animFrameRef.current);
       animFrameRef.current = 0;
     }
+
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.playbackState = "paused";
+    }
   }, [stopOscillators]);
 
   const loadTrack = useCallback((index: number) => {
@@ -206,6 +224,15 @@ export function useAudioEngine(): AudioEngine {
     pauseTimeRef.current = 0;
     startTimeRef.current = 0;
     setElapsed(0);
+
+    // Update track name in OS media controls immediately on selection
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: tracks[index].name,
+        artist: "MindFlow",
+        album: "Binaural Audio",
+      });
+    }
   }, [stopAudio]);
 
   const togglePlay = useCallback(() => {
@@ -300,6 +327,23 @@ export function useAudioEngine(): AudioEngine {
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [pauseAudio, playAudio, prevTrack, nextTrack]);
+
+  // Media Session — hardware media keys, lock screen & headphone controls
+  useEffect(() => {
+    if (!("mediaSession" in navigator)) return;
+    navigator.mediaSession.setActionHandler("play",          () => playAudio());
+    navigator.mediaSession.setActionHandler("pause",         () => pauseAudio());
+    navigator.mediaSession.setActionHandler("nexttrack",     () => nextTrack());
+    navigator.mediaSession.setActionHandler("previoustrack", () => prevTrack());
+    return () => {
+      try {
+        navigator.mediaSession.setActionHandler("play",          null);
+        navigator.mediaSession.setActionHandler("pause",         null);
+        navigator.mediaSession.setActionHandler("nexttrack",     null);
+        navigator.mediaSession.setActionHandler("previoustrack", null);
+      } catch { /* browser may not support removal */ }
+    };
+  }, [playAudio, pauseAudio, nextTrack, prevTrack]);
 
   // Cleanup on unmount
   useEffect(() => {
