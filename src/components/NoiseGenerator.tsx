@@ -112,13 +112,13 @@ interface NoiseGeneratorProps {
 export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) {
   const [selectedNoise, setSelectedNoise] = useState<NoiseType>("pink");
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolumeState] = useState(60);
+  const [volume, setVolumeState] = useState(10);
   const [autoSync, setAutoSync] = useState(false);
 
   const audioCtxRef  = useRef<AudioContext | null>(null);
   const sourceRef    = useRef<AudioBufferSourceNode | null>(null);
   const gainRef      = useRef<GainNode | null>(null);
-  const volumeRef    = useRef(60);
+  const volumeRef    = useRef(10);
   const isPlayingRef = useRef(false);
   const noiseRef     = useRef<NoiseType>("pink");
 

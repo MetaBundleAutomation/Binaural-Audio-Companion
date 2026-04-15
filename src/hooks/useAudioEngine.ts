@@ -21,7 +21,7 @@ export function useAudioEngine(): AudioEngine {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [elapsed, setElapsed] = useState(0);
-  const [volume, setVolumeState] = useState(70);
+  const [volume, setVolumeState] = useState(10);
 
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -32,7 +32,7 @@ export function useAudioEngine(): AudioEngine {
   const pauseTimeRef = useRef(0);
   const isPlayingRef = useRef(false);
   const animFrameRef = useRef<number>(0);
-  const volumeRef = useRef(70);
+  const volumeRef = useRef(10);
   const currentTrackRef = useRef(0);
 
   const getOrCreateContext = useCallback(() => {
