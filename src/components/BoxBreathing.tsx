@@ -243,7 +243,6 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
   useEffect(() => {
     requestAnimationFrame(() => draw(true));
     return () => cancelAnimationFrame(rafRef.current);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Auto-sync: start/pause breathing when audio starts/stops
@@ -322,7 +321,7 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
         <div className="w-full max-w-lg mt-2">
           <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--background-light)] p-6 text-left">
             <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed mb-5">
-              Box breathing is a well-established technique for calming the mind and body when stress, anxiety, or sleeplessness becomes hard to manage. It works by activating your body's natural rest response — gently slowing your heart rate and easing the tension that builds when your thoughts won't settle.
+              Box breathing is a well-established technique for calming the mind and body when stress, anxiety, or sleeplessness becomes hard to manage. It works by activating your body&apos;s natural rest response — gently slowing your heart rate and easing the tension that builds when your thoughts won&apos;t settle.
             </p>
 
             <div className="space-y-3">

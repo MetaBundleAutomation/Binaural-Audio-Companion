@@ -223,7 +223,6 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
         audioCtxRef.current = null;
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── Render ────────────────────────────────────────────────────────────────────
