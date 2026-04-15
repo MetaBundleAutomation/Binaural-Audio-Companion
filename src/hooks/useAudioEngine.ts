@@ -34,6 +34,7 @@ export function useAudioEngine(): AudioEngine {
   const animFrameRef = useRef<number>(0);
   const volumeRef = useRef(10);
   const currentTrackRef = useRef(0);
+  const fadeMultiplierRef = useRef(1); // 1 = full volume, 0 = silent (used during fade-out)
 
   const getOrCreateContext = useCallback(() => {
     if (audioCtxRef.current && audioCtxRef.current.state !== "closed") {
@@ -66,6 +67,7 @@ export function useAudioEngine(): AudioEngine {
     setIsPlaying(false);
     startTimeRef.current = 0;
     pauseTimeRef.current = 0;
+    fadeMultiplierRef.current = 1;
     setElapsed(0);
     if (animFrameRef.current) {
       cancelAnimationFrame(animFrameRef.current);
@@ -83,6 +85,24 @@ export function useAudioEngine(): AudioEngine {
     const clamped = Math.max(0, Math.min(el, total));
 
     setElapsed(clamped);
+
+    // Apply fade-out for tracks that have one
+    const fadeOutDuration = track.fadeOutDuration ?? 0;
+    if (fadeOutDuration > 0) {
+      const fadeStart = total - fadeOutDuration;
+      if (clamped >= fadeStart) {
+        const fadeMult = Math.max(0, 1 - (clamped - fadeStart) / fadeOutDuration);
+        fadeMultiplierRef.current = fadeMult;
+        if (gainNodeRef.current) {
+          const vol = volumeRef.current / 100;
+          const gain = 0.25 * vol * fadeMult;
+          gainNodeRef.current.left.gain.setValueAtTime(gain, ctx.currentTime);
+          gainNodeRef.current.right.gain.setValueAtTime(gain, ctx.currentTime);
+        }
+      } else {
+        fadeMultiplierRef.current = 1;
+      }
+    }
 
     if (clamped >= total) {
       // Auto-advance
@@ -110,7 +130,18 @@ export function useAudioEngine(): AudioEngine {
     const freq = track.binauralFreq || 10;
     const baseFreq = 200;
     const vol = volumeRef.current / 100;
-    const targetGain = 0.25 * vol;
+
+    // If resuming mid-fade, initialise gain at the correct reduced level
+    const total = parseDuration(track.duration);
+    const fadeOutDuration = track.fadeOutDuration ?? 0;
+    const resumePos = pauseTimeRef.current > 0 ? pauseTimeRef.current : 0;
+    const fadeStart = total - fadeOutDuration;
+    let fadeMult = 1;
+    if (fadeOutDuration > 0 && resumePos >= fadeStart) {
+      fadeMult = Math.max(0, 1 - (resumePos - fadeStart) / fadeOutDuration);
+    }
+    fadeMultiplierRef.current = fadeMult;
+    const targetGain = 0.25 * vol * fadeMult;
 
     const merger = ctx.createChannelMerger(2);
     const analyser = analyserRef.current!;
@@ -239,8 +270,10 @@ export function useAudioEngine(): AudioEngine {
     const vol = value / 100;
     if (gainNodeRef.current && audioCtxRef.current) {
       const now = audioCtxRef.current.currentTime;
-      gainNodeRef.current.left.gain.setValueAtTime(0.25 * vol, now);
-      gainNodeRef.current.right.gain.setValueAtTime(0.25 * vol, now);
+      // Respect current fade multiplier so volume changes don't override the fade
+      const gain = 0.25 * vol * fadeMultiplierRef.current;
+      gainNodeRef.current.left.gain.setValueAtTime(gain, now);
+      gainNodeRef.current.right.gain.setValueAtTime(gain, now);
     }
   }, []);
 

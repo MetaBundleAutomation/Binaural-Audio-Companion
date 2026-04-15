@@ -4,6 +4,8 @@ export interface Track {
   duration: string;
   binauralFreq: number;
   icon: string;
+  /** Seconds from end at which the track begins to fade to silence */
+  fadeOutDuration?: number;
 }
 
 export const tracks: Track[] = [
@@ -16,10 +18,11 @@ export const tracks: Track[] = [
   },
   {
     name: "Calm",
-    description: "25 Minutes of 12 Hz Alpha waves for relaxing the mind",
-    duration: "25:00",
+    description: "15 Minutes of 12 Hz Alpha waves for relaxing the mind — fades gently over the final 5 minutes",
+    duration: "15:00",
     binauralFreq: 12,
     icon: "calm",
+    fadeOutDuration: 300,
   },
   {
     name: "Sleep",
@@ -44,10 +47,11 @@ export const tracks: Track[] = [
   },
   {
     name: "Meditation",
-    description: "40 Minutes of 6 Hz Theta waves for staying in the present with daily mindfulness",
-    duration: "40:00",
+    description: "15 Minutes of 6 Hz Theta waves for staying in the present with daily mindfulness — fades gently over the final 5 minutes",
+    duration: "15:00",
     binauralFreq: 6,
     icon: "meditation",
+    fadeOutDuration: 300,
   },
   {
     name: "Learning",
@@ -58,10 +62,11 @@ export const tracks: Track[] = [
   },
   {
     name: "Anxiety",
-    description: "30 Minutes of 8 Hz Alpha waves for calming the mind and relieving stress",
-    duration: "30:00",
+    description: "15 Minutes of 8 Hz Alpha waves for calming the mind and relieving stress — fades gently over the final 5 minutes",
+    duration: "15:00",
     binauralFreq: 8,
     icon: "anxiety",
+    fadeOutDuration: 300,
   },
 ];
 
