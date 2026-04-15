@@ -1,23 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
-import { tracks, parseDuration, formatTime } from "@/data/tracks"; // tracks used for currentTrackIndex lookup
+import React from "react";
+import { tracks, parseDuration, formatTime } from "@/data/tracks";
 import { useAudioEngine } from "@/hooks/useAudioEngine";
-import Visualizer from "./Visualizer";
 import Icon from "./Icons";
 import BoxBreathing from "./BoxBreathing";
 import NoiseGenerator from "./NoiseGenerator";
 import AudioCarousel from "./AudioCarousel";
 
+// Matches the gradient cycle used in AudioCarousel
+const GRADIENTS = [
+  "from-[#2B6B7F] to-[#3A8FA3]",
+  "from-[#4A5568] to-[#5A6B7A]",
+  "from-[#1E4F5E] to-[#2B6B7F]",
+  "from-[#8C9BAA] to-[#A0B0C0]",
+];
+
 export default function Player() {
-  const engine = useAudioEngine();
-  // dragValue tracks slider position while user is scrubbing (keeps input always controlled)
-  const [dragValue, setDragValue] = useState<number | null>(null);
-  const track = tracks[engine.currentTrackIndex];
-  const totalSeconds = parseDuration(track.duration);
-  const displayElapsed = dragValue !== null ? dragValue : engine.elapsed;
-  const remaining = totalSeconds - displayElapsed;
-  const progressPct = totalSeconds > 0 ? (displayElapsed / totalSeconds) * 100 : 0;
+  const engine  = useAudioEngine();
+  const track   = tracks[engine.currentTrackIndex];
+  const gradient = GRADIENTS[engine.currentTrackIndex % GRADIENTS.length];
 
   return (
     <>
@@ -27,62 +29,65 @@ export default function Player() {
           className="rounded-3xl p-10 border border-[var(--border-color)] bg-[var(--background-card)]"
           style={{ boxShadow: "var(--shadow-lg)" }}
         >
-          {/* Visualizer */}
+          {/* ── Hero card display ──────────────────────────────────────────── */}
           <div className="mb-8">
-            <div className="visualizer-bg rounded-2xl h-[200px] flex items-center justify-center overflow-hidden relative border-2 border-[var(--border-color)]">
-              <Visualizer analyser={engine.analyser} isPlaying={engine.isPlaying} />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[2] text-white/30 drop-shadow-lg">
-                <Icon name={track.icon} size={70} />
+            <div
+              className={`w-full rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center gap-8 relative overflow-hidden`}
+              style={{
+                height: 220,
+                border: "2px solid rgba(255,255,255,0.14)",
+                boxShadow: "0 16px 48px rgba(0,0,0,0.35)",
+              }}
+            >
+              {/* Glare highlight */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at 32% 18%, rgba(255,255,255,0.20) 0%, transparent 65%)",
+                }}
+              />
+
+              {/* Equalizer bars — visible while playing */}
+              {engine.isPlaying && (
+                <div className="absolute top-4 right-4 flex items-end gap-[3px]">
+                  {[12, 18, 10, 16, 8].map((h, i) => (
+                    <div
+                      key={i}
+                      className="w-[3px] rounded-full bg-white/75"
+                      style={{
+                        height: h,
+                        transformOrigin: "bottom",
+                        animation: `eq-bar 0.7s ease-in-out ${i * 0.13}s infinite alternate`,
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Icon */}
+              <div className="text-white/90 z-10 shrink-0">
+                <Icon name={track.icon} size={80} />
+              </div>
+
+              {/* Track info */}
+              <div className="z-10 flex flex-col gap-2 max-w-xs">
+                <p className="text-white font-bold text-[26px] leading-tight tracking-tight">
+                  {track.name}
+                </p>
+                <p className="text-white/60 text-[13px] font-semibold tabular-nums">
+                  {formatTime(parseDuration(track.duration))}
+                  {track.fadeOutDuration ? " · fades gently" : ""}
+                </p>
+                <p className="text-white/55 text-[13px] leading-relaxed line-clamp-2">
+                  {track.description.split("—")[0].split("·")[0].trim()}
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Track Info */}
-          <div className="text-center mb-8">
-            <h3 className="text-[32px] font-bold mb-3 tracking-tight text-[var(--text-primary)]">
-              {track.name}
-            </h3>
-            <p className="text-[17px] font-medium leading-relaxed text-[var(--text-secondary)]">
-              {track.description}
-            </p>
-          </div>
-
-          {/* Controls */}
+          {/* ── Controls ──────────────────────────────────────────────────── */}
           <div className="flex flex-col gap-5">
-            {/* Progress */}
-            <div className="flex items-center gap-4 bg-[var(--background-light)] rounded-xl px-5 py-3 border border-[var(--border-color)]">
-              <span className="text-[15px] font-semibold text-[var(--text-secondary)] min-w-[50px] tabular-nums">
-                {formatTime(displayElapsed)}
-              </span>
-              <input
-                type="range"
-                min={0}
-                max={totalSeconds}
-                value={displayElapsed}
-                className="flex-1"
-                style={{ '--fill': `${progressPct}%` } as React.CSSProperties}
-                onMouseDown={(e) => setDragValue(Number((e.target as HTMLInputElement).value))}
-                onMouseUp={(e) => {
-                  const v = Number((e.target as HTMLInputElement).value);
-                  engine.seek(v);
-                  setDragValue(null);
-                }}
-                onTouchStart={(e) => setDragValue(Number((e.target as HTMLInputElement).value))}
-                onTouchEnd={(e) => {
-                  const v = Number((e.target as HTMLInputElement).value);
-                  engine.seek(v);
-                  setDragValue(null);
-                }}
-                onChange={(e) => {
-                  const v = Number(e.target.value);
-                  if (dragValue !== null) setDragValue(v);
-                }}
-                aria-label="Track progress"
-              />
-              <span className="text-[15px] font-semibold text-[var(--text-secondary)] min-w-[50px] tabular-nums text-right">
-                -{formatTime(remaining)}
-              </span>
-            </div>
 
             {/* Play Controls */}
             <div className="flex justify-center items-center gap-5">
@@ -98,7 +103,7 @@ export default function Player() {
 
               <button
                 onClick={engine.togglePlay}
-                className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all"
+                className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-white"
                 style={{
                   background: "var(--primary)",
                   boxShadow: "0 8px 24px rgba(43, 107, 127, 0.4)",
@@ -139,7 +144,7 @@ export default function Player() {
                 value={engine.volume}
                 onChange={(e) => engine.setVolume(Number(e.target.value))}
                 className="flex-1"
-                style={{ '--fill': `${engine.volume}%` } as React.CSSProperties}
+                style={{ "--fill": `${engine.volume}%` } as React.CSSProperties}
                 aria-label="Volume control"
               />
             </div>
