@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { tracks, parseDuration, formatTime } from "@/data/tracks";
+import { tracks, parseDuration, formatTime } from "@/data/tracks"; // tracks used for currentTrackIndex lookup
 import { useAudioEngine } from "@/hooks/useAudioEngine";
 import Visualizer from "./Visualizer";
-import TrackCard from "./TrackCard";
 import Icon from "./Icons";
 import BoxBreathing from "./BoxBreathing";
 import NoiseGenerator from "./NoiseGenerator";
+import AudioCarousel from "./AudioCarousel";
 
 export default function Player() {
   const engine = useAudioEngine();
@@ -153,26 +153,15 @@ export default function Player() {
       {/* Box Breathing */}
       <BoxBreathing isAudioPlaying={engine.isPlaying} />
 
-      {/* Track Library */}
-      <section id="library" className="my-20">
-        <h2 className="text-[40px] font-bold mb-10 text-center tracking-tight text-[var(--text-primary)]">
-          Audio Library
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {tracks.map((t, i) => (
-            <TrackCard
-              key={t.name}
-              track={t}
-              index={i}
-              isActive={i === engine.currentTrackIndex}
-              onClick={() => {
-                  engine.loadTrack(i);
-                  document.getElementById("player")?.scrollIntoView({ behavior: "smooth" });
-                }}
-            />
-          ))}
-        </div>
-      </section>
+      {/* Track Library — Coverflow carousel */}
+      <AudioCarousel
+        currentIndex={engine.currentTrackIndex}
+        isPlaying={engine.isPlaying}
+        onSelect={(idx) => {
+          engine.loadTrack(idx);
+          document.getElementById("player")?.scrollIntoView({ behavior: "smooth" });
+        }}
+      />
     </>
   );
 }

@@ -143,6 +143,12 @@ input[type="range"]::-moz-range-thumb:hover {
   box-shadow: 0 0 0 4px rgba(43, 107, 127, 0.2);
 }
 
+/* Equalizer bar animation for the AudioCarousel playing indicator */
+@keyframes eq-bar {
+  from { transform: scaleY(0.35); }
+  to   { transform: scaleY(1); }
+}
+
 .visualizer-bg {
   background: linear-gradient(135deg, #F0F4F8 0%, #E2E8F0 100%);
 }
