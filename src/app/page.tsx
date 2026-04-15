@@ -26,7 +26,7 @@ export default function Home() {
               </div>
               <h3 className="text-[23px] font-bold mb-3 text-[var(--text-primary)]">Focus</h3>
               <p className="text-base font-medium leading-relaxed text-[var(--text-secondary)]">
-                Beta waves (13-30 Hz) for concentration, attention and mental clarity. Gamma waves (30-100 Hz) for problem solving.
+                Helps quiet the mental noise so you can concentrate on one thing at a time. Useful when your thoughts are scattered, tasks feel hard to start, or your mind keeps drifting away from what you&apos;re trying to do.
               </p>
             </div>
             <div className="bg-[var(--background-card)] rounded-2xl p-8 text-center border border-[var(--border-color)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--primary)] min-h-[280px] flex flex-col justify-start">
@@ -35,7 +35,7 @@ export default function Home() {
               </div>
               <h3 className="text-[23px] font-bold mb-3 text-[var(--text-primary)]">Relaxation</h3>
               <p className="text-base font-medium leading-relaxed text-[var(--text-secondary)]">
-                Slow delta waves (0.5-4 Hz) for relaxation and meditation. Alpha waves (8-12 Hz) for relaxation with eyes shut.
+                Eases the physical tension and mental restlessness that build up through the day. A good starting point if you feel wound up, on edge, or just need something to take the pressure down a notch before it becomes overwhelming.
               </p>
             </div>
             <div className="bg-[var(--background-card)] rounded-2xl p-8 text-center border border-[var(--border-color)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--primary)] min-h-[280px] flex flex-col justify-start">
@@ -44,7 +44,7 @@ export default function Home() {
               </div>
               <h3 className="text-[23px] font-bold mb-3 text-[var(--text-primary)]">Sleep</h3>
               <p className="text-base font-medium leading-relaxed text-[var(--text-secondary)]">
-                Theta waves (4-8 Hz) for drowsiness and light sleep. Delta waves (0.5-4 Hz) for deep relaxation and sleep onset.
+                Guides your mind into the slower rhythms it naturally moves through as you fall asleep. Helpful when you can&apos;t switch off at night, wake in the early hours, or find that deep, restful sleep is hard to reach.
               </p>
             </div>
           </div>
