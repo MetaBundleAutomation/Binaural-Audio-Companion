@@ -22,7 +22,7 @@ export default function Player() {
   return (
     <>
       {/* Player Section */}
-      <section className="my-16">
+      <section id="player" className="my-16">
         <div
           className="rounded-3xl p-10 border border-[var(--border-color)] bg-[var(--background-card)]"
           style={{ boxShadow: "var(--shadow-lg)" }}
@@ -165,7 +165,10 @@ export default function Player() {
               track={t}
               index={i}
               isActive={i === engine.currentTrackIndex}
-              onClick={() => engine.loadTrack(i)}
+              onClick={() => {
+                  engine.loadTrack(i);
+                  document.getElementById("player")?.scrollIntoView({ behavior: "smooth" });
+                }}
             />
           ))}
         </div>
