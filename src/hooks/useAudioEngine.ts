@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { tracks, parseDuration } from "@/data/tracks";
+import { usePreferences } from "@/hooks/usePreferences";
 
 export interface AudioEngine {
   isPlaying: boolean;
@@ -20,13 +21,16 @@ export interface AudioEngine {
 }
 
 export function useAudioEngine(): AudioEngine {
+  const { set } = usePreferences();
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const [volume, setVolumeState] = useState(10);
 
-  const audioCtxRef     = useRef<AudioContext | null>(null);
+  const audioCtxRef       = useRef<AudioContext | null>(null);
+  const volumeDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const analyserRef     = useRef<AnalyserNode | null>(null);
   const oscLeftRef      = useRef<OscillatorNode | null>(null);
   const oscRightRef     = useRef<OscillatorNode | null>(null);
@@ -238,6 +242,8 @@ export function useAudioEngine(): AudioEngine {
 
     isPlayingRef.current = true;
     setIsPlaying(true);
+    // Auto-save: record the beat that just started playing
+    set("lastBeatId", track.name);
     animFrameRef.current = requestAnimationFrame(updateProgress);
 
     if ("mediaSession" in navigator) {
@@ -300,6 +306,8 @@ export function useAudioEngine(): AudioEngine {
     const newLooping = !isLoopingRef.current;
     isLoopingRef.current = newLooping;
     setIsLooping(newLooping);
+    // Auto-save loop state immediately (no debounce — it's a discrete toggle)
+    set("lastLoopState", newLooping);
 
     if (newLooping) {
       // ── Loop turned ON ───────────────────────────────────────────────────
@@ -376,6 +384,9 @@ export function useAudioEngine(): AudioEngine {
   const setVolume = useCallback((value: number) => {
     volumeRef.current = value;
     setVolumeState(value);
+    // Debounce: don't write to localStorage on every pixel of a slider drag
+    if (volumeDebounceRef.current) clearTimeout(volumeDebounceRef.current);
+    volumeDebounceRef.current = setTimeout(() => { set("lastVolume", value); }, 300);
     if (gainNodeRef.current && audioCtxRef.current) {
       const now  = audioCtxRef.current.currentTime;
       const vol  = value / 100;
@@ -434,6 +445,7 @@ export function useAudioEngine(): AudioEngine {
   useEffect(() => {
     return () => {
       stopAudio();
+      if (volumeDebounceRef.current) clearTimeout(volumeDebounceRef.current);
       if (audioCtxRef.current && audioCtxRef.current.state !== "closed") {
         audioCtxRef.current.close();
         audioCtxRef.current = null;

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { usePreferences } from "@/hooks/usePreferences";
 
 // ─── Types & Data ─────────────────────────────────────────────────────────────
 
@@ -110,6 +111,8 @@ interface NoiseGeneratorProps {
 }
 
 export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) {
+  const { set } = usePreferences();
+
   const [selectedNoise, setSelectedNoise] = useState<NoiseType>("pink");
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolumeState] = useState(3);
@@ -184,6 +187,8 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     gainRef.current      = gain;
     isPlayingRef.current = true;
     setIsPlaying(true);
+    // Auto-save: record the noise type that just started playing
+    set("lastNoiseId", type);
 
     // ── 3-second logarithmic fade-in ─────────────────────────────────────────
     fadeInActiveRef.current = true;
