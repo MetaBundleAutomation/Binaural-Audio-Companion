@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import { baseURL, description, siteName, title } from "@/config";
 
 export const metadata: Metadata = {
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/icon?<generated>",
     shortcut: "/icon?<generated>",
-    apple: "/icon?<generated>",
+    // apple-icon.tsx is auto-detected by Next.js and generates the 180×180 touch icon
   },
   alternates: {
     canonical: baseURL,
@@ -64,6 +65,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <ServiceWorkerRegistration />
         <Header />
         {children}
         <Footer />
