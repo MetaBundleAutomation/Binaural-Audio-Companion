@@ -195,6 +195,44 @@ export default function Instructions() {
 
             <hr className="border-[var(--border-color)]" />
 
+            {/* Combining Sessions */}
+            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">✨ Combining Sessions for Deeper Relaxation</h2>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-5">
+                You can layer all three tools at the same time for a richer experience.
+                Try this sequence:
+              </p>
+              <ol className="space-y-4 text-[var(--text-secondary)] leading-relaxed list-decimal list-outside pl-5">
+                <li>
+                  <strong className="text-[var(--text-primary)]">Start with Noise Therapy.</strong>{" "}
+                  Pick a background sound — Brown Noise, Pink Noise, or White Noise work well —
+                  and set the volume low (around 30%). This becomes your gentle base layer.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Add a Binaural Beat.</strong>{" "}
+                  Open the Audio Library and choose a beat that matches your goal — Calm or Sleep
+                  for winding down, Focus for deep work. Set it slightly louder than the noise so
+                  you can feel it through the background.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Open Box Breathing.</strong>{" "}
+                  Follow the visual guide — breathe in, hold, breathe out, hold. Let the animation
+                  set your pace.
+                </li>
+              </ol>
+              <p className="text-[var(--text-secondary)] leading-relaxed mt-5">
+                Together, the noise softens distractions, the beat shapes your mental state, and
+                the breathing brings your body along. Try it for 10 minutes and notice how you feel.
+              </p>
+              <blockquote className="mt-5 pl-4 border-l-2 border-[var(--border-color)] text-[var(--text-secondary)] text-[14px] leading-relaxed">
+                <strong className="text-[var(--text-primary)]">No wrong way.</strong>{" "}
+                If three feels like too much, use any two — or just one. The right combination
+                is whichever one you&apos;ll actually use.
+              </blockquote>
+            </div>
+
+            <hr className="border-[var(--border-color)]" />
+
             {/* Safety */}
             <div
               className="bg-[var(--background-card)] rounded-2xl p-8 border"
