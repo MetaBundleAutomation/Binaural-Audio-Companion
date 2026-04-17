@@ -5,6 +5,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import PreferencesProvider from "@/components/PreferencesProvider";
 import { baseURL, description, siteName, title } from "@/config";
 
 export const metadata: Metadata = {
@@ -66,12 +67,14 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ServiceWorkerRegistration />
-        <Header />
-        {children}
-        <Footer />
-        {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID && (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
-        )}
+        <PreferencesProvider>
+          <Header />
+          {children}
+          <Footer />
+          {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID && (
+            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
+          )}
+        </PreferencesProvider>
       </body>
     </html>
   );
