@@ -73,8 +73,9 @@ export function useAudioEngine(): AudioEngine {
     startTimeRef.current = 0;
     pauseTimeRef.current = 0;
     fadeMultiplierRef.current = 1;
-    // Note: loop state (isLoopingRef) is intentionally NOT reset here —
-    // the user's loop preference persists across track changes.
+    // Reset loop state on every track change (manual select or auto-advance).
+    isLoopingRef.current = false;
+    setIsLooping(false);
     setElapsed(0);
     if (animFrameRef.current) {
       cancelAnimationFrame(animFrameRef.current);
