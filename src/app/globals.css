@@ -158,3 +158,29 @@ input[type="range"]::-moz-range-thumb:hover {
     background: linear-gradient(135deg, #222A32 0%, #151A1E 100%);
   }
 }
+
+/*
+  Player card background tint — picks up --beat-r/g/b CSS variables set inline
+  by the Player component and blends a hint of the current beat colour into the
+  card surface. color-mix() is used so the transition animates smoothly.
+  Fallback: plain card background for browsers that predate color-mix().
+*/
+.player-bg {
+  background-color: var(--background-card);
+  background-color: color-mix(
+    in srgb,
+    rgb(var(--beat-r, 43) var(--beat-g, 107) var(--beat-b, 127)) 3%,
+    var(--background-card)
+  );
+  transition: background-color 600ms ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .player-bg {
+    background-color: color-mix(
+      in srgb,
+      rgb(var(--beat-r, 43) var(--beat-g, 107) var(--beat-b, 127)) 7%,
+      var(--background-card)
+    );
+  }
+}

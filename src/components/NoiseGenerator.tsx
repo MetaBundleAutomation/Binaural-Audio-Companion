@@ -115,12 +115,15 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
   const [volume, setVolumeState] = useState(3);
   const [autoSync, setAutoSync] = useState(false);
 
-  const audioCtxRef  = useRef<AudioContext | null>(null);
-  const sourceRef    = useRef<AudioBufferSourceNode | null>(null);
-  const gainRef      = useRef<GainNode | null>(null);
-  const volumeRef    = useRef(3);
-  const isPlayingRef = useRef(false);
-  const noiseRef     = useRef<NoiseType>("pink");
+  const audioCtxRef    = useRef<AudioContext | null>(null);
+  const sourceRef      = useRef<AudioBufferSourceNode | null>(null);
+  const gainRef        = useRef<GainNode | null>(null);
+  const volumeRef      = useRef(3);
+  const isPlayingRef   = useRef(false);
+  const noiseRef       = useRef<NoiseType>("pink");
+  // Fade-in state
+  const fadeInActiveRef  = useRef(false);
+  const fadeIntervalRef  = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -135,7 +138,16 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     return audioCtxRef.current;
   }
 
+  function clearFadeInterval() {
+    if (fadeIntervalRef.current !== null) {
+      clearInterval(fadeIntervalRef.current);
+      fadeIntervalRef.current = null;
+    }
+    fadeInActiveRef.current = false;
+  }
+
   function stopNoise() {
+    clearFadeInterval();
     if (sourceRef.current) {
       try { sourceRef.current.stop(); sourceRef.current.disconnect(); } catch { /* already stopped */ }
       sourceRef.current = null;
@@ -152,16 +164,17 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     // 3-second looping buffer
     const bufLen = ctx.sampleRate * 3;
     const buf    = ctx.createBuffer(1, bufLen, ctx.sampleRate);
-    if (type === "white")  fillWhiteNoise(buf);
+    if (type === "white")      fillWhiteNoise(buf);
     else if (type === "pink")  fillPinkNoise(buf);
-    else fillBrownNoise(buf);
+    else                       fillBrownNoise(buf);
 
     const source = ctx.createBufferSource();
     source.buffer = buf;
     source.loop   = true;
 
     const gain = ctx.createGain();
-    gain.gain.value = vol / 100;
+    // Start near-silent for fade-in
+    gain.gain.value = 0.001 * (vol / 100);
 
     source.connect(gain);
     gain.connect(ctx.destination);
@@ -171,6 +184,32 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     gainRef.current      = gain;
     isPlayingRef.current = true;
     setIsPlaying(true);
+
+    // ── 3-second logarithmic fade-in ─────────────────────────────────────────
+    fadeInActiveRef.current = true;
+    const startTime = Date.now();
+
+    fadeIntervalRef.current = setInterval(() => {
+      if (!gainRef.current || !audioCtxRef.current) {
+        clearFadeInterval();
+        return;
+      }
+      const elapsed = (Date.now() - startTime) / 1000; // seconds
+      if (elapsed >= 3) {
+        // Fade-in complete — set target volume and stop polling
+        gainRef.current.gain.setValueAtTime(
+          volumeRef.current / 100,
+          audioCtxRef.current.currentTime,
+        );
+        clearFadeInterval();
+        return;
+      }
+      const fadeInMult = Math.pow(1000, (elapsed / 3) - 1); // 0.001 → 1
+      gainRef.current.gain.setValueAtTime(
+        (volumeRef.current / 100) * fadeInMult,
+        audioCtxRef.current.currentTime,
+      );
+    }, 50);
   }
 
   // ── Controls ─────────────────────────────────────────────────────────────────
@@ -195,7 +234,8 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
   function handleVolume(value: number) {
     volumeRef.current = value;
     setVolumeState(value);
-    if (gainRef.current && audioCtxRef.current) {
+    // Skip direct gain write during fade-in — the interval will use volumeRef.current
+    if (gainRef.current && audioCtxRef.current && !fadeInActiveRef.current) {
       gainRef.current.gain.setValueAtTime(value / 100, audioCtxRef.current.currentTime);
     }
   }
@@ -223,6 +263,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
         audioCtxRef.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── Render ────────────────────────────────────────────────────────────────────
@@ -249,6 +290,8 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
               <button
                 key={type}
                 onClick={() => handleSelectNoise(type)}
+                aria-label={n.label}
+                aria-pressed={isSelected}
                 className={`rounded-2xl p-5 text-left border-2 transition-all cursor-pointer ${
                   isSelected
                     ? "border-[var(--primary)] bg-[var(--background-light)]"
@@ -280,6 +323,12 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
 
         {/* Controls */}
         <div className="flex flex-col gap-5">
+
+          {/* Volume reminder */}
+          <p className="text-center text-xs text-[var(--text-secondary)]">
+            🎧 Lower your volume before pressing play
+          </p>
+
           {/* Play / Stop button */}
           <div className="flex justify-center">
             <button
@@ -330,6 +379,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
               <button
                 role="switch"
                 aria-checked={autoSync}
+                aria-label="Auto-sync noise with audio playback"
                 onClick={() => setAutoSync((v) => !v)}
                 className={`relative w-11 h-6 rounded-full border-0 cursor-pointer transition-colors overflow-hidden ${
                   autoSync ? "bg-[var(--primary)]" : "bg-[var(--border-color)]"

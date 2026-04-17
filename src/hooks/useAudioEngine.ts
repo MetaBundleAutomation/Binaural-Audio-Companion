@@ -26,20 +26,24 @@ export function useAudioEngine(): AudioEngine {
   const [elapsed, setElapsed] = useState(0);
   const [volume, setVolumeState] = useState(10);
 
-  const audioCtxRef    = useRef<AudioContext | null>(null);
-  const analyserRef    = useRef<AnalyserNode | null>(null);
-  const oscLeftRef     = useRef<OscillatorNode | null>(null);
-  const oscRightRef    = useRef<OscillatorNode | null>(null);
-  const gainNodeRef    = useRef<{ left: GainNode; right: GainNode } | null>(null);
-  const startTimeRef   = useRef(0);
-  const pauseTimeRef   = useRef(0);
-  const isPlayingRef   = useRef(false);
-  const isLoopingRef   = useRef(false);
-  const animFrameRef   = useRef<number>(0);
-  const volumeRef      = useRef(10);
+  const audioCtxRef     = useRef<AudioContext | null>(null);
+  const analyserRef     = useRef<AnalyserNode | null>(null);
+  const oscLeftRef      = useRef<OscillatorNode | null>(null);
+  const oscRightRef     = useRef<OscillatorNode | null>(null);
+  const gainNodeRef     = useRef<{ left: GainNode; right: GainNode } | null>(null);
+  const startTimeRef    = useRef(0);
+  const pauseTimeRef    = useRef(0);
+  const isPlayingRef    = useRef(false);
+  const isLoopingRef    = useRef(false);
+  const animFrameRef    = useRef<number>(0);
+  const volumeRef       = useRef(10);
   const currentTrackRef = useRef(0);
-  // 1 = full user volume; approaches 0.001 (≈ −60 dB) during logarithmic fade
+  // 1 = full user volume; approaches 0.001 (≈ −60 dB) during logarithmic fade-out
   const fadeMultiplierRef = useRef(1);
+  // Fade-in: soft 3-second ramp at the start of every playback
+  const needsFadeInRef  = useRef(false);
+  const fadeInStartRef  = useRef(0);
+  const fadeInMultRef   = useRef(1); // current fade-in multiplier, used by setVolume
 
   const getOrCreateContext = useCallback(() => {
     if (audioCtxRef.current && audioCtxRef.current.state !== "closed") {
@@ -73,6 +77,8 @@ export function useAudioEngine(): AudioEngine {
     startTimeRef.current = 0;
     pauseTimeRef.current = 0;
     fadeMultiplierRef.current = 1;
+    needsFadeInRef.current = false;
+    fadeInMultRef.current = 1;
     // Reset loop state on every track change (manual select or auto-advance).
     isLoopingRef.current = false;
     setIsLooping(false);
@@ -91,9 +97,30 @@ export function useAudioEngine(): AudioEngine {
     if (!isPlayingRef.current || !audioCtxRef.current) return;
 
     const ctx = audioCtxRef.current;
-    const el = ctx.currentTime - startTimeRef.current;
-    const track = tracks[currentTrackRef.current];
-    const total = parseDuration(track.duration);
+
+    // ── Fade-in (first 3 seconds of every playback) ──────────────────────────
+    if (needsFadeInRef.current) {
+      const fadeInElapsed = ctx.currentTime - fadeInStartRef.current;
+      let fadeInMult: number;
+      if (fadeInElapsed < 3) {
+        // Logarithmic ramp: 0.001 → 1 over 3 seconds
+        fadeInMult = Math.pow(1000, (fadeInElapsed / 3) - 1);
+      } else {
+        fadeInMult = 1;
+        needsFadeInRef.current = false;
+      }
+      fadeInMultRef.current = fadeInMult;
+      if (gainNodeRef.current) {
+        const vol  = volumeRef.current / 100;
+        const gain = 0.25 * vol * fadeMultiplierRef.current * fadeInMult;
+        gainNodeRef.current.left.gain.setValueAtTime(gain, ctx.currentTime);
+        gainNodeRef.current.right.gain.setValueAtTime(gain, ctx.currentTime);
+      }
+    }
+
+    const el      = ctx.currentTime - startTimeRef.current;
+    const track   = tracks[currentTrackRef.current];
+    const total   = parseDuration(track.duration);
     const clamped = Math.max(0, Math.min(el, total));
 
     if (isLoopingRef.current) {
@@ -116,12 +143,13 @@ export function useAudioEngine(): AudioEngine {
       if (fadeOutDuration > 0) {
         const fadeStart = total - fadeOutDuration;
         if (clamped >= fadeStart) {
-          const t = clamped - fadeStart;                // 0 → fadeOutDuration
+          const t        = clamped - fadeStart;                // 0 → fadeOutDuration
           const fadeMult = Math.pow(0.001, t / fadeOutDuration);
           fadeMultiplierRef.current = fadeMult;
           if (gainNodeRef.current) {
-            const vol = volumeRef.current / 100;
-            const gain = 0.25 * vol * fadeMult;
+            const vol  = volumeRef.current / 100;
+            // fadeInMult will be 1 by the time fade-out starts (3s vs 10min)
+            const gain = 0.25 * vol * fadeMult * fadeInMultRef.current;
             gainNodeRef.current.left.gain.setValueAtTime(gain, ctx.currentTime);
             gainNodeRef.current.right.gain.setValueAtTime(gain, ctx.currentTime);
           }
@@ -144,7 +172,7 @@ export function useAudioEngine(): AudioEngine {
   }, [stopAudio]);
 
   const playAudio = useCallback(() => {
-    const ctx = getOrCreateContext();
+    const ctx   = getOrCreateContext();
     const track = tracks[currentTrackRef.current];
 
     if (ctx.state === "suspended") ctx.resume();
@@ -156,17 +184,21 @@ export function useAudioEngine(): AudioEngine {
     const vol     = volumeRef.current / 100;
 
     // If resuming mid-fade, initialise gain at the correct logarithmic level
-    const total          = parseDuration(track.duration);
+    const total           = parseDuration(track.duration);
     const fadeOutDuration = track.fadeOutDuration ?? 0;
-    const resumePos      = pauseTimeRef.current > 0 ? pauseTimeRef.current : 0;
-    const fadeStart      = total - fadeOutDuration;
+    const resumePos       = pauseTimeRef.current > 0 ? pauseTimeRef.current : 0;
+    const fadeStart       = total - fadeOutDuration;
     let fadeMult = 1;
     if (!isLoopingRef.current && fadeOutDuration > 0 && resumePos >= fadeStart) {
       const t = resumePos - fadeStart;
       fadeMult = Math.pow(0.001, t / fadeOutDuration);
     }
     fadeMultiplierRef.current = fadeMult;
-    const targetGain = 0.25 * vol * fadeMult;
+
+    // Fade-in: every playback (including resume) starts at near-silence.
+    needsFadeInRef.current = true;
+    fadeInMultRef.current  = 0.001;
+    const initialGain = 0.25 * vol * fadeMult * 0.001;
 
     const merger  = ctx.createChannelMerger(2);
     const analyser = analyserRef.current!;
@@ -175,7 +207,7 @@ export function useAudioEngine(): AudioEngine {
     const gainL = ctx.createGain();
     oscL.type = "sine";
     oscL.frequency.value = baseFreq;
-    gainL.gain.value = targetGain;
+    gainL.gain.value = initialGain;
     oscL.connect(gainL);
     gainL.connect(merger, 0, 0);
 
@@ -183,7 +215,7 @@ export function useAudioEngine(): AudioEngine {
     const gainR = ctx.createGain();
     oscR.type = "sine";
     oscR.frequency.value = baseFreq + freq;
-    gainR.gain.value = targetGain;
+    gainR.gain.value = initialGain;
     oscR.connect(gainR);
     gainR.connect(merger, 0, 1);
 
@@ -196,6 +228,9 @@ export function useAudioEngine(): AudioEngine {
     oscLeftRef.current  = oscL;
     oscRightRef.current = oscR;
     gainNodeRef.current = { left: gainL, right: gainR };
+
+    // Anchor fade-in timing to this exact moment
+    fadeInStartRef.current = ctx.currentTime;
 
     startTimeRef.current = pauseTimeRef.current > 0
       ? ctx.currentTime - pauseTimeRef.current
@@ -221,6 +256,10 @@ export function useAudioEngine(): AudioEngine {
     if (audioCtxRef.current && startTimeRef.current > 0) {
       pauseTimeRef.current = audioCtxRef.current.currentTime - startTimeRef.current;
     }
+
+    // If paused mid-fade-in, reset so the next play starts a fresh fade-in.
+    needsFadeInRef.current = false;
+    fadeInMultRef.current  = 1;
 
     stopOscillators();
     isPlayingRef.current = false;
@@ -265,11 +304,11 @@ export function useAudioEngine(): AudioEngine {
     if (newLooping) {
       // ── Loop turned ON ───────────────────────────────────────────────────
       // Cancel any in-progress logarithmic fade and restore the gain to the
-      // user's chosen volume immediately.
+      // user's chosen volume immediately (respecting current fade-in mult).
       fadeMultiplierRef.current = 1;
       if (gainNodeRef.current && audioCtxRef.current) {
         const vol  = volumeRef.current / 100;
-        const gain = 0.25 * vol;
+        const gain = 0.25 * vol * 1 * fadeInMultRef.current;
         const now  = audioCtxRef.current.currentTime;
         gainNodeRef.current.left.gain.cancelScheduledValues(now);
         gainNodeRef.current.right.gain.cancelScheduledValues(now);
@@ -282,9 +321,9 @@ export function useAudioEngine(): AudioEngine {
       // and auto-stop apply naturally from here.
       // e.g. if looping for 22 min: 22 % 15 = 7 min → 8 min left before fade starts.
       if (audioCtxRef.current && isPlayingRef.current) {
-        const track = tracks[currentTrackRef.current];
-        const total = parseDuration(track.duration);
-        const el    = audioCtxRef.current.currentTime - startTimeRef.current;
+        const track   = tracks[currentTrackRef.current];
+        const total   = parseDuration(track.duration);
+        const el      = audioCtxRef.current.currentTime - startTimeRef.current;
         const cyclePos = el % total;
         startTimeRef.current = audioCtxRef.current.currentTime - cyclePos;
       }
@@ -337,12 +376,12 @@ export function useAudioEngine(): AudioEngine {
   const setVolume = useCallback((value: number) => {
     volumeRef.current = value;
     setVolumeState(value);
-    const vol = value / 100;
     if (gainNodeRef.current && audioCtxRef.current) {
-      const now = audioCtxRef.current.currentTime;
-      // Respect the current fade multiplier so a volume change during the fade
-      // recomputes the curve from the new target level rather than snapping to full.
-      const gain = 0.25 * vol * fadeMultiplierRef.current;
+      const now  = audioCtxRef.current.currentTime;
+      const vol  = value / 100;
+      // Respect both the fade-out and fade-in multipliers so a volume change
+      // never snaps to the wrong level during either ramp.
+      const gain = 0.25 * vol * fadeMultiplierRef.current * fadeInMultRef.current;
       gainNodeRef.current.left.gain.setValueAtTime(gain, now);
       gainNodeRef.current.right.gain.setValueAtTime(gain, now);
     }

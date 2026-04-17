@@ -12,9 +12,10 @@ const LIBRARY_LINKS = [
 ];
 
 const FLAT_LINKS = [
-  { name: "Home",     href: "/" },
-  { name: "Benefits", href: "/#features" },
-  { name: "About",    href: "/about" },
+  { name: "Home",         href: "/" },
+  { name: "Benefits",     href: "/#features" },
+  { name: "Instructions", href: "/instructions" },
+  { name: "About",        href: "/about" },
 ];
 
 const Header = () => {

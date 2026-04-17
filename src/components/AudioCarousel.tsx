@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { tracks, parseDuration, formatTime } from "@/data/tracks";
+import { tracks, parseDuration, formatTime, lightenHex } from "@/data/tracks";
 import Icon from "./Icons";
 
 // ─── Layout constants ─────────────────────────────────────────────────────────
@@ -15,13 +15,6 @@ const PEEK_SCALE   = 0.68;
 const FAR_SCALE    = 0.50;
 const PEEK_OPACITY = 0.65;
 const FAR_OPACITY  = 0.28;
-
-const GRADIENTS = [
-  "from-[#2B6B7F] to-[#3A8FA3]",
-  "from-[#4A5568] to-[#5A6B7A]",
-  "from-[#1E4F5E] to-[#2B6B7F]",
-  "from-[#8C9BAA] to-[#A0B0C0]",
-];
 
 // Drag-vs-tap: ignore clicks where the pointer moved more than this
 const TAP_MAX_MOVE_PX = 8;
@@ -135,7 +128,6 @@ export default function AudioCarousel({ currentIndex, isPlaying, onSelect }: Aud
           const offset   = getOffset(idx, browseIndex);
           const isHero   = offset === 0;
           const isActive = idx === currentIndex; // currently loaded/playing track
-          const gradient = GRADIENTS[idx % GRADIENTS.length];
 
           return (
             <div
@@ -159,11 +151,12 @@ export default function AudioCarousel({ currentIndex, isPlaying, onSelect }: Aud
             >
               {/* Card face */}
               <div
-                className={`w-full h-full rounded-3xl bg-gradient-to-br ${gradient} flex flex-col items-center justify-center gap-3 relative overflow-hidden`}
+                className="w-full h-full rounded-3xl flex flex-col items-center justify-center gap-3 relative overflow-hidden"
                 style={{
+                  background: `linear-gradient(135deg, ${track.color} 0%, ${lightenHex(track.color)} 100%)`,
                   border: isHero ? "2px solid rgba(255,255,255,0.18)" : "2px solid transparent",
                   boxShadow: isHero
-                    ? "0 24px 64px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06)"
+                    ? `0 24px 64px rgba(0,0,0,0.45), 0 0 40px ${track.color}40, 0 0 0 1px rgba(255,255,255,0.06)`
                     : "none",
                 }}
               >

@@ -1,40 +1,40 @@
 "use client";
 
 import React from "react";
-import { tracks, parseDuration, formatTime } from "@/data/tracks";
+import { tracks, parseDuration, formatTime, lightenHex, hexToRgbTriplet } from "@/data/tracks";
 import { useAudioEngine } from "@/hooks/useAudioEngine";
 import Icon from "./Icons";
 import BoxBreathing from "./BoxBreathing";
 import NoiseGenerator from "./NoiseGenerator";
 import AudioCarousel from "./AudioCarousel";
+import VolumeWarningModal from "./VolumeWarningModal";
 
-// Matches the gradient cycle used in AudioCarousel
-const GRADIENTS = [
-  "from-[#2B6B7F] to-[#3A8FA3]",
-  "from-[#4A5568] to-[#5A6B7A]",
-  "from-[#1E4F5E] to-[#2B6B7F]",
-  "from-[#8C9BAA] to-[#A0B0C0]",
-];
+function hexToRgbVars(hex: string): React.CSSProperties {
+  const [r, g, b] = hexToRgbTriplet(hex);
+  return { "--beat-r": r, "--beat-g": g, "--beat-b": b } as React.CSSProperties;
+}
 
 export default function Player() {
-  const engine  = useAudioEngine();
-  const track   = tracks[engine.currentTrackIndex];
-  const gradient = GRADIENTS[engine.currentTrackIndex % GRADIENTS.length];
+  const engine = useAudioEngine();
+  const track  = tracks[engine.currentTrackIndex];
 
   return (
     <>
+      <VolumeWarningModal />
+
       {/* Player Section */}
       <section id="player" className="my-16">
         <div
-          className="rounded-3xl p-10 border border-[var(--border-color)] bg-[var(--background-card)]"
-          style={{ boxShadow: "var(--shadow-lg)" }}
+          className="rounded-3xl p-10 border border-[var(--border-color)] player-bg"
+          style={{ boxShadow: "var(--shadow-lg)", ...hexToRgbVars(track.color) }}
         >
           {/* ── Hero card display ──────────────────────────────────────────── */}
           <div className="mb-8">
             <div
-              className={`w-full rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center gap-8 relative overflow-hidden`}
+              className="w-full rounded-2xl flex items-center justify-center gap-8 relative overflow-hidden"
               style={{
                 height: 220,
+                background: `linear-gradient(135deg, ${track.color} 0%, ${lightenHex(track.color)} 100%)`,
                 border: "2px solid rgba(255,255,255,0.14)",
                 boxShadow: "0 16px 48px rgba(0,0,0,0.35)",
               }}
@@ -89,6 +89,11 @@ export default function Player() {
           {/* ── Controls ──────────────────────────────────────────────────── */}
           <div className="flex flex-col gap-5">
 
+            {/* Volume reminder */}
+            <p className="text-center text-xs text-[var(--text-secondary)]">
+              🎧 Lower your volume before pressing play
+            </p>
+
             {/* Play Controls */}
             <div className="flex justify-center items-center gap-5">
               <button
@@ -131,37 +136,50 @@ export default function Player() {
                 </svg>
               </button>
 
-              {/* Loop toggle — ON: accent teal; OFF: muted (matches prev/next style) */}
-              <button
-                onClick={engine.toggleLoop}
-                className="w-[50px] h-[50px] rounded-full flex items-center justify-center transition-all cursor-pointer"
-                style={engine.isLooping ? {
-                  background: "var(--primary)",
-                  boxShadow: "0 4px 12px rgba(43, 107, 127, 0.35)",
-                  color: "white",
-                } : {
-                  background: "var(--background-light)",
-                  color: "var(--text-secondary)",
-                }}
-                aria-label={engine.isLooping ? "Loop on" : "Loop off"}
-                aria-pressed={engine.isLooping}
-              >
-                {/* Repeat icon (lucide-react paths, rendered inline) */}
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="w-5 h-5"
+              {/* Loop toggle with label */}
+              <div className="flex flex-col items-center gap-1">
+                <button
+                  onClick={engine.toggleLoop}
+                  className="w-[50px] h-[50px] rounded-full flex items-center justify-center transition-all cursor-pointer"
+                  style={
+                    engine.isLooping
+                      ? {
+                          background: "var(--primary)",
+                          boxShadow: "0 4px 12px rgba(43, 107, 127, 0.35)",
+                          color: "white",
+                        }
+                      : {
+                          background: "var(--background-light)",
+                          color: "var(--text-secondary)",
+                        }
+                  }
+                  aria-label={
+                    engine.isLooping
+                      ? "Loop is on — tap to stop looping"
+                      : "Toggle loop — play continuously"
+                  }
+                  aria-pressed={engine.isLooping}
                 >
-                  <polyline points="17 1 21 5 17 9" />
-                  <path d="M3 11V9a4 4 0 0 1 4-4h14" />
-                  <polyline points="7 23 3 19 7 15" />
-                  <path d="M21 13v2a4 4 0 0 1-4 4H3" />
-                </svg>
-              </button>
+                  {/* Repeat icon */}
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-5 h-5"
+                  >
+                    <polyline points="17 1 21 5 17 9" />
+                    <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                    <polyline points="7 23 3 19 7 15" />
+                    <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+                  </svg>
+                </button>
+                <span className="text-[10px] font-semibold text-[var(--text-secondary)]">
+                  {engine.isLooping ? "Loop: On" : "Loop"}
+                </span>
+              </div>
             </div>
 
             {/* Volume */}
