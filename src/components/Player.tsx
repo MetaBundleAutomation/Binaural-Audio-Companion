@@ -130,6 +130,38 @@ export default function Player() {
                   <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
                 </svg>
               </button>
+
+              {/* Loop toggle — ON: accent teal; OFF: muted (matches prev/next style) */}
+              <button
+                onClick={engine.toggleLoop}
+                className="w-[50px] h-[50px] rounded-full flex items-center justify-center transition-all cursor-pointer"
+                style={engine.isLooping ? {
+                  background: "var(--primary)",
+                  boxShadow: "0 4px 12px rgba(43, 107, 127, 0.35)",
+                  color: "white",
+                } : {
+                  background: "var(--background-light)",
+                  color: "var(--text-secondary)",
+                }}
+                aria-label={engine.isLooping ? "Loop on" : "Loop off"}
+                aria-pressed={engine.isLooping}
+              >
+                {/* Repeat icon (lucide-react paths, rendered inline) */}
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-5 h-5"
+                >
+                  <polyline points="17 1 21 5 17 9" />
+                  <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                  <polyline points="7 23 3 19 7 15" />
+                  <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+                </svg>
+              </button>
             </div>
 
             {/* Volume */}

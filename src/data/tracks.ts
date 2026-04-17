@@ -11,14 +11,17 @@ export interface Track {
 export const tracks: Track[] = [
   {
     name: "Focus",
-    description: "30 Minutes of 25 Hz Beta waves for deep concentration",
-    duration: "30:00",
+    description:
+      "15 Minutes of 25 Hz Beta waves for deep concentration — fades gently over the final 5 minutes",
+    duration: "15:00",
     binauralFreq: 25,
     icon: "focus",
+    fadeOutDuration: 300,
   },
   {
     name: "Calm",
-    description: "15 Minutes of 12 Hz Alpha waves for relaxing the mind — fades gently over the final 5 minutes",
+    description:
+      "15 Minutes of 12 Hz Alpha waves for relaxing the mind — fades gently over the final 5 minutes",
     duration: "15:00",
     binauralFreq: 12,
     icon: "calm",
@@ -26,28 +29,35 @@ export const tracks: Track[] = [
   },
   {
     name: "Sleep",
-    description: "45 Minutes of 4 Hz Delta waves for deep sleep",
-    duration: "45:00",
+    description:
+      "15 Minutes of 4 Hz Delta waves for deep sleep — fades gently over the final 5 minutes",
+    duration: "15:00",
     binauralFreq: 4,
     icon: "sleep",
+    fadeOutDuration: 300,
   },
   {
     name: "Creativity",
-    description: "35 Minutes of 8 Hz Alpha waves for exploring creativity",
-    duration: "35:00",
+    description:
+      "15 Minutes of 8 Hz Alpha waves for exploring creativity — fades gently over the final 5 minutes",
+    duration: "15:00",
     binauralFreq: 8,
     icon: "creativity",
+    fadeOutDuration: 300,
   },
   {
     name: "Energy",
-    description: "20 Minutes of 30 Hz Beta waves for exercise and mental alertness",
-    duration: "20:00",
+    description:
+      "15 Minutes of 30 Hz Beta waves for exercise and mental alertness — fades gently over the final 5 minutes",
+    duration: "15:00",
     binauralFreq: 30,
     icon: "energy",
+    fadeOutDuration: 300,
   },
   {
     name: "Meditation",
-    description: "15 Minutes of 6 Hz Theta waves for staying in the present with daily mindfulness — fades gently over the final 5 minutes",
+    description:
+      "15 Minutes of 6 Hz Theta waves for staying in the present with daily mindfulness — fades gently over the final 5 minutes",
     duration: "15:00",
     binauralFreq: 6,
     icon: "meditation",
@@ -55,14 +65,17 @@ export const tracks: Track[] = [
   },
   {
     name: "Learning",
-    description: "50 Minutes of 10 Hz Alpha waves for attention and memory",
-    duration: "50:00",
+    description:
+      "15 Minutes of 10 Hz Alpha waves for attention and memory — fades gently over the final 5 minutes",
+    duration: "15:00",
     binauralFreq: 10,
     icon: "learning",
+    fadeOutDuration: 300,
   },
   {
     name: "Anxiety",
-    description: "15 Minutes of 8 Hz Alpha waves for calming the mind and relieving stress — fades gently over the final 5 minutes",
+    description:
+      "15 Minutes of 8 Hz Alpha waves for calming the mind and relieving stress — fades gently over the final 5 minutes",
     duration: "15:00",
     binauralFreq: 8,
     icon: "anxiety",
