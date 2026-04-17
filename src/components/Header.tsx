@@ -16,6 +16,7 @@ const FLAT_LINKS = [
   { name: "Benefits",     href: "/#features" },
   { name: "Instructions", href: "/instructions" },
   { name: "About",        href: "/about" },
+  { name: "Settings",     href: "/settings" },
 ];
 
 const Header = () => {

@@ -44,6 +44,32 @@
   }
 }
 
+/* ── Brightness overrides ──────────────────────────────────────────────────── */
+/* Applied as a class on <html> by BrightnessSync. "default" = no extra class. */
+
+html.brightness-dim {
+  --background:       #ECEFF4;
+  --background-light: #F3F6FA;
+  --background-card:  #F8FAFB;
+}
+html.brightness-bright {
+  --background:       #FFFFFF;
+  --background-light: #FFFFFF;
+  --background-card:  #FFFFFF;
+}
+@media (prefers-color-scheme: dark) {
+  html.brightness-dim {
+    --background:       #0D1014;
+    --background-light: #121619;
+    --background-card:  #181E24;
+  }
+  html.brightness-bright {
+    --background:       #1E2830;
+    --background-light: #243040;
+    --background-card:  #2A3848;
+  }
+}
+
 /*
   Tailwind v4 compat: override default border color.
 */

@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import PreferencesProvider from "@/components/PreferencesProvider";
+import BrightnessSync from "@/components/BrightnessSync";
 import { baseURL, description, siteName, title } from "@/config";
 
 export const metadata: Metadata = {
@@ -68,6 +69,7 @@ export default function RootLayout({
       <body>
         <ServiceWorkerRegistration />
         <PreferencesProvider>
+          <BrightnessSync />
           <Header />
           {children}
           <Footer />
