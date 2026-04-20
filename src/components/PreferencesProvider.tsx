@@ -10,6 +10,58 @@ import {
 } from "@/hooks/usePreferences";
 import type { Preferences } from "@/hooks/usePreferences";
 
+// ─── Runtime validation ───────────────────────────────────────────────────────
+// Ensures values read back from localStorage match expected types before they
+// enter React state. Returns undefined for any value that fails validation so
+// the caller falls back to the default preference instead.
+
+function validatePref<K extends keyof Preferences>(
+  key: K,
+  value: unknown,
+): Preferences[K] | undefined {
+  switch (key) {
+    case "lastVolume":
+    case "defaultVolume": {
+      const n = Number(value);
+      return (Number.isFinite(n) && n >= 0 && n <= 100)
+        ? n as Preferences[K]
+        : undefined;
+    }
+    case "lastLoopState":
+    case "defaultLoopState":
+      return typeof value === "boolean" ? value as Preferences[K] : undefined;
+
+    case "lastBeatId":
+    case "lastNoiseId":
+    case "defaultBeatId":
+    case "defaultNoiseId":
+      return (value === null || typeof value === "string")
+        ? value as Preferences[K]
+        : undefined;
+
+    case "launchScreen":
+      return (["home", "library", "lastPlayed"] as const).includes(value as never)
+        ? value as Preferences[K]
+        : undefined;
+
+    case "favouriteBeats":
+    case "favouriteNoises":
+      return (Array.isArray(value) && value.every(v => typeof v === "string"))
+        ? value as Preferences[K]
+        : undefined;
+
+    case "brightness":
+      return (["dim", "default", "bright"] as const).includes(value as never)
+        ? value as Preferences[K]
+        : undefined;
+
+    default:
+      return undefined;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function PreferencesProvider({ children }: { children: ReactNode }) {
   const [prefs, setPrefs]           = useState<Preferences>(DEFAULT_PREFERENCES);
   const [isHydrated, setIsHydrated] = useState(false);
@@ -24,9 +76,12 @@ export default function PreferencesProvider({ children }: { children: ReactNode 
         const raw = localStorage.getItem(storageKey);
         if (raw !== null) {
           try {
-            loaded[key] = JSON.parse(raw);
+            const parsed    = JSON.parse(raw);
+            const validated = validatePref(key, parsed);
+            if (validated !== undefined) loaded[key] = validated;
+            // Invalid/unexpected value — silently fall back to default
           } catch {
-            // Malformed value — silently fall back to default
+            // Malformed JSON — silently fall back to default
           }
         }
       },

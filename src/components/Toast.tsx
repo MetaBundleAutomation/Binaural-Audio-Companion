@@ -17,7 +17,11 @@ export default function Toast() {
     let timer: ReturnType<typeof setTimeout>;
 
     function handler(e: Event) {
-      const msg = (e as CustomEvent<string>).detail;
+      // Guard: only accept genuine CustomEvents with a string payload to
+      // prevent injected events from rendering unexpected content.
+      if (!(e instanceof CustomEvent) || typeof e.detail !== "string") return;
+      const msg = e.detail.trim();
+      if (!msg) return;
       setMessage(msg);
       clearTimeout(timer);
       timer = setTimeout(() => setMessage(null), 2000);
