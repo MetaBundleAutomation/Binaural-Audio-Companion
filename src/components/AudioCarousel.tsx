@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import { tracks, parseDuration, formatTime, lightenHex } from "@/data/tracks";
 import Icon from "./Icons";
+import { usePreferences } from "@/hooks/usePreferences";
 
 // ─── Layout constants ─────────────────────────────────────────────────────────
 
@@ -29,9 +30,9 @@ interface AudioCarouselProps {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function getOffset(idx: number, centreIndex: number): number {
-  let offset = (idx - centreIndex + tracks.length) % tracks.length;
-  if (offset > tracks.length / 2) offset -= tracks.length;
+function getOffset(idx: number, centreIndex: number, count: number): number {
+  let offset = (idx - centreIndex + count) % count;
+  if (offset > count / 2) offset -= count;
   return offset;
 }
 
@@ -69,13 +70,30 @@ function cardStyles(offset: number): React.CSSProperties {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function AudioCarousel({ currentIndex, isPlaying, onSelect }: AudioCarouselProps) {
-  // browseIndex: which card is visually centred. Decoupled from the playing track.
-  const [browseIndex, setBrowseIndex] = useState(currentIndex);
+  const { prefs, toggleFavouriteBeat } = usePreferences();
+
+  // Favourites-first display order — pure reordering, all tracks still present
+  const displayTracks = useMemo(() => {
+    const favSet = new Set(prefs.favouriteBeats);
+    const favs = tracks.filter(t => favSet.has(t.name));
+    const rest = tracks.filter(t => !favSet.has(t.name));
+    return [...favs, ...rest];
+  }, [prefs.favouriteBeats]);
+
+  // Track the centred card by name so reordering doesn't cause a visual jump
+  const browseTrackRef = useRef<string>(tracks[currentIndex]?.name ?? tracks[0].name);
+  const [, forceUpdate] = useState(0);
+
+  // browseIndex is derived so it stays correct whenever displayTracks reorders
+  const browseIndex = Math.max(
+    0,
+    displayTracks.findIndex(t => t.name === browseTrackRef.current),
+  );
 
   // Sync browse position whenever the audio engine advances to a new track
-  // (auto-advance, or prev/next buttons in the player).
   useEffect(() => {
-    setBrowseIndex(currentIndex);
+    browseTrackRef.current = tracks[currentIndex]?.name ?? tracks[0].name;
+    forceUpdate(n => n + 1);
   }, [currentIndex]);
 
   const touchStartX  = useRef(0);
@@ -85,7 +103,10 @@ export default function AudioCarousel({ currentIndex, isPlaying, onSelect }: Aud
 
   // Scroll carousel left/right — browse only, never triggers playback
   function go(delta: number) {
-    setBrowseIndex((prev) => (prev + delta + tracks.length) % tracks.length);
+    const len = displayTracks.length;
+    const newIdx = (browseIndex + delta + len) % len;
+    browseTrackRef.current = displayTracks[newIdx].name;
+    forceUpdate(n => n + 1);
   }
 
   // Touch swipe handlers on the container
@@ -124,14 +145,15 @@ export default function AudioCarousel({ currentIndex, isPlaying, onSelect }: Aud
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        {tracks.map((track, idx) => {
-          const offset   = getOffset(idx, browseIndex);
+        {displayTracks.map((track, idx) => {
+          const offset   = getOffset(idx, browseIndex, displayTracks.length);
           const isHero   = offset === 0;
-          const isActive = idx === currentIndex; // currently loaded/playing track
+          const isActive = track === tracks[currentIndex]; // currently loaded/playing track
+          const isFav    = prefs.favouriteBeats.includes(track.name);
 
           return (
             <div
-              key={idx}
+              key={track.name}
               style={cardStyles(offset)}
               onPointerDown={(e) => {
                 pointerDownX.current = e.clientX;
@@ -141,10 +163,11 @@ export default function AudioCarousel({ currentIndex, isPlaying, onSelect }: Aud
                 if (!isATap(e)) return; // drag — ignore
                 if (isHero) {
                   // Second tap: hero card → load track + scroll to player
-                  onSelect(idx);
+                  onSelect(tracks.indexOf(track));
                 } else {
                   // First tap: non-hero → centre it, no playback
-                  setBrowseIndex(idx);
+                  browseTrackRef.current = track.name;
+                  forceUpdate(n => n + 1);
                 }
               }}
               aria-label={isHero ? `Play ${track.name}` : `Browse to ${track.name}`}
@@ -194,6 +217,29 @@ export default function AudioCarousel({ currentIndex, isPlaying, onSelect }: Aud
                     </svg>
                     <span className="text-white text-[10px] font-bold tracking-wide">PLAY</span>
                   </div>
+                )}
+
+                {/* Favourite heart — hero card only */}
+                {isHero && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); toggleFavouriteBeat(track.name); }}
+                    className="absolute top-4 left-4 z-10 w-7 h-7 flex items-center justify-center rounded-full bg-black/20 hover:bg-black/30 transition-colors cursor-pointer"
+                    aria-label={isFav ? `Remove ${track.name} from favourites` : `Add ${track.name} to favourites`}
+                    aria-pressed={isFav}
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="w-4 h-4"
+                      style={{ transition: "fill 0.2s, stroke 0.2s" }}
+                      fill={isFav ? "#A56B7C" : "none"}
+                      stroke={isFav ? "#A56B7C" : "white"}
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                    </svg>
+                  </button>
                 )}
 
                 {/* Icon */}
@@ -254,10 +300,10 @@ export default function AudioCarousel({ currentIndex, isPlaying, onSelect }: Aud
 
       {/* ── Dot indicators — browse only ───────────────────────────────────── */}
       <div className="flex justify-center gap-2 mt-5">
-        {tracks.map((_, i) => (
+        {displayTracks.map((t, i) => (
           <button
-            key={i}
-            onClick={() => setBrowseIndex(i)}
+            key={t.name}
+            onClick={() => { browseTrackRef.current = t.name; forceUpdate(n => n + 1); }}
             className="rounded-full transition-all duration-300 cursor-pointer"
             style={{
               width:      i === browseIndex ? 20 : 8,

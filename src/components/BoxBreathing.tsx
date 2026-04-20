@@ -72,9 +72,8 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
     const pc       = idle ? "#4a6b8a" : PHASES[phase].color;
     const countdown = idle ? "—" : String(Math.max(1, Math.ceil(4 * (1 - t))));
 
-    // Background
-    ctx.fillStyle = "#0f1e2e";
-    ctx.fillRect(0, 0, S, S);
+    // Background — transparent so CSS background-color shows through
+    ctx.clearRect(0, 0, S, S);
 
     // Aura glow halos – capped so they never reach the track ring
     const maxAura = TRACK_R - 18;
@@ -92,8 +91,8 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
     // Breathing circle fill
     const grad = ctx.createRadialGradient(C, C - r * 0.25, 0, C, C, r);
     if (idle) {
-      grad.addColorStop(0, "#1e3d5c");
-      grad.addColorStop(1, "#0d2438");
+      grad.addColorStop(0, "rgba(43,107,127,0.18)");
+      grad.addColorStop(1, "rgba(43,107,127,0.06)");
     } else {
       grad.addColorStop(0, alpha(pc, 0.55));
       grad.addColorStop(1, alpha(pc, 0.18));
@@ -106,7 +105,7 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
     // Breathing circle border
     ctx.beginPath();
     ctx.arc(C, C, r, 0, Math.PI * 2);
-    ctx.strokeStyle = idle ? "#2a4a6a" : pc;
+    ctx.strokeStyle = idle ? "rgba(43,107,127,0.35)" : pc;
     ctx.lineWidth = idle ? 2 : 3;
     ctx.stroke();
 
@@ -179,10 +178,10 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
 
     if (idle) {
       ctx.font = "200 64px Arial, sans-serif";
-      ctx.fillStyle = "#1e4a72";
+      ctx.fillStyle = "rgba(43,107,127,0.5)";
       ctx.fillText("—", C, C - 12);
       ctx.font = "15px Arial, sans-serif";
-      ctx.fillStyle = "#2a4a5a";
+      ctx.fillStyle = "rgba(90,107,122,0.7)";
       ctx.fillText("press start", C, C + 46);
     } else {
       ctx.shadowColor = pc;
@@ -271,7 +270,7 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
           ref={canvasRef}
           width={S}
           height={S}
-          style={{ width: 380, height: 380, borderRadius: 20 }}
+          style={{ width: 380, height: 380, borderRadius: 20, background: "var(--background-card)" }}
           aria-label="Box breathing animation"
         />
 
@@ -313,68 +312,11 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
             />
           </button>
           <span className="text-sm text-[var(--text-secondary)]">
-            Auto-sync with audio playback
+            Start and stop with the audio player
           </span>
         </label>
 
-        {/* Benefits & How-To */}
-        <div className="w-full max-w-lg mt-2">
-          <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--background-light)] p-6 text-left">
-            <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed mb-5">
-              Box breathing is a well-established technique for calming the mind and body when stress, anxiety, or sleeplessness becomes hard to manage. It works by activating your body&apos;s natural rest response — gently slowing your heart rate and easing the tension that builds when your thoughts won&apos;t settle.
-            </p>
 
-            <div className="space-y-3">
-              {[
-                {
-                  step: "1",
-                  color: "#9ba8ff",
-                  label: "Hold",
-                  detail: "Start with empty lungs. Hold still for 4 seconds.",
-                },
-                {
-                  step: "2",
-                  color: "#4aa8e8",
-                  label: "Inhale",
-                  detail: "Breathe in slowly through your nose for 4 seconds.",
-                },
-                {
-                  step: "3",
-                  color: "#9ba8ff",
-                  label: "Hold",
-                  detail: "Lungs full. Hold steady for 4 seconds.",
-                },
-                {
-                  step: "4",
-                  color: "#56c9b5",
-                  label: "Exhale",
-                  detail: "Release slowly through your mouth for 4 seconds.",
-                },
-              ].map(({ step, color, label, detail }) => (
-                <div key={step} className="flex items-start gap-3">
-                  <span
-                    className="w-7 h-7 rounded-full text-[13px] font-bold flex items-center justify-center shrink-0"
-                    style={{
-                      background: `${color}18`,
-                      border: `1px solid ${color}40`,
-                      color,
-                    }}
-                  >
-                    {step}
-                  </span>
-                  <div className="text-[13px] leading-relaxed pt-0.5">
-                    <span className="font-bold text-[var(--text-primary)]">{label} </span>
-                    <span className="text-[var(--text-secondary)]">{detail}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <p className="text-[12px] text-[var(--text-secondary)] opacity-60 mt-4">
-              Repeat 4–6 cycles. Most people notice a shift within 2 minutes.
-            </p>
-          </div>
-        </div>
       </div>
     </section>
   );

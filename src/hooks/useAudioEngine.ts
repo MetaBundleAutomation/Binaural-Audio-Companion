@@ -21,7 +21,7 @@ export interface AudioEngine {
 }
 
 export function useAudioEngine(): AudioEngine {
-  const { set } = usePreferences();
+  const { set, prefs, isHydrated } = usePreferences();
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
@@ -48,6 +48,8 @@ export function useAudioEngine(): AudioEngine {
   const needsFadeInRef  = useRef(false);
   const fadeInStartRef  = useRef(0);
   const fadeInMultRef   = useRef(1); // current fade-in multiplier, used by setVolume
+  // Prevents the preference-initialisation effect from running more than once
+  const hasInitialisedRef = useRef(false);
 
   const getOrCreateContext = useCallback(() => {
     if (audioCtxRef.current && audioCtxRef.current.state !== "closed") {
@@ -397,6 +399,34 @@ export function useAudioEngine(): AudioEngine {
       gainNodeRef.current.right.gain.setValueAtTime(gain, now);
     }
   }, []);
+
+  // ── One-shot preference initialisation ───────────────────────────────────
+  // Runs once after localStorage has been read. Sets the initial track, volume,
+  // and loop state from the user's saved "My Defaults" preferences.
+
+  useEffect(() => {
+    if (!isHydrated || hasInitialisedRef.current) return;
+    hasInitialisedRef.current = true;
+
+    // Initial track: explicit default → last-played → 0
+    const targetName = prefs.defaultBeatId ?? prefs.lastBeatId;
+    if (targetName) {
+      const idx = tracks.findIndex(t => t.name === targetName);
+      if (idx !== -1) {
+        currentTrackRef.current = idx;
+        setCurrentTrackIndex(idx);
+      }
+    }
+
+    // Initial volume from saved default (avoids the hardcoded 10% cold start)
+    volumeRef.current = prefs.defaultVolume;
+    setVolumeState(prefs.defaultVolume);
+
+    // Initial loop state from saved default
+    isLoopingRef.current = prefs.defaultLoopState;
+    setIsLooping(prefs.defaultLoopState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isHydrated]);
 
   // ── Keyboard shortcuts ────────────────────────────────────────────────────
 

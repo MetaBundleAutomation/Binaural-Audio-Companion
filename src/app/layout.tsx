@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import PreferencesProvider from "@/components/PreferencesProvider";
 import BrightnessSync from "@/components/BrightnessSync";
+import Toast from "@/components/Toast";
 import { baseURL, description, siteName, title } from "@/config";
 
 export const metadata: Metadata = {
@@ -70,6 +71,7 @@ export default function RootLayout({
         <ServiceWorkerRegistration />
         <PreferencesProvider>
           <BrightnessSync />
+          <Toast />
           <Header />
           {children}
           <Footer />

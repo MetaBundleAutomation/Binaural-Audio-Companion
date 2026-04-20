@@ -3,11 +3,16 @@
 import React from "react";
 import { tracks, parseDuration, formatTime, lightenHex, hexToRgbTriplet } from "@/data/tracks";
 import { useAudioEngine } from "@/hooks/useAudioEngine";
+import { usePreferences } from "@/hooks/usePreferences";
 import Icon from "./Icons";
 import BoxBreathing from "./BoxBreathing";
 import NoiseGenerator from "./NoiseGenerator";
 import AudioCarousel from "./AudioCarousel";
 import VolumeWarningModal from "./VolumeWarningModal";
+
+function fireToast(msg: string) {
+  window.dispatchEvent(new CustomEvent("mindflow:toast", { detail: msg }));
+}
 
 function hexToRgbVars(hex: string): React.CSSProperties {
   const [r, g, b] = hexToRgbTriplet(hex);
@@ -17,6 +22,19 @@ function hexToRgbVars(hex: string): React.CSSProperties {
 export default function Player() {
   const engine = useAudioEngine();
   const track  = tracks[engine.currentTrackIndex];
+  const { prefs, set } = usePreferences();
+
+  function handleSetDefault() {
+    const alreadyDefault =
+      prefs.defaultBeatId === track.name &&
+      prefs.defaultVolume === engine.volume &&
+      prefs.defaultLoopState === engine.isLooping;
+    if (alreadyDefault) { fireToast("Already your default."); return; }
+    set("defaultBeatId", track.name);
+    set("defaultVolume", engine.volume);
+    set("defaultLoopState", engine.isLooping);
+    fireToast("Saved as your default.");
+  }
 
   return (
     <>
@@ -94,7 +112,7 @@ export default function Player() {
               🎧 Lower your volume before pressing play
             </p>
 
-            {/* Play Controls */}
+            {/* Play Controls — primary row */}
             <div className="flex justify-center items-center gap-5">
               <button
                 onClick={engine.prevTrack}
@@ -135,12 +153,16 @@ export default function Player() {
                   <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
                 </svg>
               </button>
+            </div>
 
-              {/* Loop toggle with label */}
+            {/* Secondary controls — loop & default */}
+            <div className="flex justify-center items-center gap-6">
+
+              {/* Loop toggle */}
               <div className="flex flex-col items-center gap-1">
                 <button
                   onClick={engine.toggleLoop}
-                  className="w-[50px] h-[50px] rounded-full flex items-center justify-center transition-all cursor-pointer"
+                  className="w-[38px] h-[38px] rounded-full flex items-center justify-center transition-all cursor-pointer"
                   style={
                     engine.isLooping
                       ? {
@@ -160,7 +182,6 @@ export default function Player() {
                   }
                   aria-pressed={engine.isLooping}
                 >
-                  {/* Repeat icon */}
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
@@ -168,7 +189,7 @@ export default function Player() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="w-5 h-5"
+                    className="w-4 h-4"
                   >
                     <polyline points="17 1 21 5 17 9" />
                     <path d="M3 11V9a4 4 0 0 1 4-4h14" />
@@ -180,6 +201,30 @@ export default function Player() {
                   {engine.isLooping ? "Loop: On" : "Loop"}
                 </span>
               </div>
+
+              {/* Set as default */}
+              <div className="flex flex-col items-center gap-1">
+                <button
+                  onClick={handleSetDefault}
+                  aria-label="Set current beat and settings as my default"
+                  className="w-[38px] h-[38px] rounded-full flex items-center justify-center transition-all cursor-pointer bg-[var(--background-light)]"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-4 h-4"
+                  >
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                  </svg>
+                </button>
+                <span className="text-[10px] font-semibold text-[var(--text-secondary)]">Default</span>
+              </div>
+
             </div>
 
             {/* Volume */}

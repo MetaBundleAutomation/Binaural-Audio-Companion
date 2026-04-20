@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { usePreferences } from "@/hooks/usePreferences";
 
 // ─── Types & Data ─────────────────────────────────────────────────────────────
@@ -111,7 +111,26 @@ interface NoiseGeneratorProps {
 }
 
 export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) {
-  const { set } = usePreferences();
+  const { set, prefs, isHydrated, toggleFavouriteNoise } = usePreferences();
+
+  // Favourites-first display order
+  const displayNoiseTypes = useMemo(() => {
+    const favSet = new Set(prefs.favouriteNoises);
+    const favs = NOISE_TYPES.filter(t => favSet.has(t));
+    const rest = NOISE_TYPES.filter(t => !favSet.has(t));
+    return [...favs, ...rest];
+  }, [prefs.favouriteNoises]);
+
+  function fireToast(msg: string) {
+    window.dispatchEvent(new CustomEvent("mindflow:toast", { detail: msg }));
+  }
+
+  function handleSetDefault() {
+    const alreadyDefault = prefs.defaultNoiseId === noiseRef.current;
+    if (alreadyDefault) { fireToast("Already your default."); return; }
+    set("defaultNoiseId", noiseRef.current);
+    fireToast("Saved as your default.");
+  }
 
   const [selectedNoise, setSelectedNoise] = useState<NoiseType>("pink");
   const [isPlaying, setIsPlaying] = useState(false);
@@ -258,6 +277,20 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAudioPlaying, autoSync]);
 
+  // ── One-shot preference initialisation ───────────────────────────────────────
+  // Runs once after localStorage has been read. Pre-selects the saved default
+  // (or last-used) noise type so the component doesn't always cold-start on pink.
+
+  useEffect(() => {
+    if (!isHydrated) return;
+    const target = (prefs.defaultNoiseId ?? prefs.lastNoiseId) as NoiseType | null;
+    if (target && NOISE_TYPES.includes(target)) {
+      noiseRef.current = target;
+      setSelectedNoise(target);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isHydrated]);
+
   // ── Cleanup ───────────────────────────────────────────────────────────────────
 
   useEffect(() => {
@@ -288,51 +321,71 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
 
         {/* Noise Type Selection */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          {NOISE_TYPES.map((type) => {
+          {displayNoiseTypes.map((type) => {
             const n = NOISE_INFO[type];
             const isSelected = selectedNoise === type;
+            const isFav = prefs.favouriteNoises.includes(type);
             return (
-              <button
-                key={type}
-                onClick={() => handleSelectNoise(type)}
-                aria-label={n.label}
-                aria-pressed={isSelected}
-                className={`rounded-2xl p-5 text-left border-2 transition-all cursor-pointer ${
-                  isSelected
-                    ? "border-[var(--primary)] bg-[var(--background-light)]"
-                    : "border-[var(--border-color)] bg-[var(--background-light)] hover:border-[var(--primary-light)]"
-                }`}
-              >
-                <div
-                  className="mb-3"
-                  style={{ color: isSelected ? n.color : "var(--text-secondary)" }}
+              <div key={type} className="relative">
+                <button
+                  onClick={() => handleSelectNoise(type)}
+                  aria-label={n.label}
+                  aria-pressed={isSelected}
+                  className={`w-full rounded-2xl p-5 text-left border-2 transition-all cursor-pointer ${
+                    isSelected
+                      ? "border-[var(--primary)] bg-[var(--background-light)]"
+                      : "border-[var(--border-color)] bg-[var(--background-light)] hover:border-[var(--primary-light)]"
+                  }`}
                 >
-                  <NoiseIcon type={type} size={36} />
-                </div>
-                <div className="font-bold text-[17px] mb-1 text-[var(--text-primary)]">
-                  {n.label}
-                </div>
-                <div
-                  className="text-[11px] font-bold uppercase tracking-widest mb-2"
-                  style={{ color: n.color }}
+                  <div
+                    className="mb-3 pr-7"
+                    style={{ color: isSelected ? n.color : "var(--text-secondary)" }}
+                  >
+                    <NoiseIcon type={type} size={36} />
+                  </div>
+                  <div className="font-bold text-[17px] mb-1 text-[var(--text-primary)]">
+                    {n.label}
+                  </div>
+                  <div
+                    className="text-[11px] font-bold uppercase tracking-widest"
+                    style={{ color: n.color }}
+                  >
+                    {n.tagline}
+                  </div>
+                  {isSelected && (
+                    <div className="text-[13px] text-[var(--text-secondary)] leading-relaxed mt-2">
+                      {n.description}
+                    </div>
+                  )}
+                </button>
+
+                {/* Favourite heart */}
+                <button
+                  onClick={() => toggleFavouriteNoise(type)}
+                  className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full bg-[var(--background-card)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all cursor-pointer"
+                  aria-label={isFav ? `Remove ${n.label} from favourites` : `Add ${n.label} to favourites`}
+                  aria-pressed={isFav}
                 >
-                  {n.tagline}
-                </div>
-                <div className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
-                  {n.description}
-                </div>
-              </button>
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="w-3.5 h-3.5"
+                    style={{ transition: "fill 0.2s, stroke 0.2s" }}
+                    fill={isFav ? "#A56B7C" : "none"}
+                    stroke={isFav ? "#A56B7C" : "var(--text-secondary)"}
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                  </svg>
+                </button>
+              </div>
             );
           })}
         </div>
 
         {/* Controls */}
         <div className="flex flex-col gap-5">
-
-          {/* Volume reminder */}
-          <p className="text-center text-xs text-[var(--text-secondary)]">
-            🎧 Lower your volume before pressing play
-          </p>
 
           {/* Play / Stop button */}
           <div className="flex justify-center">
@@ -354,6 +407,28 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
                   <path d="M8 5v14l11-7z" />
                 </svg>
               )}
+            </button>
+          </div>
+
+          {/* Set as default */}
+          <div className="flex justify-center">
+            <button
+              onClick={handleSetDefault}
+              className="flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--text-secondary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all cursor-pointer"
+              aria-label="Set current noise as my default"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-4 h-4"
+              >
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+              </svg>
+              Set as my default
             </button>
           </div>
 
@@ -397,7 +472,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
                 />
               </button>
               <span className="text-sm text-[var(--text-secondary)]">
-                Auto-sync with audio playback
+                Start and stop with the audio player
               </span>
             </label>
           </div>

@@ -233,6 +233,110 @@ export default function Instructions() {
 
             <hr className="border-[var(--border-color)]" />
 
+            {/* Make MindFlow Yours */}
+            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">⭐ Make MindFlow Yours</h2>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-5">
+                MindFlow remembers your preferences so you spend less time setting things up and more time actually using it.
+              </p>
+              <ul className="space-y-4 text-[var(--text-secondary)] leading-relaxed">
+                <li>
+                  <strong className="text-[var(--text-primary)]">Favourite beats and noises.</strong>{" "}
+                  Tap the <span className="font-semibold text-[var(--text-primary)]">♥ heart</span> on any
+                  beat card in the Audio Library, or on any noise card in Noise Therapy, to mark it as a
+                  favourite. Favourites float to the top of each list automatically.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Save a default session.</strong>{" "}
+                  Press the <span className="font-semibold text-[var(--text-primary)]">Default</span> bookmark
+                  button in the player controls to lock in the current beat, volume, and loop state as your
+                  starting point. The same button appears as{" "}
+                  <span className="font-semibold text-[var(--text-primary)]">Set as my default</span> in
+                  Noise Therapy.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Choose your launch screen.</strong>{" "}
+                  In <Link href="/settings" className="underline underline-offset-2 text-[var(--primary)] hover:opacity-80">Settings</Link>,
+                  set the <span className="font-semibold text-[var(--text-primary)]">Launch screen</span> to
+                  open straight to the player or the library — no scrolling required.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Adjust brightness.</strong>{" "}
+                  The Brightness control in Settings dims or brightens the entire interface — useful for
+                  low-light environments or before bed.
+                </li>
+              </ul>
+              <blockquote className="mt-5 pl-4 border-l-2 border-[var(--border-color)] text-[var(--text-secondary)] text-[14px] leading-relaxed">
+                <strong className="text-[var(--text-primary)]">Everything saves automatically.</strong>{" "}
+                There is no save button. Close the app, come back later — your defaults will be waiting.
+              </blockquote>
+            </div>
+
+            <hr className="border-[var(--border-color)]" />
+
+            {/* Save to Your Device */}
+            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">📲 Save MindFlow to Your Device</h2>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
+                MindFlow can be installed like a regular app — no app store required. Once installed,
+                it opens in its own full-screen window, works offline, and your settings are always
+                waiting for you exactly where you left them.
+              </p>
+
+              <div className="space-y-4">
+
+                {/* iPhone / iPad */}
+                <div className="rounded-xl border border-[var(--border-color)] bg-[var(--background-light)] p-5">
+                  <p className="font-bold text-[var(--text-primary)] mb-3">iPhone &amp; iPad (Safari)</p>
+                  <ol className="space-y-2 text-[var(--text-secondary)] text-[14px] leading-relaxed list-decimal list-outside pl-5">
+                    <li>Open MindFlow in <strong className="text-[var(--text-primary)]">Safari</strong> — this does not work in Chrome or Firefox on iOS.</li>
+                    <li>Tap the <strong className="text-[var(--text-primary)]">Share</strong> button at the bottom of the screen (the box with an arrow pointing up).</li>
+                    <li>Scroll down in the share sheet and tap <strong className="text-[var(--text-primary)]">Add to Home Screen</strong>.</li>
+                    <li>Give it a name (or leave it as-is) and tap <strong className="text-[var(--text-primary)]">Add</strong> in the top-right corner.</li>
+                  </ol>
+                  <p className="text-[var(--text-secondary)] text-[13px] mt-3 pl-0">
+                    The MindFlow icon will appear on your home screen. Tap it to open — it launches without any browser bars.
+                  </p>
+                </div>
+
+                {/* Android */}
+                <div className="rounded-xl border border-[var(--border-color)] bg-[var(--background-light)] p-5">
+                  <p className="font-bold text-[var(--text-primary)] mb-3">Android (Chrome)</p>
+                  <ol className="space-y-2 text-[var(--text-secondary)] text-[14px] leading-relaxed list-decimal list-outside pl-5">
+                    <li>Open MindFlow in <strong className="text-[var(--text-primary)]">Chrome</strong>.</li>
+                    <li>Tap the <strong className="text-[var(--text-primary)]">three-dot menu</strong> (⋮) in the top-right corner of the browser.</li>
+                    <li>Tap <strong className="text-[var(--text-primary)]">Add to Home screen</strong> or <strong className="text-[var(--text-primary)]">Install app</strong> — the exact wording depends on your Android version.</li>
+                    <li>Tap <strong className="text-[var(--text-primary)]">Add</strong> when prompted.</li>
+                  </ol>
+                  <p className="text-[var(--text-secondary)] text-[13px] mt-3">
+                    Some Android versions will show a pop-up banner at the bottom of the screen asking if you want to install — you can tap that instead.
+                  </p>
+                </div>
+
+                {/* Desktop */}
+                <div className="rounded-xl border border-[var(--border-color)] bg-[var(--background-light)] p-5">
+                  <p className="font-bold text-[var(--text-primary)] mb-3">Desktop — Chrome or Edge</p>
+                  <ol className="space-y-2 text-[var(--text-secondary)] text-[14px] leading-relaxed list-decimal list-outside pl-5">
+                    <li>Open MindFlow in <strong className="text-[var(--text-primary)]">Chrome</strong> or <strong className="text-[var(--text-primary)]">Edge</strong>.</li>
+                    <li>Look for the <strong className="text-[var(--text-primary)]">install icon</strong> on the right side of the address bar — it looks like a screen with a download arrow, or a circle with a plus sign (⊕).</li>
+                    <li>Click it and then click <strong className="text-[var(--text-primary)]">Install</strong>.</li>
+                  </ol>
+                  <p className="text-[var(--text-secondary)] text-[13px] mt-3">
+                    If you don&apos;t see the icon, open the browser menu and look for <strong className="text-[var(--text-primary)]">Save and share</strong> → <strong className="text-[var(--text-primary)]">Install page as app</strong>.
+                  </p>
+                </div>
+
+              </div>
+
+              <blockquote className="mt-6 pl-4 border-l-2 border-[var(--border-color)] text-[var(--text-secondary)] text-[14px] leading-relaxed">
+                <strong className="text-[var(--text-primary)]">Your settings stay private to your device.</strong>{" "}
+                Everything is stored locally in your browser — nothing is sent to any server, and no one
+                else who uses the same link will ever see your preferences.
+              </blockquote>
+            </div>
+
+            <hr className="border-[var(--border-color)]" />
+
             {/* Safety */}
             <div
               className="bg-[var(--background-card)] rounded-2xl p-8 border"
