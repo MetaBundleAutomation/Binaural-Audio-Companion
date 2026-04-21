@@ -41,9 +41,13 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/icon?<generated>",
-    shortcut: "/icon?<generated>",
-    // apple-icon.tsx is auto-detected by Next.js and generates the 180×180 touch icon
+    icon: [
+      { url: "/crux-icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.png",   type: "image/png", sizes: "32x32" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180" },
+    ],
   },
   alternates: {
     canonical: baseURL,
@@ -62,7 +66,7 @@ export const metadata: Metadata = {
     ],
   },
   other: {
-    "theme-color": "#2B6B7F",
+    "theme-color": "#0F1B2D",
   },
 };
 

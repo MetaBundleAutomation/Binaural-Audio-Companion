@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<title>CRUX — The Core of Calm</title><desc>App icon: five stars in Southern Cross (Crux) constellation arrangement on deep navy, with Acrux rendered in bronze-gold.</desc>
+<defs>
+<radialGradient id="glowBone" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#F5EFE0" stop-opacity="0.35"/><stop offset="60%" stop-color="#F5EFE0" stop-opacity="0.08"/><stop offset="100%" stop-color="#F5EFE0" stop-opacity="0"/></radialGradient>
+<radialGradient id="glowGold" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#D4A24C" stop-opacity="0.40"/><stop offset="60%" stop-color="#D4A24C" stop-opacity="0.10"/><stop offset="100%" stop-color="#D4A24C" stop-opacity="0"/></radialGradient>
+<clipPath id="squircle"><rect x="0" y="0" width="1024" height="1024" rx="229.0688" ry="229.0688"/></clipPath>
+</defs>
+<rect x="0" y="0" width="1024" height="1024" fill="#0F1B2D"/>
+<circle cx="512.00" cy="735.64" r="89.46" fill="url(#glowGold)"/>
+<circle cx="512.00" cy="735.64" r="27.96" fill="#D4A24C"/>
+<circle cx="512.00" cy="288.36" r="67.09" fill="url(#glowBone)"/>
+<circle cx="512.00" cy="288.36" r="20.97" fill="#F5EFE0"/>
+<circle cx="288.36" cy="512.00" r="76.04" fill="url(#glowBone)"/>
+<circle cx="288.36" cy="512.00" r="23.76" fill="#F5EFE0"/>
+<circle cx="735.64" cy="472.06" r="49.20" fill="url(#glowBone)"/>
+<circle cx="735.64" cy="472.06" r="15.38" fill="#F5EFE0"/>
+<circle cx="591.87" cy="575.90" r="26.84" fill="url(#glowBone)"/>
+<circle cx="591.87" cy="575.90" r="8.39" fill="#F5EFE0"/>
+</svg>
