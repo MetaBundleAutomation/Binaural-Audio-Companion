@@ -22,11 +22,13 @@ const Header = () => {
         <div className="flex h-20 items-center justify-between">
 
           {/* Logo */}
-          <Link
-            href="/"
-            className="text-4xl md:text-5xl font-bold text-[var(--primary)] tracking-tight"
-          >
-            {siteName}
+          <Link href="/" className="flex flex-col md:flex-row md:items-baseline md:gap-3">
+            <span className="text-4xl md:text-5xl font-bold text-[var(--primary)] tracking-tight leading-none">
+              {siteName}
+            </span>
+            <span className="text-[11px] md:text-[13px] font-medium text-[var(--text-secondary)] tracking-widest uppercase opacity-70 leading-none">
+              The Core of Calm
+            </span>
           </Link>
 
           {/* ── Desktop Navigation ─────────────────────────────────────────────── */}
