@@ -47,7 +47,7 @@ Copy `.env.example` to `.env.local` and fill in your values:
 NEXT_PUBLIC_SITE_NAME="CRUX"
 NEXT_PUBLIC_TITLE="CRUX — The Core of Calm | Binaural Beats for Veterans & Wellbeing"
 NEXT_PUBLIC_DESCRIPTION="Binaural beats, noise therapy and box breathing for calm, focus and sleep."
-NEXT_PUBLIC_URL="https://crux.metabundle.ai"
+NEXT_PUBLIC_URL="https://cruxthecoreofcalm.app"
 
 # Optional — Google Analytics
 NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=""

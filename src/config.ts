@@ -9,7 +9,7 @@ export const description =
   process.env.NEXT_PUBLIC_DESCRIPTION ||
   "Binaural beats, noise therapy and box breathing — designed for Australian military veterans with PTSD, anxiety and tinnitus, and anyone seeking calm, focus or better sleep.";
 
-const defaultBaseURL = "https://crux.metabundle.ai";
+const defaultBaseURL = "https://cruxthecoreofcalm.app";
 
 const VERCEL_URL =
   process.env.NEXT_PUBLIC_VERCEL_URL &&
