@@ -1,13 +1,12 @@
 "use client";
 
 import React from "react";
-import { tracks, parseDuration, formatTime, lightenHex, hexToRgbTriplet } from "@/data/tracks";
+import { tracks, hexToRgbTriplet } from "@/data/tracks";
 import { useAudioEngine } from "@/hooks/useAudioEngine";
 import { usePreferences } from "@/hooks/usePreferences";
-import Icon from "./Icons";
+import AudioCarousel from "./AudioCarousel";
 import BoxBreathing from "./BoxBreathing";
 import NoiseGenerator from "./NoiseGenerator";
-import AudioCarousel from "./AudioCarousel";
 import VolumeWarningModal from "./VolumeWarningModal";
 
 function fireToast(msg: string) {
@@ -20,18 +19,18 @@ function hexToRgbVars(hex: string): React.CSSProperties {
 }
 
 export default function Player() {
-  const engine = useAudioEngine();
-  const track  = tracks[engine.currentTrackIndex];
+  const engine         = useAudioEngine();
+  const track          = tracks[engine.currentTrackIndex];
   const { prefs, set } = usePreferences();
 
   function handleSetDefault() {
     const alreadyDefault =
-      prefs.defaultBeatId === track.name &&
-      prefs.defaultVolume === engine.volume &&
+      prefs.defaultBeatId    === track.name &&
+      prefs.defaultVolume    === engine.volume &&
       prefs.defaultLoopState === engine.isLooping;
     if (alreadyDefault) { fireToast("Already your default."); return; }
-    set("defaultBeatId", track.name);
-    set("defaultVolume", engine.volume);
+    set("defaultBeatId",    track.name);
+    set("defaultVolume",    engine.volume);
     set("defaultLoopState", engine.isLooping);
     fireToast("Saved as your default.");
   }
@@ -40,96 +39,39 @@ export default function Player() {
     <>
       <VolumeWarningModal />
 
-      {/* Player Section */}
+      {/* ── Player ──────────────────────────────────────────────────────────── */}
       <section id="player" className="my-16">
         <div
-          className="rounded-3xl p-10 border border-[var(--border-color)] player-bg"
+          className="rounded-3xl p-8 border border-[var(--border-color)] player-bg"
           style={{ boxShadow: "var(--shadow-lg)", ...hexToRgbVars(track.color) }}
         >
-          {/* ── Hero card display ──────────────────────────────────────────── */}
-          <div className="mb-8">
-            <div
-              className="w-full rounded-2xl flex items-center justify-center gap-8 relative overflow-hidden"
-              style={{
-                height: 220,
-                background: `linear-gradient(135deg, ${track.color} 0%, ${lightenHex(track.color)} 100%)`,
-                border: "2px solid rgba(255,255,255,0.14)",
-                boxShadow: "0 16px 48px rgba(0,0,0,0.35)",
-              }}
-            >
-              {/* Glare highlight */}
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background:
-                    "radial-gradient(ellipse at 32% 18%, rgba(255,255,255,0.20) 0%, transparent 65%)",
-                }}
-              />
 
-              {/* Equalizer bars — visible while playing */}
-              {engine.isPlaying && (
-                <div className="absolute top-4 right-4 flex items-end gap-[3px]">
-                  {[12, 18, 10, 16, 8].map((h, i) => (
-                    <div
-                      key={i}
-                      className="w-[3px] rounded-full bg-white/75"
-                      style={{
-                        height: h,
-                        transformOrigin: "bottom",
-                        animation: `eq-bar 0.7s ease-in-out ${i * 0.13}s infinite alternate`,
-                      }}
-                    />
-                  ))}
-                </div>
-              )}
+          {/* Track selector — swipeable carousel replaces the static hero card.
+              Swiping / tapping a side card centres it and immediately loads that
+              track into the engine. The Play button below starts playback. */}
+          <AudioCarousel
+            embedded
+            currentIndex={engine.currentTrackIndex}
+            isPlaying={engine.isPlaying}
+            onSelect={(idx) => engine.loadTrack(idx)}
+          />
 
-              {/* Icon */}
-              <div className="text-white/90 z-10 shrink-0">
-                <Icon name={track.icon} size={80} />
-              </div>
-
-              {/* Track info */}
-              <div className="z-10 flex flex-col gap-2 max-w-xs">
-                <p className="text-white font-bold text-[26px] leading-tight tracking-tight">
-                  {track.name}
-                </p>
-                <p className="text-white/60 text-[13px] font-semibold tabular-nums">
-                  {formatTime(parseDuration(track.duration))}
-                  {track.fadeOutDuration ? " · fades gently" : ""}
-                </p>
-                <p className="text-white/55 text-[13px] leading-relaxed line-clamp-2">
-                  {track.description.split("—")[0].split("·")[0].trim()}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* ── Controls ──────────────────────────────────────────────────── */}
-          <div className="flex flex-col gap-5">
+          {/* Controls */}
+          <div className="flex flex-col gap-5 mt-5">
 
             {/* Volume reminder */}
             <p className="text-center text-xs text-[var(--text-secondary)]">
               🎧 Lower your volume before pressing play
             </p>
 
-            {/* Play Controls — primary row */}
-            <div className="flex justify-center items-center gap-5">
-              <button
-                onClick={engine.prevTrack}
-                className="w-[50px] h-[50px] rounded-full flex items-center justify-center bg-[var(--background-light)] hover:bg-[var(--primary-dark)] transition-all cursor-pointer"
-                aria-label="Previous track"
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                  <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
-                </svg>
-              </button>
-
+            {/* Play / Pause — centred, prominent */}
+            <div className="flex justify-center">
               <button
                 onClick={engine.togglePlay}
                 className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-white"
                 style={{
                   background: "var(--primary)",
-                  boxShadow: "0 8px 24px rgba(43, 107, 127, 0.4)",
+                  boxShadow:  "0 8px 24px rgba(43, 107, 127, 0.4)",
                 }}
                 aria-label={engine.isPlaying ? "Pause" : "Play"}
               >
@@ -143,16 +85,6 @@ export default function Player() {
                   </svg>
                 )}
               </button>
-
-              <button
-                onClick={engine.nextTrack}
-                className="w-[50px] h-[50px] rounded-full flex items-center justify-center bg-[var(--background-light)] hover:bg-[var(--primary-dark)] transition-all cursor-pointer"
-                aria-label="Next track"
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                  <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
-                </svg>
-              </button>
             </div>
 
             {/* Secondary controls — loop & default */}
@@ -165,30 +97,15 @@ export default function Player() {
                   className="w-[38px] h-[38px] rounded-full flex items-center justify-center transition-all cursor-pointer"
                   style={
                     engine.isLooping
-                      ? {
-                          background: "var(--primary)",
-                          boxShadow: "0 4px 12px rgba(43, 107, 127, 0.35)",
-                          color: "white",
-                        }
-                      : {
-                          background: "var(--background-light)",
-                          color: "var(--text-secondary)",
-                        }
+                      ? { background: "var(--primary)", boxShadow: "0 4px 12px rgba(43, 107, 127, 0.35)", color: "white" }
+                      : { background: "var(--background-light)", color: "var(--text-secondary)" }
                   }
-                  aria-label={
-                    engine.isLooping
-                      ? "Loop is on — tap to stop looping"
-                      : "Toggle loop — play continuously"
-                  }
+                  aria-label={engine.isLooping ? "Loop is on — tap to stop looping" : "Toggle loop — play continuously"}
                   aria-pressed={engine.isLooping}
                 >
                   <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                     className="w-4 h-4"
                   >
                     <polyline points="17 1 21 5 17 9" />
@@ -202,7 +119,7 @@ export default function Player() {
                 </span>
               </div>
 
-              {/* Set as default */}
+              {/* Save as default */}
               <div className="flex flex-col items-center gap-1">
                 <button
                   onClick={handleSetDefault}
@@ -211,12 +128,8 @@ export default function Player() {
                   style={{ color: "var(--text-secondary)" }}
                 >
                   <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                     className="w-4 h-4"
                   >
                     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
@@ -227,7 +140,7 @@ export default function Player() {
 
             </div>
 
-            {/* Volume */}
+            {/* Volume slider */}
             <div className="flex items-center gap-4 bg-[var(--background-light)] rounded-xl px-5 py-3 border border-[var(--border-color)]">
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 shrink-0 text-[var(--text-secondary)]">
                 <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
@@ -243,6 +156,7 @@ export default function Player() {
                 aria-label="Volume control"
               />
             </div>
+
           </div>
         </div>
       </section>
@@ -252,16 +166,6 @@ export default function Player() {
 
       {/* Box Breathing */}
       <BoxBreathing isAudioPlaying={engine.isPlaying} />
-
-      {/* Track Library — Coverflow carousel */}
-      <AudioCarousel
-        currentIndex={engine.currentTrackIndex}
-        isPlaying={engine.isPlaying}
-        onSelect={(idx) => {
-          engine.loadTrack(idx);
-          document.getElementById("player")?.scrollIntoView({ behavior: "smooth" });
-        }}
-      />
     </>
   );
 }
