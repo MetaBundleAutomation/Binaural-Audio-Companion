@@ -1,15 +1,15 @@
 export const siteName =
-  process.env.NEXT_PUBLIC_SITE_NAME || "MindFlow";
+  process.env.NEXT_PUBLIC_SITE_NAME || "CRUX";
 
 export const title =
   process.env.NEXT_PUBLIC_TITLE ||
-  "MindFlow - Binaural Beats for Focus, Relaxation & Sleep";
+  "CRUX — The Core of Calm | Binaural Beats for Veterans & Wellbeing";
 
 export const description =
   process.env.NEXT_PUBLIC_DESCRIPTION ||
-  "Synchronize your brain's neural activity for mental clarity, focus, relaxation or sleep. Enhance your mind with scientifically-designed binaural beats audio therapy.";
+  "Binaural beats, noise therapy and box breathing — designed for Australian military veterans with PTSD, anxiety and tinnitus, and anyone seeking calm, focus or better sleep.";
 
-const defaultBaseURL = "https://mindflow.app";
+const defaultBaseURL = "https://crux.metabundle.ai";
 
 const VERCEL_URL =
   process.env.NEXT_PUBLIC_VERCEL_URL &&

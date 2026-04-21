@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
  * Zero-dependency, self-dismissing toast.
  *
  * Fire from anywhere:
- *   window.dispatchEvent(new CustomEvent("mindflow:toast", { detail: "Your message" }))
+ *   window.dispatchEvent(new CustomEvent("crux:toast", { detail: "Your message" }))
  *
  * Rendered once inside <PreferencesProvider> in layout.tsx.
  */
@@ -27,9 +27,9 @@ export default function Toast() {
       timer = setTimeout(() => setMessage(null), 2000);
     }
 
-    window.addEventListener("mindflow:toast", handler);
+    window.addEventListener("crux:toast", handler);
     return () => {
-      window.removeEventListener("mindflow:toast", handler);
+      window.removeEventListener("crux:toast", handler);
       clearTimeout(timer);
     };
   }, []);

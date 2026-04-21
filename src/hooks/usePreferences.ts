@@ -39,18 +39,18 @@ export const DEFAULT_PREFERENCES: Preferences = {
 // ─── localStorage key map ─────────────────────────────────────────────────────
 
 export const PREF_KEYS: Record<keyof Preferences, string> = {
-  lastBeatId:       "mindflow:lastBeatId",
-  lastNoiseId:      "mindflow:lastNoiseId",
-  lastVolume:       "mindflow:lastVolume",
-  lastLoopState:    "mindflow:lastLoopState",
-  defaultBeatId:    "mindflow:defaultBeatId",
-  defaultNoiseId:   "mindflow:defaultNoiseId",
-  defaultVolume:    "mindflow:defaultVolume",
-  defaultLoopState: "mindflow:defaultLoopState",
-  launchScreen:     "mindflow:launchScreen",
-  favouriteBeats:   "mindflow:favouriteBeats",
-  favouriteNoises:  "mindflow:favouriteNoises",
-  brightness:       "mindflow:brightness",
+  lastBeatId:       "crux:lastBeatId",
+  lastNoiseId:      "crux:lastNoiseId",
+  lastVolume:       "crux:lastVolume",
+  lastLoopState:    "crux:lastLoopState",
+  defaultBeatId:    "crux:defaultBeatId",
+  defaultNoiseId:   "crux:defaultNoiseId",
+  defaultVolume:    "crux:defaultVolume",
+  defaultLoopState: "crux:defaultLoopState",
+  launchScreen:     "crux:launchScreen",
+  favouriteBeats:   "crux:favouriteBeats",
+  favouriteNoises:  "crux:favouriteNoises",
+  brightness:       "crux:brightness",
 };
 
 // Keys cleared by "Reset to app defaults" (auto-saved "last*" are intentionally excluded)

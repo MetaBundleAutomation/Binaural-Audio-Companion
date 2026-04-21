@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Binaural Audio Companion",
-    short_name: "MindFlow",
+    name: "CRUX — The Core of Calm",
+    short_name: "CRUX",
     description:
-      "Binaural beats, noise therapy and breathing exercises for calm, focus and sleep.",
+      "Binaural beats, noise therapy and box breathing for calm, focus and sleep — designed for veterans and wellbeing.",
     start_url: "/",
     scope: "/",
     display: "standalone",

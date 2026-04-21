@@ -6,7 +6,7 @@ export default function Instructions() {
       <section className="py-20 px-4">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-6 text-center">
-            How to Use MindFlow
+            How to Use CRUX
           </h1>
           <p className="text-lg text-[var(--text-secondary)] mb-12 text-center max-w-2xl mx-auto">
             Simple guidelines to help you get the most from your binaural audio sessions.
@@ -233,11 +233,11 @@ export default function Instructions() {
 
             <hr className="border-[var(--border-color)]" />
 
-            {/* Make MindFlow Yours */}
+            {/* Make CRUX Yours */}
             <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">⭐ Make MindFlow Yours</h2>
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">⭐ Make CRUX Yours</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-5">
-                MindFlow remembers your preferences so you spend less time setting things up and more time actually using it.
+                CRUX remembers your preferences so you spend less time setting things up and more time actually using it.
               </p>
               <ul className="space-y-4 text-[var(--text-secondary)] leading-relaxed">
                 <li>
@@ -276,9 +276,9 @@ export default function Instructions() {
 
             {/* Save to Your Device */}
             <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">📲 Save MindFlow to Your Device</h2>
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">📲 Save CRUX to Your Device</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
-                MindFlow can be installed like a regular app — no app store required. Once installed,
+                CRUX can be installed like a regular app — no app store required. Once installed,
                 it opens in its own full-screen window, works offline, and your settings are always
                 waiting for you exactly where you left them.
               </p>
@@ -289,13 +289,13 @@ export default function Instructions() {
                 <div className="rounded-xl border border-[var(--border-color)] bg-[var(--background-light)] p-5">
                   <p className="font-bold text-[var(--text-primary)] mb-3">iPhone &amp; iPad (Safari)</p>
                   <ol className="space-y-2 text-[var(--text-secondary)] text-[14px] leading-relaxed list-decimal list-outside pl-5">
-                    <li>Open MindFlow in <strong className="text-[var(--text-primary)]">Safari</strong> — this does not work in Chrome or Firefox on iOS.</li>
+                    <li>Open CRUX in <strong className="text-[var(--text-primary)]">Safari</strong> — this does not work in Chrome or Firefox on iOS.</li>
                     <li>Tap the <strong className="text-[var(--text-primary)]">Share</strong> button at the bottom of the screen (the box with an arrow pointing up).</li>
                     <li>Scroll down in the share sheet and tap <strong className="text-[var(--text-primary)]">Add to Home Screen</strong>.</li>
                     <li>Give it a name (or leave it as-is) and tap <strong className="text-[var(--text-primary)]">Add</strong> in the top-right corner.</li>
                   </ol>
                   <p className="text-[var(--text-secondary)] text-[13px] mt-3 pl-0">
-                    The MindFlow icon will appear on your home screen. Tap it to open — it launches without any browser bars.
+                    The CRUX icon will appear on your home screen. Tap it to open — it launches without any browser bars.
                   </p>
                 </div>
 
@@ -303,7 +303,7 @@ export default function Instructions() {
                 <div className="rounded-xl border border-[var(--border-color)] bg-[var(--background-light)] p-5">
                   <p className="font-bold text-[var(--text-primary)] mb-3">Android (Chrome)</p>
                   <ol className="space-y-2 text-[var(--text-secondary)] text-[14px] leading-relaxed list-decimal list-outside pl-5">
-                    <li>Open MindFlow in <strong className="text-[var(--text-primary)]">Chrome</strong>.</li>
+                    <li>Open CRUX in <strong className="text-[var(--text-primary)]">Chrome</strong>.</li>
                     <li>Tap the <strong className="text-[var(--text-primary)]">three-dot menu</strong> (⋮) in the top-right corner of the browser.</li>
                     <li>Tap <strong className="text-[var(--text-primary)]">Add to Home screen</strong> or <strong className="text-[var(--text-primary)]">Install app</strong> — the exact wording depends on your Android version.</li>
                     <li>Tap <strong className="text-[var(--text-primary)]">Add</strong> when prompted.</li>
@@ -317,7 +317,7 @@ export default function Instructions() {
                 <div className="rounded-xl border border-[var(--border-color)] bg-[var(--background-light)] p-5">
                   <p className="font-bold text-[var(--text-primary)] mb-3">Desktop — Chrome or Edge</p>
                   <ol className="space-y-2 text-[var(--text-secondary)] text-[14px] leading-relaxed list-decimal list-outside pl-5">
-                    <li>Open MindFlow in <strong className="text-[var(--text-primary)]">Chrome</strong> or <strong className="text-[var(--text-primary)]">Edge</strong>.</li>
+                    <li>Open CRUX in <strong className="text-[var(--text-primary)]">Chrome</strong> or <strong className="text-[var(--text-primary)]">Edge</strong>.</li>
                     <li>Look for the <strong className="text-[var(--text-primary)]">install icon</strong> on the right side of the address bar — it looks like a screen with a download arrow, or a circle with a plus sign (⊕).</li>
                     <li>Click it and then click <strong className="text-[var(--text-primary)]">Install</strong>.</li>
                   </ol>
@@ -359,7 +359,7 @@ export default function Instructions() {
                   binaural beats are designed to alter your mental state.
                 </li>
                 <li>
-                  MindFlow is a <strong className="text-[var(--text-primary)]">wellness aid</strong>,
+                  CRUX is a <strong className="text-[var(--text-primary)]">wellness aid</strong>,
                   not a medical device. It does not replace professional mental health care.
                 </li>
                 <li>

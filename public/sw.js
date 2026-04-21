@@ -4,7 +4,7 @@
 //   navigation requests    → network-first, cache fallback (works offline)
 //   everything else        → network-first, cache fallback
 
-const CACHE = "mindflow-v1";
+const CACHE = "crux-v1";
 const PRECACHE = ["/", "/about"];
 
 // ── Install: pre-cache the app shell ──────────────────────────────────────────

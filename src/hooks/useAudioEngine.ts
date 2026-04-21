@@ -251,7 +251,7 @@ export function useAudioEngine(): AudioEngine {
     if ("mediaSession" in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: track.name,
-        artist: "MindFlow",
+        artist: "CRUX",
         album: "Binaural Audio",
       });
       navigator.mediaSession.playbackState = "playing";
@@ -293,7 +293,7 @@ export function useAudioEngine(): AudioEngine {
     if ("mediaSession" in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: tracks[index].name,
-        artist: "MindFlow",
+        artist: "CRUX",
         album: "Binaural Audio",
       });
     }

@@ -143,7 +143,7 @@ export default function SettingsPage() {
           <div className="mb-10">
             <h2 className="text-xl font-bold text-[var(--text-primary)] mb-1">My Defaults</h2>
             <p className="text-sm text-[var(--text-secondary)] mb-6">
-              Choose how MindFlow opens for you each time.
+              Choose how CRUX opens for you each time.
             </p>
 
             <div className="space-y-4">
@@ -245,7 +245,7 @@ export default function SettingsPage() {
               <Card>
                 <ControlLabel
                   label="Launch screen"
-                  description="Which screen opens when you start MindFlow."
+                  description="Which screen opens when you start CRUX."
                 />
                 <SegmentedControl
                   options={["home", "library", "lastPlayed"] as const}

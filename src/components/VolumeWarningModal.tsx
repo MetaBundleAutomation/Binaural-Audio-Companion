@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const STORAGE_KEY = "mindflow:volume-warning-dismissed";
+const STORAGE_KEY = "crux:volume-warning-dismissed";
 
 export default function VolumeWarningModal() {
   const [visible, setVisible] = useState(false);

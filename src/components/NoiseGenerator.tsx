@@ -122,7 +122,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
   }, [prefs.favouriteNoises]);
 
   function fireToast(msg: string) {
-    window.dispatchEvent(new CustomEvent("mindflow:toast", { detail: msg }));
+    window.dispatchEvent(new CustomEvent("crux:toast", { detail: msg }));
   }
 
   function handleSetDefault() {

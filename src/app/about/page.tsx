@@ -7,7 +7,7 @@ export default function About() {
       <section className="py-20 px-4">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-6 text-center">
-            About MindFlow
+            About CRUX
           </h1>
           <p className="text-lg text-[var(--text-secondary)] mb-12 text-center max-w-2xl mx-auto">
             Enhance your mental well-being with scientifically-designed binaural beats audio therapy.

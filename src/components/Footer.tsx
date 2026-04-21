@@ -43,7 +43,7 @@ export default function Footer() {
 
       {/* Legal */}
       <div className="text-center text-[12px] opacity-50 space-y-1">
-        <p>&copy; {new Date().getFullYear()} MindFlow. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} CRUX. All rights reserved.</p>
         <p>For educational and wellness purposes only. Not intended to diagnose or treat medical conditions.</p>
       </div>
 
