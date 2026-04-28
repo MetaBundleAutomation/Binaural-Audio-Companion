@@ -4,13 +4,14 @@ import { useEffect, useRef, useState } from "react";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
+// Cycle order (clockwise from 12 o'clock): Inhale → Hold → Exhale → Hold
 const PHASES = [
-  { name: "Hold",   subtitle: "hold still",  color: "#9ba8ff" },
   { name: "Inhale", subtitle: "breathe in",  color: "#4aa8e8" },
   { name: "Hold",   subtitle: "hold still",  color: "#9ba8ff" },
   { name: "Exhale", subtitle: "breathe out", color: "#56c9b5" },
+  { name: "Hold",   subtitle: "hold still",  color: "#9ba8ff" },
 ];
-const PHASE_LABELS = ["Hold", "Inhale", "Hold", "Exhale"];
+const PHASE_LABELS = ["Inhale", "Hold", "Exhale", "Hold"];
 const PHASE_MS     = 4000;
 const MIN_R        = 28;
 const MAX_R        = 108;
@@ -38,10 +39,10 @@ function alpha(hex: string, a: number): string {
 function getRadius(phase: number, elapsed: number, idle: boolean): number {
   if (idle) return MID_R;
   const t = Math.min(elapsed / PHASE_MS, 1);
-  if (phase === 0) return MIN_R;                                       // hold (post-exhale)
-  if (phase === 1) return MIN_R + (MAX_R - MIN_R) * easeInOut(t);     // inhale
-  if (phase === 2) return MAX_R;                                       // hold (post-inhale)
-  return MAX_R - (MAX_R - MIN_R) * easeInOut(t);                      // exhale
+  if (phase === 0) return MIN_R + (MAX_R - MIN_R) * easeInOut(t);     // inhale  (top)
+  if (phase === 1) return MAX_R;                                       // hold    (right, post-inhale)
+  if (phase === 2) return MAX_R - (MAX_R - MIN_R) * easeInOut(t);     // exhale  (bottom)
+  return MIN_R;                                                        // hold    (left, post-exhale)
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -158,10 +159,10 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
 
     // Phase labels at compass positions — horizontal labels pushed further out
     const labelPos: [number, number][] = [
-      [C,            C - LABEL_V],  // Hold   (top)
-      [C + LABEL_H,  C],            // Inhale (right)
-      [C,            C + LABEL_V],  // Hold   (bottom)
-      [C - LABEL_H,  C],            // Exhale (left)
+      [C,            C - LABEL_V],  // Inhale (top,    12 o'clock)
+      [C + LABEL_H,  C],            // Hold   (right,   3 o'clock)
+      [C,            C + LABEL_V],  // Exhale (bottom,  6 o'clock)
+      [C - LABEL_H,  C],            // Hold   (left,    9 o'clock)
     ];
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
