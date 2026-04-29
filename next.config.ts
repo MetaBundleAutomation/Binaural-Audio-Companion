@@ -52,6 +52,27 @@ const nextConfig: NextConfig = {
             key: "Referrer-Policy",
             value: "strict-origin-when-cross-origin",
           },
+          {
+            // Force HTTPS for 1 year; prevents protocol-downgrade attacks.
+            // includeSubDomains covers any subdomains (e.g. www.*).
+            // preload opt-in — submit to hstspreload.org once domain is live.
+            key: "Strict-Transport-Security",
+            value: "max-age=31536000; includeSubDomains; preload",
+          },
+          {
+            // Restrict browser APIs this app has no need for.
+            // Denying camera, microphone, geolocation, payment and USB
+            // prevents any injected third-party code from accessing them.
+            key: "Permissions-Policy",
+            value: [
+              "camera=()",
+              "microphone=()",
+              "geolocation=()",
+              "payment=()",
+              "usb=()",
+              "interest-cohort=()",   // opt out of FLoC / Topics API
+            ].join(", "),
+          },
         ],
       },
 
