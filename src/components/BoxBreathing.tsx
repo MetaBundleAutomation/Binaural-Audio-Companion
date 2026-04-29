@@ -61,24 +61,46 @@ export default function BoxBreathing() {
   const lastTsRef    = useRef(0);
   const isRunningRef = useRef(false);
 
-  // ── Voice — Audio instances ──────────────────────────────────────────────
-
-  /** Intro audio — kept as a persistent ref so we can attach the 'ended' handler. */
-  const introAudioRef = useRef<HTMLAudioElement | null>(null);
+  // ── Voice — HTML5 Audio (intro only) ────────────────────────────────────
 
   /**
-   * Cue preload refs — these Audio nodes are never used for playback.
-   * They exist only to warm the browser's media cache so that the fresh
-   * Audio nodes created inside playCue() start instantly.
+   * The intro WAV is kept on a regular HTMLAudioElement so we can:
+   *  • attach the 'ended' event listener with { once: true }
+   *  • stream the 633 KB file without blocking the user gesture
+   * It is primed on the first Start tap to unlock iOS HTML5 audio.
    */
-  const inhalePreloadRef = useRef<HTMLAudioElement | null>(null);
-  const holdPreloadRef   = useRef<HTMLAudioElement | null>(null);
-  const exhalePreloadRef = useRef<HTMLAudioElement | null>(null);
+  const introAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  // ── Voice — Web Audio API (cues) ─────────────────────────────────────────
+
+  /**
+   * AudioContext is created lazily inside the Start click handler so that
+   * the constructor call itself happens inside a user-gesture on iOS.
+   * (Creating it at mount-time would leave it in 'suspended' on iOS Safari.)
+   *
+   * A single GainNode (cueGainRef) provides master volume for all cues.
+   */
+  const audioCtxRef  = useRef<AudioContext | null>(null);
+  const cueGainRef   = useRef<GainNode | null>(null);
+
+  /**
+   * Decoded AudioBuffers for the three short cue files.
+   * Loaded via fetch → arrayBuffer → decodeAudioData the first time Start
+   * is pressed.  Reused on every subsequent cue play.
+   */
+  const cueBuffersRef = useRef<{
+    inhale: AudioBuffer | null;
+    hold:   AudioBuffer | null;
+    exhale: AudioBuffer | null;
+  }>({ inhale: null, hold: null, exhale: null });
 
   // ── Voice — runtime state refs ───────────────────────────────────────────
 
-  /** The cue Audio node currently playing (if any). Replaced on each phase. */
-  const activeCueRef = useRef<HTMLAudioElement | null>(null);
+  /**
+   * The AudioBufferSourceNode currently playing a cue (if any).
+   * BufferSourceNodes are one-shot — a new one is created per cue play.
+   */
+  const activeCueSourceRef = useRef<AudioBufferSourceNode | null>(null);
 
   /** Stored reference to the intro 'ended' handler so we can remove it on reset. */
   const introEndedHandlerRef = useRef<(() => void) | null>(null);
@@ -110,31 +132,87 @@ export default function BoxBreathing() {
   // ── Audio bootstrap ──────────────────────────────────────────────────────
 
   useEffect(() => {
-    // Intro — persistent instance so we can attach 'ended' and skip handlers.
+    // Intro: single persistent HTMLAudioElement.  Cues use Web Audio (see
+    // playCue), so only the intro lives here.
     const intro = new Audio("/audio/intro.wav");
     intro.volume  = 0.8;
     intro.preload = "auto";
     introAudioRef.current = intro;
 
-    // Cue preloaders — trigger browser cache fill without ever playing.
-    // playCue() creates a fresh Audio node per cue to avoid ended/paused
-    // state carrying over between phases; these preloaders ensure those
-    // fresh nodes can start immediately from cache.
-    const inhale = new Audio("/audio/inhale.wav");
-    const hold   = new Audio("/audio/hold.wav");
-    const exhale = new Audio("/audio/exhale.wav");
-    [inhale, hold, exhale].forEach(a => { a.preload = "auto"; });
-    inhalePreloadRef.current = inhale;
-    holdPreloadRef.current   = hold;
-    exhalePreloadRef.current = exhale;
-
     return () => {
       intro.pause();
+      intro.src = "";           // release browser media resource
       introAudioRef.current = null;
-      [inhale, hold, exhale].forEach(a => a.src = ""); // release resources
-      inhalePreloadRef.current = holdPreloadRef.current = exhalePreloadRef.current = null;
+
+      // Close Web Audio context if it was created during this mount
+      if (audioCtxRef.current) {
+        audioCtxRef.current.close().catch(() => {});
+        audioCtxRef.current = null;
+      }
+      cueGainRef.current    = null;
+      cueBuffersRef.current = { inhale: null, hold: null, exhale: null };
+
+      if (activeCueSourceRef.current) {
+        try { activeCueSourceRef.current.stop(); } catch { /* already ended */ }
+        activeCueSourceRef.current = null;
+      }
     };
   }, []);
+
+  // ── iOS AudioContext — resume on page visibility restored ─────────────────
+  //
+  // iOS suspends the AudioContext whenever the browser tab or PWA is sent
+  // to the background.  Resuming it on 'visibilitychange' ensures that cue
+  // playback works again when the user returns to the app mid-session.
+  useEffect(() => {
+    function handleVisibility() {
+      if (
+        document.visibilityState === "visible" &&
+        audioCtxRef.current?.state === "suspended"
+      ) {
+        audioCtxRef.current.resume().catch(() => {});
+        console.log("[BoxBreathing] AudioContext resumed after visibility restored");
+      }
+    }
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
+
+  // ── Async cue-buffer loader ───────────────────────────────────────────────
+  //
+  // Called (fire-and-forget) from the Start handler.  The intro plays for
+  // ~13 s, giving plenty of time to fetch and decode the three ~1 s cues
+  // before the first cue is needed.  Idempotent — re-entry while loading is
+  // prevented by the null-check; already-loaded buffers are never re-fetched.
+  async function loadCueBuffers(ctx: AudioContext) {
+    const b = cueBuffersRef.current;
+    if (b.inhale && b.hold && b.exhale) return; // already loaded
+
+    const decode = async (src: string): Promise<AudioBuffer | null> => {
+      try {
+        const resp = await fetch(src);
+        const ab   = await resp.arrayBuffer();
+        if (ctx.state === "closed") return null;   // component unmounted
+        return await ctx.decodeAudioData(ab);
+      } catch (err) {
+        console.warn(`[BoxBreathing] Failed to decode ${src}:`, err);
+        return null;
+      }
+    };
+
+    const [inhale, hold, exhale] = await Promise.all([
+      decode("/audio/inhale.wav"),
+      decode("/audio/hold.wav"),
+      decode("/audio/exhale.wav"),
+    ]);
+
+    if (ctx.state !== "closed") {
+      cueBuffersRef.current = { inhale, hold, exhale };
+      console.log("[BoxBreathing] Cue buffers ready:", {
+        inhale: !!inhale, hold: !!hold, exhale: !!exhale,
+      });
+    }
+  }
 
   // Hydrate both voice preferences from localStorage after mount.
   // Done in a single effect to avoid two sequential re-renders and to keep
@@ -330,9 +408,10 @@ export default function BoxBreathing() {
 
   /**
    * Stop all audio (intro + any active cue) and cancel the intro ended-handler.
-   * Safe to call at any time (no-ops if nothing is playing).
+   * Safe to call at any time — all branches are no-ops when nothing is playing.
    */
   function stopAllAudio() {
+    // ── Intro (HTML5 Audio) ────────────────────────────────────────────────
     const intro = introAudioRef.current;
     if (intro) {
       if (introEndedHandlerRef.current) {
@@ -342,51 +421,78 @@ export default function BoxBreathing() {
       intro.pause();
       intro.currentTime = 0;
     }
-    if (activeCueRef.current) {
-      activeCueRef.current.pause();
-      activeCueRef.current.currentTime = 0;
-      activeCueRef.current = null;
+
+    // ── Active cue (Web Audio BufferSourceNode) ────────────────────────────
+    // stop() throws if the source has already ended — catch silently.
+    if (activeCueSourceRef.current) {
+      try { activeCueSourceRef.current.stop(); } catch { /* already ended */ }
+      activeCueSourceRef.current = null;
     }
+
     introModeRef.current = false;
   }
 
   /**
-   * Immediately play the phase cue for the given phase index.
+   * Immediately play the phase cue using the Web Audio API.
    *
-   * A FRESH Audio node is created for every cue play.  This is the key fix:
-   * reusing a played-through Audio element leaves it in an ended/paused state
-   * that can interfere with the next play() call (especially after pause() +
-   * currentTime = 0 on an ended element, which triggers a seek event that
-   * can race with the following play() in Chromium).  Creating a fresh node
-   * each time gives us a clean, idle element with no prior state.
+   * Why Web Audio instead of HTMLAudioElement for cues:
+   *  • On iOS, HTMLAudioElement.play() can silently fail when called outside
+   *    a fresh user gesture — even after the initial unlock.  Web Audio
+   *    BufferSourceNodes play freely once the AudioContext has been resumed.
+   *  • No shared-instance state (ended/paused) to carry over between phases.
+   *  • Not affected by the iOS silent-mode switch (same as HTML5 after iOS 7,
+   *    but Web Audio is far more reliable across rapid repeated calls).
+   *  • Each BufferSourceNode is inherently one-shot and GC'd after playback.
    *
-   * The preload refs (inhalePreloadRef / holdPreloadRef / exhalePreloadRef)
-   * warm the browser's media cache so the fresh nodes start instantly.
-   *
-   * Phases 1 and 3 both use /audio/hold.wav but each gets its own node.
+   * Phases 1 and 3 share the same AudioBuffer (hold) but each play triggers
+   * a fresh BufferSourceNode, so there is no reuse-state issue.
    */
   function playCue(phase: number) {
     const phaseName = PHASE_LABELS[phase];
-    const src =
-      phase === 0 ? "/audio/inhale.wav" :
-      phase === 2 ? "/audio/exhale.wav" :
-      "/audio/hold.wav"; // phases 1 & 3
+    const ctx       = audioCtxRef.current;
+    const gain      = cueGainRef.current;
+    const buffers   = cueBuffersRef.current;
 
-    // Stop whatever was playing before (usually already done — cues are ~1 s)
-    if (activeCueRef.current) {
-      activeCueRef.current.pause();
-      activeCueRef.current = null;
+    const buffer =
+      phase === 0 ? buffers.inhale :
+      phase === 2 ? buffers.exhale :
+      buffers.hold; // phases 1 & 3
+
+    if (!ctx || !gain) {
+      console.warn(`[BoxBreathing] AudioContext not initialised for ${phaseName} — cue skipped`);
+      return;
+    }
+    if (!buffer) {
+      console.warn(`[BoxBreathing] Buffer not ready for ${phaseName} — cue skipped`);
+      return;
     }
 
-    // Fresh node — no ended/paused/pending-Promise carry-over
-    const audio = new Audio(src);
-    audio.volume = 0.8;
-    activeCueRef.current = audio;
+    // Stop the previous source (already ended in normal use, but safe to call)
+    if (activeCueSourceRef.current) {
+      try { activeCueSourceRef.current.stop(); } catch { /* already ended */ }
+      activeCueSourceRef.current = null;
+    }
+
+    // iOS can suspend the AudioContext when the page loses focus; resume it
+    if (ctx.state === "suspended") {
+      ctx.resume().catch(err =>
+        console.warn("[BoxBreathing] AudioContext resume failed in playCue:", err)
+      );
+    }
+
+    // One-shot BufferSourceNode — fresh per cue, no state carry-over
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(gain);           // gain → destination (set up in start())
+    activeCueSourceRef.current = source;
 
     console.log(`[BoxBreathing] Playing cue: ${phaseName}`);
-    audio.play().catch((err: unknown) => {
-      console.warn(`[BoxBreathing] Cue playback failed for ${phaseName}:`, err);
-      if (activeCueRef.current === audio) activeCueRef.current = null;
+    source.start(0);
+
+    // Clean up ref when this source finishes naturally
+    source.addEventListener("ended", () => {
+      source.disconnect();
+      if (activeCueSourceRef.current === source) activeCueSourceRef.current = null;
     });
   }
 
@@ -427,6 +533,64 @@ export default function BoxBreathing() {
   // ── Controls ──────────────────────────────────────────────────────────────
 
   function start() {
+    // ── iOS Audio unlock (must run synchronously in the user-gesture handler) ─
+    //
+    // iOS Safari requires that AudioContext.resume() AND HTMLAudioElement.play()
+    // both be called within the same synchronous call stack as the tap/click
+    // event.  Awaiting anything before these calls breaks the gesture context.
+    //
+    // Strategy:
+    //  1. Create AudioContext + GainNode on the very first Start tap.
+    //  2. Call resume() synchronously (the returned Promise is not awaited).
+    //  3. Prime the intro HTMLAudioElement with a silent play→pause so iOS
+    //     unlocks it for later programmatic playback.
+    //  4. Fire-and-forget loadCueBuffers() — the intro plays for ~13 s, giving
+    //     ample time to fetch + decode the three ~1 s cue WAVs before the first
+    //     phase transition.
+    if (!audioCtxRef.current) {
+      try {
+        // webkitAudioContext for Safari < 14.1
+        const AudioContextClass =
+          window.AudioContext ??
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (window as any).webkitAudioContext as typeof AudioContext;
+        const ctx  = new AudioContextClass();
+        const gain = ctx.createGain();
+        gain.gain.value = 0.8;
+        gain.connect(ctx.destination);
+        audioCtxRef.current = ctx;
+        cueGainRef.current  = gain;
+        console.log("[BoxBreathing] AudioContext created, state:", ctx.state);
+      } catch (err) {
+        console.warn("[BoxBreathing] Could not create AudioContext:", err);
+      }
+    }
+
+    // Resume the context if iOS put it into 'suspended' on creation
+    if (audioCtxRef.current?.state === "suspended") {
+      audioCtxRef.current.resume().catch(err =>
+        console.warn("[BoxBreathing] AudioContext resume failed:", err)
+      );
+    }
+
+    // Prime the intro Audio element — iOS requires a play() call in the exact
+    // gesture handler before the element can be triggered programmatically.
+    if (introAudioRef.current) {
+      const intro = introAudioRef.current;
+      intro.load(); // force iOS to fetch the file (preload="auto" is not respected)
+      intro.play()
+        .then(() => { intro.pause(); intro.currentTime = 0; })
+        .catch(() => { /* silent — we just need the unlock, not the sound */ });
+    }
+
+    // Load cue buffers in the background (fire-and-forget — idempotent)
+    if (audioCtxRef.current) {
+      loadCueBuffers(audioCtxRef.current).catch(err =>
+        console.warn("[BoxBreathing] loadCueBuffers failed:", err)
+      );
+    }
+    // ── End iOS unlock ────────────────────────────────────────────────────────
+
     if (status === "paused") {
       // Resume from pause — don't replay intro or reset cycle count
       isRunningRef.current = true;
@@ -668,6 +832,10 @@ export default function BoxBreathing() {
           {/* Helper text — visible to sighted users and screen readers */}
           <p className="text-xs text-[var(--text-secondary)] opacity-60 text-center max-w-xs">
             Helpful for visually impaired users — voice continues throughout the session
+          </p>
+          {/* Silent-mode hint — especially relevant on iPhone/iPad */}
+          <p className="text-xs text-[var(--text-secondary)] opacity-40 text-center max-w-xs italic">
+            On mobile, ensure your device is not on silent mode
           </p>
         </div>
 
