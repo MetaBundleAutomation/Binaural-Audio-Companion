@@ -17,7 +17,7 @@ const CSP = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: https:",
+  "img-src 'self' data:",
   "font-src 'self'",
   "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com",
   "media-src 'self'",
@@ -58,6 +58,20 @@ const nextConfig: NextConfig = {
             // preload opt-in — submit to hstspreload.org once domain is live.
             key: "Strict-Transport-Security",
             value: "max-age=31536000; includeSubDomains; preload",
+          },
+          {
+            // Prevent cross-origin pages obtaining a window reference to this
+            // app (e.g. via window.open or target="_blank") — closes XS-Leaks.
+            key: "Cross-Origin-Opener-Policy",
+            value: "same-origin",
+          },
+          {
+            // Restrict this app's resources to same-origin consumers only —
+            // reinforces X-Frame-Options: DENY at the resource level.
+            // Note: do NOT pair with Cross-Origin-Embedder-Policy: require-corp
+            // as that would break the Google Analytics script (cross-origin, no CORP).
+            key: "Cross-Origin-Resource-Policy",
+            value: "same-origin",
           },
           {
             // Restrict browser APIs this app has no need for.
