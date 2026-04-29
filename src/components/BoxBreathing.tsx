@@ -63,14 +63,21 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
 
   // ── Voice — Audio instances ──────────────────────────────────────────────
 
-  const introAudioRef  = useRef<HTMLAudioElement | null>(null);
-  const inhaleAudioRef = useRef<HTMLAudioElement | null>(null);
-  const holdAudioRef   = useRef<HTMLAudioElement | null>(null);
-  const exhaleAudioRef = useRef<HTMLAudioElement | null>(null);
+  /** Intro audio — kept as a persistent ref so we can attach the 'ended' handler. */
+  const introAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  /**
+   * Cue preload refs — these Audio nodes are never used for playback.
+   * They exist only to warm the browser's media cache so that the fresh
+   * Audio nodes created inside playCue() start instantly.
+   */
+  const inhalePreloadRef = useRef<HTMLAudioElement | null>(null);
+  const holdPreloadRef   = useRef<HTMLAudioElement | null>(null);
+  const exhalePreloadRef = useRef<HTMLAudioElement | null>(null);
 
   // ── Voice — runtime state refs ───────────────────────────────────────────
 
-  /** The cue Audio node currently playing (if any). */
+  /** The cue Audio node currently playing (if any). Replaced on each phase. */
   const activeCueRef = useRef<HTMLAudioElement | null>(null);
 
   /** Stored reference to the intro 'ended' handler so we can remove it on reset. */
@@ -104,19 +111,29 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
   // ── Audio bootstrap ──────────────────────────────────────────────────────
 
   useEffect(() => {
-    const intro  = new Audio("/audio/intro.wav");
+    // Intro — persistent instance so we can attach 'ended' and skip handlers.
+    const intro = new Audio("/audio/intro.wav");
+    intro.volume  = 0.8;
+    intro.preload = "auto";
+    introAudioRef.current = intro;
+
+    // Cue preloaders — trigger browser cache fill without ever playing.
+    // playCue() creates a fresh Audio node per cue to avoid ended/paused
+    // state carrying over between phases; these preloaders ensure those
+    // fresh nodes can start immediately from cache.
     const inhale = new Audio("/audio/inhale.wav");
     const hold   = new Audio("/audio/hold.wav");
     const exhale = new Audio("/audio/exhale.wav");
-    [intro, inhale, hold, exhale].forEach(a => { a.volume = 0.8; a.preload = "auto"; });
-    introAudioRef.current  = intro;
-    inhaleAudioRef.current = inhale;
-    holdAudioRef.current   = hold;
-    exhaleAudioRef.current = exhale;
+    [inhale, hold, exhale].forEach(a => { a.preload = "auto"; });
+    inhalePreloadRef.current = inhale;
+    holdPreloadRef.current   = hold;
+    exhalePreloadRef.current = exhale;
+
     return () => {
-      [intro, inhale, hold, exhale].forEach(a => a.pause());
-      introAudioRef.current = inhaleAudioRef.current =
-        holdAudioRef.current = exhaleAudioRef.current = null;
+      intro.pause();
+      introAudioRef.current = null;
+      [inhale, hold, exhale].forEach(a => a.src = ""); // release resources
+      inhalePreloadRef.current = holdPreloadRef.current = exhalePreloadRef.current = null;
     };
   }, []);
 
@@ -337,40 +354,36 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
   /**
    * Immediately play the phase cue for the given phase index.
    *
-   * Key design: when hold.wav is reused for phases 1 → 3, calling
-   * pause() on the same Audio instance that we're about to play() can
-   * cause an AbortError in Chromium-based browsers (the pending play
-   * Promise is rejected). We guard against this by only stopping the
-   * previous cue when it is a DIFFERENT audio instance.
+   * A FRESH Audio node is created for every cue play.  This is the key fix:
+   * reusing a played-through Audio element leaves it in an ended/paused state
+   * that can interfere with the next play() call (especially after pause() +
+   * currentTime = 0 on an ended element, which triggers a seek event that
+   * can race with the following play() in Chromium).  Creating a fresh node
+   * each time gives us a clean, idle element with no prior state.
    *
-   * Phases 1 and 3 share hold.wav; Inhale (0) and Exhale (2) are
-   * distinct instances.
+   * The preload refs (inhalePreloadRef / holdPreloadRef / exhalePreloadRef)
+   * warm the browser's media cache so the fresh nodes start instantly.
+   *
+   * Phases 1 and 3 both use /audio/hold.wav but each gets its own node.
    */
   function playCue(phase: number) {
     const phaseName = PHASE_LABELS[phase];
+    const src =
+      phase === 0 ? "/audio/inhale.wav" :
+      phase === 2 ? "/audio/exhale.wav" :
+      "/audio/hold.wav"; // phases 1 & 3
 
-    const audio =
-      phase === 0 ? inhaleAudioRef.current :
-      phase === 2 ? exhaleAudioRef.current :
-      holdAudioRef.current; // phases 1 & 3 → hold.wav
-
-    if (!audio) {
-      console.warn(`[BoxBreathing] Audio instance for ${phaseName} is null — skipping cue`);
-      return;
-    }
-
-    // Stop a DIFFERENT cue that may still be playing (e.g., if tab was
-    // backgrounded and two phases caught up at once). Skip the pause when
-    // we're reusing the same instance (hold.wav, phases 1 & 3) to avoid
-    // the pause+play AbortError.
-    if (activeCueRef.current && activeCueRef.current !== audio) {
+    // Stop whatever was playing before (usually already done — cues are ~1 s)
+    if (activeCueRef.current) {
       activeCueRef.current.pause();
-      activeCueRef.current.currentTime = 0;
+      activeCueRef.current = null;
     }
+
+    // Fresh node — no ended/paused/pending-Promise carry-over
+    const audio = new Audio(src);
+    audio.volume = 0.8;
     activeCueRef.current = audio;
 
-    // Reset to the beginning and play
-    audio.currentTime = 0;
     console.log(`[BoxBreathing] Playing cue: ${phaseName}`);
     audio.play().catch((err: unknown) => {
       console.warn(`[BoxBreathing] Cue playback failed for ${phaseName}:`, err);
