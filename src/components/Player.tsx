@@ -165,7 +165,7 @@ export default function Player() {
       <NoiseGenerator isAudioPlaying={engine.isPlaying} />
 
       {/* Box Breathing */}
-      <BoxBreathing isAudioPlaying={engine.isPlaying} />
+      <BoxBreathing />
     </>
   );
 }

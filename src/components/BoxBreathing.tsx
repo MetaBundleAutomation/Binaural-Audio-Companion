@@ -50,7 +50,7 @@ function getRadius(phase: number, elapsed: number, idle: boolean): number {
 
 type Status = "idle" | "intro" | "running" | "paused";
 
-export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boolean }) {
+export default function BoxBreathing() {
 
   // ── Canvas / animation refs ──────────────────────────────────────────────
 
@@ -104,7 +104,6 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
   // ── React state ──────────────────────────────────────────────────────────
 
   const [status,          setStatus]          = useState<Status>("idle");
-  const [autoSync,        setAutoSync]        = useState(false);
   const [voiceEnabled,    setVoiceEnabled]    = useState(true);   // default ON
   const [voiceContinuous, setVoiceContinuous] = useState(false);  // default OFF
 
@@ -473,13 +472,6 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
     }
   }
 
-  /** Skip the intro mid-play and jump directly into the breathing animation. */
-  function skipIntro() {
-    stopAllAudio();
-    cycleCountRef.current = 0;
-    startAnimationWithCue();
-  }
-
   function pause() {
     stopAllAudio();
     isRunningRef.current = false;
@@ -542,25 +534,16 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Auto-sync: mirror the audio player's play/pause state
-  useEffect(() => {
-    if (!autoSync) return;
-    if (isAudioPlaying  && status === "idle")    start();
-    if (!isAudioPlaying && status === "running") pause();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAudioPlaying, autoSync]);
-
   // ── Render ────────────────────────────────────────────────────────────────
 
+  // During "intro" the button acts as Pause — clicking it stops the intro
+  // audio and lands the session in the paused state ready to Resume.
   const btnLabel =
-    status === "running" ? "Pause"  :
-    status === "intro"   ? "Skip"   :
-    status === "paused"  ? "Resume" : "Start";
+    status === "running" || status === "intro" ? "Pause"  :
+    status === "paused"                        ? "Resume" : "Start";
 
   const btnClick =
-    status === "running" ? pause :
-    status === "intro"   ? skipIntro :
-    start;
+    status === "running" || status === "intro" ? pause : start;
 
   return (
     <section id="box-breathing" className="my-16">
@@ -687,25 +670,6 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
             Helpful for visually impaired users — voice continues throughout the session
           </p>
         </div>
-
-        {/* ── Auto-sync toggle (unchanged) ─────────────────────────────── */}
-        <label className="flex items-center gap-3 cursor-pointer select-none">
-          <button
-            role="switch"
-            aria-checked={autoSync}
-            onClick={() => setAutoSync((v) => !v)}
-            className={`relative w-11 h-6 rounded-full border-0 cursor-pointer transition-colors overflow-hidden ${
-              autoSync ? "bg-[var(--primary)]" : "bg-[var(--border-color)]"
-            }`}
-          >
-            <span className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${
-              autoSync ? "translate-x-5" : "translate-x-0"
-            }`} />
-          </button>
-          <span className="text-sm text-[var(--text-secondary)]">
-            Start and stop with the audio player
-          </span>
-        </label>
 
       </div>
     </section>
