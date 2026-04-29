@@ -288,8 +288,16 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
         elapsedRef.current -= PHASE_MS;
         phaseRef.current    = (phaseRef.current + 1) % 4;
 
-        // A full cycle completes whenever the phase wraps back to 0
+        // A full cycle completes whenever the phase wraps back to 0.
+        // Increment BEFORE calling maybePlayCue so the cue-gate logic
+        // sees the updated count (cycle 1 → block default cues).
         if (phaseRef.current === 0) cycleCountRef.current += 1;
+
+        console.log(
+          `[BoxBreathing] Phase transition → ${PHASE_LABELS[phaseRef.current]},` +
+          ` cycleCount: ${cycleCountRef.current},` +
+          ` continuous: ${voiceContinuousRef.current}`
+        );
 
         // Play the cue for the new phase (respects voice/continuous settings)
         maybePlayCue(phaseRef.current);
@@ -328,39 +336,69 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
 
   /**
    * Immediately play the phase cue for the given phase index.
-   * Stops any currently-playing cue first to prevent overlap.
-   * Phases 1 and 3 share hold.wav.
+   *
+   * Key design: when hold.wav is reused for phases 1 → 3, calling
+   * pause() on the same Audio instance that we're about to play() can
+   * cause an AbortError in Chromium-based browsers (the pending play
+   * Promise is rejected). We guard against this by only stopping the
+   * previous cue when it is a DIFFERENT audio instance.
+   *
+   * Phases 1 and 3 share hold.wav; Inhale (0) and Exhale (2) are
+   * distinct instances.
    */
   function playCue(phase: number) {
-    if (activeCueRef.current) {
-      activeCueRef.current.pause();
-      activeCueRef.current.currentTime = 0;
-      activeCueRef.current = null;
-    }
+    const phaseName = PHASE_LABELS[phase];
+
     const audio =
       phase === 0 ? inhaleAudioRef.current :
       phase === 2 ? exhaleAudioRef.current :
       holdAudioRef.current; // phases 1 & 3 → hold.wav
-    if (!audio) return;
-    audio.currentTime = 0;
+
+    if (!audio) {
+      console.warn(`[BoxBreathing] Audio instance for ${phaseName} is null — skipping cue`);
+      return;
+    }
+
+    // Stop a DIFFERENT cue that may still be playing (e.g., if tab was
+    // backgrounded and two phases caught up at once). Skip the pause when
+    // we're reusing the same instance (hold.wav, phases 1 & 3) to avoid
+    // the pause+play AbortError.
+    if (activeCueRef.current && activeCueRef.current !== audio) {
+      activeCueRef.current.pause();
+      activeCueRef.current.currentTime = 0;
+    }
     activeCueRef.current = audio;
-    audio.play().catch(() => {
-      console.warn(`BoxBreathing: cue audio unavailable for phase ${phase} (${PHASE_LABELS[phase]})`);
-      activeCueRef.current = null;
+
+    // Reset to the beginning and play
+    audio.currentTime = 0;
+    console.log(`[BoxBreathing] Playing cue: ${phaseName}`);
+    audio.play().catch((err: unknown) => {
+      console.warn(`[BoxBreathing] Cue playback failed for ${phaseName}:`, err);
+      if (activeCueRef.current === audio) activeCueRef.current = null;
     });
   }
 
   /**
    * Play a cue only when the rules allow it:
    *   – master voice toggle must be ON
-   *   – during the first cycle (cycleCount === 0): always play
-   *   – after the first cycle:  play only when continuous mode is ON
+   *   – during the first cycle (cycleCount === 0): always play all 4 phases
+   *   – cycle 2 onwards: play only when continuous mode is ON
+   *
+   * cycleCountRef increments when the phase wraps 3→0, so cycleCount === 0
+   * covers the entire first cycle (Inhale + Hold + Exhale + Hold).
    */
   function maybePlayCue(phase: number) {
     if (!voiceEnabledRef.current) return;
-    if (cycleCountRef.current === 0 || voiceContinuousRef.current) {
-      playCue(phase);
-    }
+
+    const shouldPlay = cycleCountRef.current === 0 || voiceContinuousRef.current;
+    console.log(
+      `[BoxBreathing] Phase: ${PHASE_LABELS[phase]},` +
+      ` Cycle: ${cycleCountRef.current},` +
+      ` Continuous: ${voiceContinuousRef.current},` +
+      ` Playing cue: ${shouldPlay ? "yes" : "no"}`
+    );
+
+    if (shouldPlay) playCue(phase);
   }
 
   /**
@@ -370,7 +408,7 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
   function startAnimationWithCue() {
     isRunningRef.current = true;
     setStatus("running");
-    maybePlayCue(0); // Inhale cue at the very start of phase 0
+    maybePlayCue(0); // Inhale cue at the very start of cycle 0, phase 0
     startLoop();
   }
 
@@ -408,9 +446,9 @@ export default function BoxBreathing({ isAudioPlaying }: { isAudioPlaying: boole
       // { once: true } auto-removes the listener after it fires
       intro.addEventListener("ended", handleEnded, { once: true });
 
-      intro.play().catch(() => {
+      intro.play().catch((err: unknown) => {
         // Audio unavailable — skip intro and start animation immediately
-        console.warn("BoxBreathing: intro audio unavailable, starting animation directly");
+        console.warn("[BoxBreathing] Intro audio failed, starting animation directly:", err);
         intro.removeEventListener("ended", handleEnded);
         introEndedHandlerRef.current = null;
         introModeRef.current         = false;
