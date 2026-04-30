@@ -9,13 +9,20 @@ import type { NextConfig } from "next";
 //  • 'unsafe-inline' is required for script-src because Next.js injects the
 //    __NEXT_DATA__ hydration script inline. A nonce-based approach is the
 //    stricter alternative but requires middleware and is out of scope here.
+//  • 'unsafe-eval' is required in development only: Next.js dev server uses
+//    webpack's eval-source-map devtool which wraps every module factory in
+//    eval() for fast incremental rebuilds with inline source maps.  Production
+//    builds use a non-eval devtool so 'unsafe-eval' is omitted there.
 //  • connect-src includes Google Analytics endpoints used by @next/third-parties.
 //  • media-src 'self' covers the binaural audio tracks served from /public.
 //  • worker-src 'self' covers the service worker (/sw.js).
 // ─────────────────────────────────────────────────────────────────────────────
+const isDev = process.env.NODE_ENV === "development";
+
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
+  // 'unsafe-eval' added in dev only — webpack eval-source-map requires it
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data:",
   "font-src 'self'",
