@@ -33,7 +33,7 @@ const VOICE_CONT_KEY = "crux_voice_continuous_enabled";
  *   INTRO_END_S – end: one full breathing cycle cued at 4-second intervals,
  *                      starting on "Exhale"
  */
-const NARRATION_SRC = "/audio/Box Breathing Narration.mp3?v=4";
+const NARRATION_SRC = "/audio/Box Breathing Narration.mp3?v=5";
 
 /**
  * Timestamp (seconds) inside NARRATION_SRC where the word "Exhale" is spoken.
