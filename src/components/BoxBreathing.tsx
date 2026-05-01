@@ -2,6 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 
+declare global {
+  interface Window { webkitAudioContext?: typeof AudioContext; }
+}
+
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 // Cycle order (clockwise from 12 o'clock): Inhale → Hold → Exhale → Hold
@@ -31,12 +35,12 @@ const VOICE_CONT_KEY = "crux_voice_continuous_enabled";
  * Combined narration file.  Contains:
  *   0 – INTRO_END_S  : intro speech + countdown ("…three, two, one")
  *   INTRO_END_S – end: one full breathing cycle cued at 4-second intervals,
- *                      starting on "Exhale"
+ *                      starting on "Inhale"
  */
 const NARRATION_SRC = "/audio/Box Breathing.mp3?v=7";
 
 /**
- * Timestamp (seconds) inside NARRATION_SRC where the word "Exhale" is spoken.
+ * Timestamp (seconds) inside NARRATION_SRC where the word "Inhale" is spoken.
  * Measured with ffmpeg silencedetect (first silence_end before a ≥3 s gap).
  * The animation starts at this exact offset so audio and visuals stay in sync.
  */
@@ -83,26 +87,34 @@ export default function BoxBreathing() {
   const lastTsRef    = useRef(0);
   const isRunningRef = useRef(false);
 
-  // ── Audio ─────────────────────────────────────────────────────────────────
+  // ── Audio (Web Audio API) ─────────────────────────────────────────────────
 
   /**
-   * Single HTMLAudioElement for the combined narration.
-   * Primed (play→pause) on the first Start tap to unlock iOS audio,
-   * then played from currentTime=0 on each fresh start.
+   * Shared AudioContext — created on mount in suspended state (iOS-safe).
+   * Resumed synchronously inside the Start tap handler (a user gesture),
+   * which is the only point iOS allows audio to begin.  Once running, all
+   * subsequent BufferSourceNode.start() calls work freely from timers and
+   * event callbacks — unlike HTMLAudioElement which blocks every non-gesture play.
    */
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioCtxRef    = useRef<AudioContext | null>(null);
 
   /**
-   * `timeupdate` handler that watches for currentTime ≥ INTRO_END_S.
-   * Stored here so it can be removed on pause / reset / unmount.
+   * Pre-decoded PCM buffer for the entire narration file.
+   * Decoded on mount so the first Start press plays instantly with no fetch lag.
    */
-  const timeupdateHandlerRef = useRef<(() => void) | null>(null);
+  const audioBufferRef = useRef<AudioBuffer | null>(null);
 
   /**
-   * `ended` handler that loops the phase section of the narration
-   * (seeking back to INTRO_END_S) when Continuous voice guidance is ON.
+   * Currently playing BufferSourceNode.
+   * A new node must be created for every play; old nodes cannot be restarted.
    */
-  const endedHandlerRef = useRef<(() => void) | null>(null);
+  const audioSourceRef = useRef<AudioBufferSourceNode | null>(null);
+
+  /**
+   * setTimeout handle that fires at INTRO_END_S to start the animation.
+   * Cancelled on stop/reset so the timer never fires after a session ends.
+   */
+  const introTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /** True while the intro speech is playing — canvas shows "breathe with me". */
   const introModeRef = useRef(false);
@@ -123,15 +135,26 @@ export default function BoxBreathing() {
   // ── Audio bootstrap ──────────────────────────────────────────────────────
 
   useEffect(() => {
-    const audio = new Audio(NARRATION_SRC);
-    audio.volume  = 0.8;
-    audio.preload = "auto";
-    audioRef.current = audio;
+    // AudioContext intentionally starts suspended on iOS — it will be resumed
+    // inside the Start tap handler.  decodeAudioData works on a suspended
+    // context, so the buffer is ready the moment the user presses Start.
+    const Ctor = window.AudioContext ?? window.webkitAudioContext;
+    if (!Ctor) return;
+
+    const ctx = new Ctor();
+    audioCtxRef.current = ctx;
+
+    fetch(NARRATION_SRC)
+      .then((r) => r.arrayBuffer())
+      .then((ab) => ctx.decodeAudioData(ab))
+      .then((decoded) => { audioBufferRef.current = decoded; })
+      .catch((e) => console.warn("[BoxBreathing] audio preload failed:", e));
 
     return () => {
-      audio.pause();
-      audio.src = "";
-      audioRef.current = null;
+      if (ctx.state !== "closed") ctx.close().catch(() => {});
+      audioCtxRef.current   = null;
+      audioBufferRef.current = null;
+      audioSourceRef.current = null;
     };
   }, []);
 
@@ -155,6 +178,25 @@ export default function BoxBreathing() {
         voiceContinuousRef.current = v;
       }
     } catch { /* localStorage unavailable — use defaults */ }
+  }, []);
+
+  // ── iOS audio-session recovery ────────────────────────────────────────────
+  // iOS suspends the AudioContext when the screen locks, a call comes in, or
+  // the app goes to background.  Resume it the moment the page is visible again
+  // so playback continues without requiring another tap.
+  useEffect(() => {
+    const handleVisibility = () => {
+      const ctx = audioCtxRef.current;
+      if (!ctx) return;
+      if (
+        document.visibilityState === "visible" &&
+        (ctx.state === "suspended" || ctx.state === "interrupted")
+      ) {
+        ctx.resume().catch(() => {});
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
   }, []);
 
   // ── Draw ─────────────────────────────────────────────────────────────────
@@ -316,24 +358,58 @@ export default function BoxBreathing() {
   // ── Audio helpers ─────────────────────────────────────────────────────────
 
   /**
-   * Stop the narration audio and remove all event handlers.
+   * Cancel the intro timer and stop any playing BufferSourceNode.
    * Safe to call at any time — every branch is a no-op when nothing is active.
    */
   function stopAllAudio() {
-    const audio = audioRef.current;
-    if (audio) {
-      if (timeupdateHandlerRef.current) {
-        audio.removeEventListener("timeupdate", timeupdateHandlerRef.current);
-        timeupdateHandlerRef.current = null;
-      }
-      if (endedHandlerRef.current) {
-        audio.removeEventListener("ended", endedHandlerRef.current);
-        endedHandlerRef.current = null;
-      }
-      audio.pause();
-      audio.currentTime = 0;
+    if (introTimerRef.current !== null) {
+      clearTimeout(introTimerRef.current);
+      introTimerRef.current = null;
+    }
+    if (audioSourceRef.current) {
+      // Clear onended BEFORE stop() — stopping a node fires the ended event,
+      // and we must not trigger the continuous-loop handler on a manual stop.
+      audioSourceRef.current.onended = null;
+      try { audioSourceRef.current.stop(); } catch { /* already stopped */ }
+      audioSourceRef.current = null;
     }
     introModeRef.current = false;
+  }
+
+  /**
+   * Create a new BufferSourceNode and begin playback from offsetSeconds.
+   * Any previously playing source is stopped first.
+   *
+   * When the source ends naturally, loops back to INTRO_END_S if Continuous
+   * voice guidance is ON — skipping the intro speech on subsequent cycles.
+   */
+  function playNarration(offsetSeconds: number) {
+    const ctx    = audioCtxRef.current;
+    const buffer = audioBufferRef.current;
+    if (!ctx || !buffer) return;
+
+    // Stop previous source (clears onended first to suppress the loop callback).
+    if (audioSourceRef.current) {
+      audioSourceRef.current.onended = null;
+      try { audioSourceRef.current.stop(); } catch { /* already stopped */ }
+      audioSourceRef.current = null;
+    }
+
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(ctx.destination);
+
+    // Keep a reference so the closure can verify it hasn't been superseded.
+    audioSourceRef.current = source;
+
+    source.onended = () => {
+      // Guard: only loop if this source is still the active one.
+      if (audioSourceRef.current === source && voiceContinuousRef.current) {
+        playNarration(INTRO_END_S);
+      }
+    };
+
+    source.start(0, offsetSeconds);
   }
 
   /**
@@ -348,25 +424,29 @@ export default function BoxBreathing() {
 
   // ── Controls ──────────────────────────────────────────────────────────────
 
-  function start() {
-    // ── iOS HTMLAudioElement unlock ───────────────────────────────────────────
+  async function start() {
+    const ctx = audioCtxRef.current;
+
+    // ── iOS AudioContext unlock ───────────────────────────────────────────────
     //
-    // iOS Safari requires HTMLAudioElement.play() to be called synchronously
-    // inside the tap/click handler.  load() forces iOS to fetch the file
-    // (preload="auto" is ignored on iOS).  We do NOT pause after play() here —
-    // the real play() call below runs in the same synchronous handler, so any
-    // async .then() pause would race against actual playback and kill the audio.
-    if (audioRef.current) {
-      audioRef.current.load();
+    // AudioContext starts in "suspended" state on iOS.  ctx.resume() MUST be
+    // called synchronously inside a user-gesture handler (tap / click) to
+    // transition it to "running".  Once running, all subsequent
+    // BufferSourceNode.start() calls — including those from setTimeout and
+    // audio-event callbacks — work without restriction.
+    //
+    // This is the fundamental difference from HTMLAudioElement: with the Web
+    // Audio API you unlock the context once and the unlock persists for the
+    // entire session, rather than needing a fresh gesture for every play().
+    if (ctx && (ctx.state === "suspended" || ctx.state === "interrupted")) {
+      try { await ctx.resume(); } catch { /* continue; playback won't work but animation will */ }
     }
-    // ── End iOS unlock ────────────────────────────────────────────────────────
 
     if (status === "paused") {
-      // Resume from pause.  Resume the narration audio if it hasn't ended yet
-      // (covers the case where the user paused while audio was still playing).
-      const audio = audioRef.current;
-      if (audio && audio.currentTime > 0 && !audio.ended) {
-        audio.play().catch(() => {});
+      // Re-enter the breathing cycle audio from INTRO_END_S so cues stay
+      // aligned with whatever phase the animation is currently on.
+      if (voiceEnabledRef.current && ctx && audioBufferRef.current) {
+        playNarration(INTRO_END_S);
       }
       isRunningRef.current = true;
       setStatus("running");
@@ -375,71 +455,43 @@ export default function BoxBreathing() {
     }
 
     // ── Fresh start ───────────────────────────────────────────────────────────
-    // Reset animation to Exhale (PHASE_START_IDX) at t=0.
     phaseRef.current   = PHASE_START_IDX;
     elapsedRef.current = 0;
     lastTsRef.current  = 0;
 
-    if (voiceEnabledRef.current && audioRef.current) {
-      const audio = audioRef.current;
-      audio.currentTime = 0;
-
+    if (voiceEnabledRef.current && ctx && audioBufferRef.current) {
       // Show idle canvas with "breathe with me" while the intro plays.
       introModeRef.current = true;
       setStatus("intro");
       draw(true);
 
-      // ── timeupdate: watches for the "Exhale" voice onset ────────────────────
+      // Note the AudioContext clock at the moment playback begins.
+      // Used to seed elapsedRef with sub-millisecond accuracy when the
+      // setTimeout fires, compensating for any JS-engine scheduling delay.
+      const startCtxTime = ctx.currentTime;
+      playNarration(0);
+
+      // ── setTimeout replaces timeupdate polling ──────────────────────────────
       //
-      // `timeupdate` fires every ~250 ms (browser-throttled).  When
-      // currentTime crosses INTRO_END_S the handler:
-      //   1. Removes itself (one-shot).
-      //   2. Aligns elapsedRef to the audio's exact position — compensates for
-      //      the ~250 ms polling granularity so the first animation frame is
-      //      correctly placed within the Exhale phase.
-      //   3. Kicks off the rAF animation loop.
-      const handleTimeUpdate = () => {
-        if (audio.currentTime < INTRO_END_S) return;
+      // HTMLAudioElement.timeupdate fires every ~250 ms, introducing up to
+      // 250 ms of animation-start lag.  A single setTimeout keyed to
+      // INTRO_END_S is both simpler and far more accurate; ctx.currentTime
+      // advances at audio-clock precision so the overshoot correction below
+      // is typically < 10 ms.
+      introTimerRef.current = setTimeout(() => {
+        introTimerRef.current = null;
+        introModeRef.current  = false;
 
-        audio.removeEventListener("timeupdate", handleTimeUpdate);
-        timeupdateHandlerRef.current = null;
-        introModeRef.current = false;
-
-        // Align the animation clock to where the audio already is.
-        // lastTsRef=0 means the first rAF delta will be 0, preserving this offset.
-        elapsedRef.current = (audio.currentTime - INTRO_END_S) * 1000;
+        // Correct for any overshoot: seed elapsed with however many ms past
+        // INTRO_END_S the audio clock has already advanced.
+        const audioPos = ctx.currentTime - startCtxTime;
+        elapsedRef.current = Math.max(0, (audioPos - INTRO_END_S) * 1000);
 
         startAnimation();
-      };
-      timeupdateHandlerRef.current = handleTimeUpdate;
-      audio.addEventListener("timeupdate", handleTimeUpdate);
-
-      // ── ended: loop the phase section when Continuous guidance is ON ────────
-      //
-      // The narration file contains one breathing cycle (16 s of cues).
-      // When the file ends and Continuous is enabled, seek back to INTRO_END_S
-      // and replay — skipping the intro speech so the user only hears the cues.
-      const handleEnded = () => {
-        if (voiceContinuousRef.current && audioRef.current) {
-          const a = audioRef.current;
-          a.currentTime = INTRO_END_S;
-          a.play().catch(() => {});
-        }
-      };
-      endedHandlerRef.current = handleEnded;
-      audio.addEventListener("ended", handleEnded);
-
-      audio.play().catch((err: unknown) => {
-        // Audio unavailable — skip intro and start animation immediately.
-        console.warn("[BoxBreathing] Audio failed, starting animation directly:", err);
-        audio.removeEventListener("timeupdate", handleTimeUpdate);
-        timeupdateHandlerRef.current = null;
-        introModeRef.current         = false;
-        startAnimation();
-      });
+      }, INTRO_END_S * 1000);
 
     } else {
-      // Voice off — jump straight to animation at Exhale, no audio.
+      // Voice off — jump straight into animation.
       startAnimation();
     }
   }
