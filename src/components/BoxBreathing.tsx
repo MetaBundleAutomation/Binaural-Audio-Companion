@@ -16,7 +16,10 @@ const PHASES = [
   { name: "Hold",   subtitle: "hold still",  color: "#9ba8ff" },
 ];
 const PHASE_LABELS = ["Inhale", "Hold", "Exhale", "Hold"];
-const PHASE_MS     = 4000;
+// Each phase is 4 000 ms — equal durations, as close to 4 s as possible.
+// Animation starts at INTRO_END_S when "Inhale" is spoken; the 16 000 ms
+// cycle is within ~176 ms of the audio loop length (15 824 ms), imperceptible.
+const PHASE_DURATIONS = [4000, 4000, 4000, 4000]; // ms [Inhale, Hold, Exhale, Hold]
 const MIN_R        = 28;
 const MAX_R        = 108;
 const MID_R        = (MIN_R + MAX_R) / 2;
@@ -36,14 +39,14 @@ const VOICE_KEY = "crux_voice_guidance_enabled";
  *   INTRO_END_S – end: one full breathing cycle cued at 4-second intervals,
  *                      starting on "Inhale"
  */
-const NARRATION_SRC = "/audio/Box Breathing.mp3?v=7";
+const NARRATION_SRC = "/audio/Box Breathing.mp3?v=9";
 
 /**
  * Timestamp (seconds) inside NARRATION_SRC where the word "Inhale" is spoken.
  * Measured with ffmpeg silencedetect (first silence_end before a ≥3 s gap).
  * The animation starts at this exact offset so audio and visuals stay in sync.
  */
-const INTRO_END_S = 15.946;
+const INTRO_END_S = 12.780;
 
 /**
  * Index into PHASES where the animation opens.
@@ -64,7 +67,7 @@ function alpha(hex: string, a: number): string {
 
 function getRadius(phase: number, elapsed: number, idle: boolean): number {
   if (idle) return MID_R;
-  const t = Math.min(elapsed / PHASE_MS, 1);
+  const t = Math.min(elapsed / PHASE_DURATIONS[phase], 1);
   if (phase === 0) return MIN_R + (MAX_R - MIN_R) * easeInOut(t);
   if (phase === 1) return MAX_R;
   if (phase === 2) return MAX_R - (MAX_R - MIN_R) * easeInOut(t);
@@ -198,7 +201,7 @@ export default function BoxBreathing() {
 
     const phase     = phaseRef.current;
     const elapsed   = elapsedRef.current;
-    const t         = Math.min(elapsed / PHASE_MS, 1);
+    const t         = Math.min(elapsed / PHASE_DURATIONS[phase], 1);
     const r         = getRadius(phase, elapsed, idle);
     const pc        = idle ? "#4a6b8a" : PHASES[phase].color;
     const countdown = idle ? "—" : String(Math.max(1, Math.ceil(4 * (1 - t))));
@@ -332,8 +335,8 @@ export default function BoxBreathing() {
       lastTsRef.current   = ts;
       elapsedRef.current += delta;
 
-      while (elapsedRef.current >= PHASE_MS) {
-        elapsedRef.current -= PHASE_MS;
+      while (elapsedRef.current >= PHASE_DURATIONS[phaseRef.current]) {
+        elapsedRef.current -= PHASE_DURATIONS[phaseRef.current];
         phaseRef.current    = (phaseRef.current + 1) % 4;
       }
 
@@ -575,11 +578,6 @@ export default function BoxBreathing() {
           </button>
         </div>
 
-        {/* ── Timing label ────────────────────────────────────────────── */}
-        <p className="text-xs text-[var(--text-secondary)] opacity-50 tracking-widest">
-          4 · 4 · 4 · 4 · box breathing
-        </p>
-
         {/* ── Voice guidance toggle (master on/off) ────────────────────
              Uses <div role="switch"> instead of <button> inside <label>
              to prevent browsers double-dispatching click events.          */}
@@ -618,6 +616,23 @@ export default function BoxBreathing() {
             )}
             Voice guidance
           </span>
+        </div>
+
+        {/* ── Description block ───────────────────────────────────────── */}
+        <div className="flex flex-col items-center gap-2 text-center" style={{ maxWidth: 420 }}>
+          {/* Tier 1 – regular weight, muted */}
+          <p className="text-sm text-[var(--text-secondary)] opacity-70 leading-relaxed">
+            Box breathing works best with regular use, first thing in the morning,
+            just before bed or throughout the day when ever you feel anxious.
+          </p>
+          {/* Tier 2 – bold cadence line, primary colour */}
+          <p className="text-sm font-bold text-[var(--text-primary)] tracking-wide">
+            Inhale&nbsp;4s&nbsp;·&nbsp;Hold&nbsp;4s<br />Exhale&nbsp;4s&nbsp;·&nbsp;Hold&nbsp;4s
+          </p>
+          {/* Tier 3 – muted, smaller */}
+          <p className="text-xs text-[var(--text-secondary)] opacity-50">
+            Repeat for 2–3 minutes.
+          </p>
         </div>
 
       </div>
