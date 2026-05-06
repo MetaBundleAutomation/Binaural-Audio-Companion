@@ -28,8 +28,7 @@ const S            = 600;
 const C            = S / 2;
 const SEG_GAP      = 0.04;
 
-const VOICE_KEY      = "crux_voice_guidance_enabled";
-const VOICE_CONT_KEY = "crux_voice_continuous_enabled";
+const VOICE_KEY = "crux_voice_guidance_enabled";
 
 /**
  * Combined narration file.  Contains:
@@ -120,17 +119,15 @@ export default function BoxBreathing() {
   const introModeRef = useRef(false);
 
   /**
-   * Ref mirrors of voiceEnabled / voiceContinuous — updated synchronously in
-   * toggle handlers so the rAF closure always reads the latest value.
+   * Ref mirror of voiceEnabled — updated synchronously in the toggle handler
+   * so the audio helpers always read the latest value without a re-render.
    */
-  const voiceEnabledRef    = useRef(true);
-  const voiceContinuousRef = useRef(false);
+  const voiceEnabledRef = useRef(true);
 
   // ── React state ──────────────────────────────────────────────────────────
 
   const [status,          setStatus]          = useState<Status>("idle");
-  const [voiceEnabled,    setVoiceEnabled]    = useState(true);   // default ON
-  const [voiceContinuous, setVoiceContinuous] = useState(false);  // default OFF
+  const [voiceEnabled, setVoiceEnabled] = useState(true); // default ON
 
   // ── Audio bootstrap ──────────────────────────────────────────────────────
 
@@ -160,9 +157,7 @@ export default function BoxBreathing() {
 
   // ── Voice preference hydration ────────────────────────────────────────────
 
-  // Hydrate both voice preferences from localStorage after mount.
-  // Done in a single effect to avoid two sequential re-renders and to keep
-  // the ref mirrors consistent with the state from the very first frame.
+  // Hydrate voice preference from localStorage after mount.
   useEffect(() => {
     try {
       const sv = localStorage.getItem(VOICE_KEY);
@@ -170,12 +165,6 @@ export default function BoxBreathing() {
         const v = sv === "true";
         setVoiceEnabled(v);
         voiceEnabledRef.current = v;
-      }
-      const sc = localStorage.getItem(VOICE_CONT_KEY);
-      if (sc !== null) {
-        const v = sc === "true";
-        setVoiceContinuous(v);
-        voiceContinuousRef.current = v;
       }
     } catch { /* localStorage unavailable — use defaults */ }
   }, []);
@@ -380,8 +369,8 @@ export default function BoxBreathing() {
    * Create a new BufferSourceNode and begin playback from offsetSeconds.
    * Any previously playing source is stopped first.
    *
-   * When the source ends naturally, loops back to INTRO_END_S if Continuous
-   * voice guidance is ON — skipping the intro speech on subsequent cycles.
+   * When the source ends naturally, loops back to INTRO_END_S — skipping the
+   * intro speech so only the breathing cues repeat on subsequent cycles.
    */
   function playNarration(offsetSeconds: number) {
     const ctx    = audioCtxRef.current;
@@ -403,8 +392,8 @@ export default function BoxBreathing() {
     audioSourceRef.current = source;
 
     source.onended = () => {
-      // Guard: only loop if this source is still the active one.
-      if (audioSourceRef.current === source && voiceContinuousRef.current) {
+      // Always loop — voice guidance plays every cycle when voice is ON.
+      if (audioSourceRef.current === source) {
         playNarration(INTRO_END_S);
       }
     };
@@ -534,17 +523,6 @@ export default function BoxBreathing() {
     // Turning ON: takes effect at next Start press — no retroactive action.
   }
 
-  function handleToggleContinuous() {
-    if (!voiceEnabled) return; // guard: no effect without master toggle
-    const next = !voiceContinuous;
-    voiceContinuousRef.current = next; // Update ref immediately for animation loop
-    setVoiceContinuous(next);
-    try { localStorage.setItem(VOICE_CONT_KEY, String(next)); } catch { /* noop */ }
-    // No immediate audio change needed:
-    //   Toggled ON:  ended handler will loop from INTRO_END_S on next cycle end ✓
-    //   Toggled OFF: current audio completes; ended handler becomes a no-op ✓
-  }
-
   // ── Lifecycle ─────────────────────────────────────────────────────────────
 
   useEffect(() => {
@@ -640,57 +618,6 @@ export default function BoxBreathing() {
             )}
             Voice guidance
           </span>
-        </div>
-
-        {/* ── Continuous voice guidance toggle ─────────────────────────
-             Greyed out when master voice toggle is OFF (no effect without it).
-             Placed directly below "Voice guidance" to form a logical group.  */}
-        <div className="flex flex-col items-center gap-1.5 w-full">
-          <div
-            className={`flex items-center gap-3 select-none ${
-              voiceEnabled ? "cursor-pointer" : "cursor-not-allowed opacity-40"
-            }`}
-            onClick={voiceEnabled ? handleToggleContinuous : undefined}
-            role="presentation"
-          >
-            <div
-              role="switch"
-              aria-checked={voiceContinuous}
-              aria-disabled={!voiceEnabled}
-              aria-label="Toggle continuous voice guidance"
-              tabIndex={voiceEnabled ? 0 : -1}
-              onKeyDown={(e) =>
-                voiceEnabled && (e.key === " " || e.key === "Enter") && handleToggleContinuous()
-              }
-              className={`relative w-11 h-6 rounded-full transition-colors overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] ${
-                voiceEnabled ? "cursor-pointer" : "cursor-not-allowed"
-              } ${
-                voiceContinuous && voiceEnabled ? "bg-[var(--primary)]" : "bg-[var(--border-color)]"
-              }`}
-            >
-              <span className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                voiceContinuous ? "translate-x-5" : "translate-x-0"
-              }`} />
-            </div>
-            <span className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)]">
-              {/* Repeat / loop icon */}
-              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <polyline points="17 1 21 5 17 9"/>
-                <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
-                <polyline points="7 23 3 19 7 15"/>
-                <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
-              </svg>
-              Continuous voice guidance
-            </span>
-          </div>
-          {/* Helper text — visible to sighted users and screen readers */}
-          <p className="text-xs text-[var(--text-secondary)] opacity-60 text-center max-w-xs">
-            Helpful for visually impaired users — voice continues throughout the session
-          </p>
-          {/* Silent-mode hint — especially relevant on iPhone/iPad */}
-          <p className="text-xs text-[var(--text-secondary)] opacity-40 text-center max-w-xs italic">
-            On mobile, ensure your device is not on silent mode
-          </p>
         </div>
 
       </div>
