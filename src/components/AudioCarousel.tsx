@@ -213,7 +213,7 @@ export default function AudioCarousel({
             <div
               className="w-full h-full rounded-3xl flex flex-col items-center justify-center gap-2 relative overflow-hidden"
               style={{
-                background: `linear-gradient(135deg, ${track.color} 0%, ${lightenHex(track.color)} 100%)`,
+                background: `linear-gradient(135deg, ${lightenHex(track.color, 0.18)} 0%, ${lightenHex(track.color, 0.32)} 100%)`,
                 border:     isHero ? "2px solid rgba(255,255,255,0.18)" : "2px solid transparent",
                 boxShadow:  isHero
                   ? `0 24px 64px rgba(0,0,0,0.45), 0 0 40px ${track.color}40, 0 0 0 1px rgba(255,255,255,0.06)`
@@ -295,15 +295,6 @@ export default function AudioCarousel({
                   {track.name}
                 </p>
 
-                {isHero && (
-                  <p
-                    className="text-white/60 mt-1 font-medium tabular-nums"
-                    style={{ fontSize: embedded ? 11 : 12 }}
-                  >
-                    {formatTime(parseDuration(track.duration))}
-                    {track.fadeOutDuration ? " · fades" : ""}
-                  </p>
-                )}
               </div>
 
               {/* Short description — standalone hero only */}

@@ -11,63 +11,34 @@
 }
 
 :root {
-  --primary: #2B6B7F;
-  --primary-dark: #1E4F5E;
-  --primary-light: #3A8FA3;
-  --secondary: #8C9BAA;
-  --accent: #4A5568;
-  --background: #F5F7FA;
-  --background-light: #FAFBFC;
-  --background-card: #FFFFFF;
-  --text-primary: #1A2332;
-  --text-secondary: #5A6B7A;
-  --border-color: #E2E8F0;
-  --shadow: 0 10px 30px rgba(43, 107, 127, 0.12);
-  --shadow-lg: 0 20px 60px rgba(43, 107, 127, 0.18);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --primary: #3A8FA3;
-    --primary-dark: #2B6B7F;
-    --primary-light: #4BA8BD;
-    --secondary: #7A8B9A;
-    --accent: #5A6B7A;
-    --background: #151A1E;
-    --background-light: #1C2228;
-    --background-card: #222A32;
-    --text-primary: #E8ECF0;
-    --text-secondary: #8C9BAA;
-    --border-color: #2D3748;
-    --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.4);
-  }
+  color-scheme: dark;
+  --primary: #3A8FA3;
+  --primary-dark: #2B6B7F;
+  --primary-light: #4BA8BD;
+  --secondary: #7A8B9A;
+  --accent: #5A6B7A;
+  --background: #151A1E;
+  --background-light: #1C2228;
+  --background-card: #222A32;
+  --text-primary: #E8ECF0;
+  --text-secondary: #8C9BAA;
+  --border-color: #2D3748;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.4);
 }
 
 /* ── Brightness overrides ──────────────────────────────────────────────────── */
 /* Applied as a class on <html> by BrightnessSync. "default" = no extra class. */
 
 html.brightness-dim {
-  --background:       #ECEFF4;
-  --background-light: #F3F6FA;
-  --background-card:  #F8FAFB;
+  --background:       #0D1014;
+  --background-light: #121619;
+  --background-card:  #181E24;
 }
 html.brightness-bright {
-  --background:       #FFFFFF;
-  --background-light: #FFFFFF;
-  --background-card:  #FFFFFF;
-}
-@media (prefers-color-scheme: dark) {
-  html.brightness-dim {
-    --background:       #0D1014;
-    --background-light: #121619;
-    --background-card:  #181E24;
-  }
-  html.brightness-bright {
-    --background:       #1E2830;
-    --background-light: #243040;
-    --background-card:  #2A3848;
-  }
+  --background:       #1E2830;
+  --background-light: #243040;
+  --background-card:  #2A3848;
 }
 
 /*
@@ -176,13 +147,7 @@ input[type="range"]::-moz-range-thumb:hover {
 }
 
 .visualizer-bg {
-  background: linear-gradient(135deg, #F0F4F8 0%, #E2E8F0 100%);
-}
-
-@media (prefers-color-scheme: dark) {
-  .visualizer-bg {
-    background: linear-gradient(135deg, #222A32 0%, #151A1E 100%);
-  }
+  background: linear-gradient(135deg, #222A32 0%, #151A1E 100%);
 }
 
 /*
@@ -195,18 +160,8 @@ input[type="range"]::-moz-range-thumb:hover {
   background-color: var(--background-card);
   background-color: color-mix(
     in srgb,
-    rgb(var(--beat-r, 43) var(--beat-g, 107) var(--beat-b, 127)) 3%,
+    rgb(var(--beat-r, 43) var(--beat-g, 107) var(--beat-b, 127)) 7%,
     var(--background-card)
   );
   transition: background-color 600ms ease;
-}
-
-@media (prefers-color-scheme: dark) {
-  .player-bg {
-    background-color: color-mix(
-      in srgb,
-      rgb(var(--beat-r, 43) var(--beat-g, 107) var(--beat-b, 127)) 7%,
-      var(--background-card)
-    );
-  }
 }
