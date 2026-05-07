@@ -20,11 +20,37 @@ export interface AudioEngine {
   setVolume: (value: number) => void;
 }
 
-// EMDR bilateral audio constants — matched to bilateralfocus.com reference implementation
-const EMDR_TONE_HZ  = 300;  // Carrier frequency (standard bilateral tone)
-const EMDR_SHARPNESS = 8;   // tanh shaping — 8 gives a sharp, clinical ping-pong alternation
-const EMDR_CROSSFADE = 0.05; // setTargetAtTime time constant (seconds) — prevents click artefacts
-const EMDR_MIN_GAIN  = 0.001; // Never allow gain to reach exactly 0
+// EMDR bilateral audio constants — reverse-engineered from reference YouTube (50 BPM analysis)
+// Pattern: discrete hard-panned L/R pulses, never both ears simultaneously
+const EMDR_FREQ      = 176;   // Hz — carrier (measured from reference audio)
+const EMDR_ATTACK_S  = 0.008; // 8 ms linear attack ramp
+const EMDR_DUTY      = 0.96;  // pulse occupies 96% of beat interval → ~40 ms silent gap
+const EMDR_RELEASE_S = 0.050; // 50 ms linear release at end of each pulse
+
+/**
+ * Pre-compute a mono pulse buffer for the given BPM.
+ *   – 176 Hz sine carrier
+ *   – 8 ms linear attack → full sustain → 50 ms linear release
+ *   – Duration = (60/bpm) * EMDR_DUTY seconds
+ */
+function createEMDRPulseBuffer(ctx: AudioContext, bpm: number): AudioBuffer {
+  const sr         = ctx.sampleRate;
+  const pulseDur   = (60 / bpm) * EMDR_DUTY;
+  const n          = Math.floor(sr * pulseDur);
+  const buf        = ctx.createBuffer(1, n, sr);
+  const d          = buf.getChannelData(0);
+  const atkN       = Math.min(Math.floor(sr * EMDR_ATTACK_S), n);
+  const relN       = Math.min(Math.floor(sr * EMDR_RELEASE_S), n - atkN);
+  const susN       = n - atkN - relN;
+  for (let i = 0; i < n; i++) {
+    let env: number;
+    if      (i < atkN)           env = i / atkN;                            // ramp up
+    else if (i < atkN + susN)    env = 1.0;                                 // sustain
+    else                         env = 1.0 - (i - atkN - susN) / relN;     // ramp down
+    d[i] = Math.sin(2 * Math.PI * EMDR_FREQ * i / sr) * env;
+  }
+  return buf;
+}
 
 export function useAudioEngine(): AudioEngine {
   const { set, prefs, isHydrated } = usePreferences();
@@ -41,12 +67,11 @@ export function useAudioEngine(): AudioEngine {
   const oscLeftRef        = useRef<OscillatorNode | null>(null);
   const oscRightRef       = useRef<OscillatorNode | null>(null);
   const gainNodeRef       = useRef<{ left: GainNode; right: GainNode } | null>(null);
-  const mergerRef             = useRef<ChannelMergerNode | null>(null);
-  const emdrSchedulerRef      = useRef<ReturnType<typeof setInterval> | null>(null);
-  const emdrOscRef            = useRef<OscillatorNode | null>(null);
-  const emdrGainLRef          = useRef<GainNode | null>(null);
-  const emdrGainRRef          = useRef<GainNode | null>(null);
-  const emdrStartCtxTimeRef   = useRef(0);
+  const mergerRef          = useRef<ChannelMergerNode | null>(null);
+  const emdrSchedulerRef   = useRef<ReturnType<typeof setInterval> | null>(null);
+  const emdrNextTimeRef    = useRef(0);          // Web Audio ctx.currentTime of next scheduled pulse
+  const emdrSideRef        = useRef<0 | 1>(0);  // 0 = left, 1 = right
+  const emdrPulseBufferRef = useRef<AudioBuffer | null>(null);
   const startTimeRef      = useRef(0);
   const pauseTimeRef    = useRef(0);
   const isPlayingRef    = useRef(false);
@@ -71,8 +96,9 @@ export function useAudioEngine(): AudioEngine {
     const ctx = new AudioCtx();
     const analyser = ctx.createAnalyser();
     analyser.fftSize = 256;
-    audioCtxRef.current = ctx;
-    analyserRef.current = analyser;
+    audioCtxRef.current      = ctx;
+    analyserRef.current      = analyser;
+    emdrPulseBufferRef.current = null; // invalidate — new context needs a fresh buffer
     return ctx;
   }, []);
 
@@ -81,12 +107,6 @@ export function useAudioEngine(): AudioEngine {
       clearInterval(emdrSchedulerRef.current);
       emdrSchedulerRef.current = null;
     }
-    if (emdrOscRef.current) {
-      try { emdrOscRef.current.stop(); emdrOscRef.current.disconnect(); } catch { /* already stopped */ }
-      emdrOscRef.current = null;
-    }
-    emdrGainLRef.current = null;
-    emdrGainRRef.current = null;
   }, []);
 
   const stopOscillators = useCallback(() => {
@@ -215,48 +235,39 @@ export function useAudioEngine(): AudioEngine {
     const merger = mergerRef.current;
     if (!ctx || !merger) return;
 
-    // Build: single oscillator → gainL / gainR → merger (left / right channels)
-    // Gain is driven by tanh(EMDR_SHARPNESS × sin(π × rate × t)) — the same
-    // algorithm used by bilateralfocus.com.  This produces a continuous tone that
-    // alternates sharply between ears (ping-pong) rather than discrete pulses.
-    const osc = ctx.createOscillator();
-    osc.type = "sine";
-    osc.frequency.value = EMDR_TONE_HZ;
+    // Build the pulse buffer for this BPM.
+    // Each pulse: 176 Hz sine, 8 ms attack, full sustain, 50 ms release.
+    // Duration = (60/bpm) * EMDR_DUTY  (96% of beat interval → ~40 ms silent gap).
+    emdrPulseBufferRef.current = createEMDRPulseBuffer(ctx, bpm);
 
-    const gainL = ctx.createGain();
-    const gainR = ctx.createGain();
-    gainL.gain.value = EMDR_MIN_GAIN;
-    gainR.gain.value = EMDR_MIN_GAIN;
+    const interval = 60 / bpm;   // seconds between consecutive L / R pulses
+    emdrNextTimeRef.current = ctx.currentTime;
+    emdrSideRef.current     = 0; // start on left
 
-    osc.connect(gainL);
-    osc.connect(gainR);
-    gainL.connect(merger, 0, 0); // → left channel
-    gainR.connect(merger, 0, 1); // → right channel
-    osc.start();
-
-    emdrOscRef.current          = osc;
-    emdrGainLRef.current        = gainL;
-    emdrGainRRef.current        = gainR;
-    emdrStartCtxTimeRef.current = ctx.currentTime;
-
-    // rate = BPM / 60 Hz
-    // At rate r: consecutive L→R peaks are (1/r) seconds apart = (60/BPM) seconds ✓
-    const rate = bpm / 60;
-
+    // Lookahead scheduler: fires every 25 ms, schedules any pulses due within
+    // the next 100 ms using sample-accurate Web Audio timing.
     emdrSchedulerRef.current = setInterval(() => {
-      const c  = audioCtxRef.current;
-      const gL = emdrGainLRef.current;
-      const gR = emdrGainRRef.current;
-      if (!c || !gL || !gR) return;
+      const c   = audioCtxRef.current;
+      const mrg = mergerRef.current;
+      const buf = emdrPulseBufferRef.current;
+      if (!c || !mrg || !buf) return;
 
-      const elapsed  = c.currentTime - emdrStartCtxTimeRef.current;
-      const raw      = Math.sin(Math.PI * rate * elapsed);
-      const leftVal  = Math.max(EMDR_MIN_GAIN, 0.5 * (1 + Math.tanh(EMDR_SHARPNESS * raw)));
-      const rightVal = Math.max(EMDR_MIN_GAIN, 1.0 - leftVal);
-      const vol      = 0.6 * (volumeRef.current / 100) * fadeMultiplierRef.current * fadeInMultRef.current;
-      const now      = c.currentTime;
-      gL.gain.setTargetAtTime(leftVal  * vol, now, EMDR_CROSSFADE);
-      gR.gain.setTargetAtTime(rightVal * vol, now, EMDR_CROSSFADE);
+      while (emdrNextTimeRef.current < c.currentTime + 0.1) {
+        const side   = emdrSideRef.current;
+        const source = c.createBufferSource();
+        source.buffer = buf;
+
+        const g = c.createGain();
+        g.gain.value = 0.7 * (volumeRef.current / 100)
+                           * fadeMultiplierRef.current
+                           * fadeInMultRef.current;
+        source.connect(g);
+        g.connect(mrg, 0, side); // side 0 → left channel, 1 → right channel
+        source.start(emdrNextTimeRef.current);
+
+        emdrSideRef.current     = (1 - side) as 0 | 1;
+        emdrNextTimeRef.current += interval;
+      }
     }, 25);
   }, [stopEMDRScheduler]);
 
