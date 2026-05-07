@@ -20,19 +20,11 @@ export interface AudioEngine {
   setVolume: (value: number) => void;
 }
 
-function createEMDRPulseBuffer(ctx: AudioContext): AudioBuffer {
-  const sr  = ctx.sampleRate;
-  const n   = Math.floor(sr * 0.45); // 450 ms — matches measured file pulse length
-  const buf = ctx.createBuffer(1, n, sr);
-  const d   = buf.getChannelData(0);
-  const atk = Math.floor(sr * 0.015); // 15 ms linear attack (measured from files)
-  const tau = sr * 0.090;             // 90 ms exponential decay constant (measured)
-  for (let i = 0; i < n; i++) {
-    const env = i < atk ? i / atk : Math.exp(-(i - atk) / tau);
-    d[i] = Math.sin(2 * Math.PI * 176 * i / sr) * env; // 176 Hz (measured from files)
-  }
-  return buf;
-}
+// EMDR bilateral audio constants — matched to bilateralfocus.com reference implementation
+const EMDR_TONE_HZ  = 300;  // Carrier frequency (standard bilateral tone)
+const EMDR_SHARPNESS = 8;   // tanh shaping — 8 gives a sharp, clinical ping-pong alternation
+const EMDR_CROSSFADE = 0.05; // setTargetAtTime time constant (seconds) — prevents click artefacts
+const EMDR_MIN_GAIN  = 0.001; // Never allow gain to reach exactly 0
 
 export function useAudioEngine(): AudioEngine {
   const { set, prefs, isHydrated } = usePreferences();
@@ -49,11 +41,12 @@ export function useAudioEngine(): AudioEngine {
   const oscLeftRef        = useRef<OscillatorNode | null>(null);
   const oscRightRef       = useRef<OscillatorNode | null>(null);
   const gainNodeRef       = useRef<{ left: GainNode; right: GainNode } | null>(null);
-  const mergerRef         = useRef<ChannelMergerNode | null>(null);
-  const emdrSchedulerRef  = useRef<ReturnType<typeof setInterval> | null>(null);
-  const nextPulseTimeRef  = useRef(0);
-  const emdrSideRef       = useRef<0 | 1>(0);
-  const pulseBufferRef    = useRef<AudioBuffer | null>(null);
+  const mergerRef             = useRef<ChannelMergerNode | null>(null);
+  const emdrSchedulerRef      = useRef<ReturnType<typeof setInterval> | null>(null);
+  const emdrOscRef            = useRef<OscillatorNode | null>(null);
+  const emdrGainLRef          = useRef<GainNode | null>(null);
+  const emdrGainRRef          = useRef<GainNode | null>(null);
+  const emdrStartCtxTimeRef   = useRef(0);
   const startTimeRef      = useRef(0);
   const pauseTimeRef    = useRef(0);
   const isPlayingRef    = useRef(false);
@@ -80,7 +73,6 @@ export function useAudioEngine(): AudioEngine {
     analyser.fftSize = 256;
     audioCtxRef.current = ctx;
     analyserRef.current = analyser;
-    pulseBufferRef.current = null; // invalidate on new context
     return ctx;
   }, []);
 
@@ -89,6 +81,12 @@ export function useAudioEngine(): AudioEngine {
       clearInterval(emdrSchedulerRef.current);
       emdrSchedulerRef.current = null;
     }
+    if (emdrOscRef.current) {
+      try { emdrOscRef.current.stop(); emdrOscRef.current.disconnect(); } catch { /* already stopped */ }
+      emdrOscRef.current = null;
+    }
+    emdrGainLRef.current = null;
+    emdrGainRRef.current = null;
   }, []);
 
   const stopOscillators = useCallback(() => {
@@ -213,35 +211,52 @@ export function useAudioEngine(): AudioEngine {
 
   const startEMDRScheduler = useCallback((bpm: number) => {
     stopEMDRScheduler();
-    const ctx = audioCtxRef.current;
-    if (!ctx) return;
+    const ctx    = audioCtxRef.current;
+    const merger = mergerRef.current;
+    if (!ctx || !merger) return;
 
-    if (!pulseBufferRef.current) {
-      pulseBufferRef.current = createEMDRPulseBuffer(ctx);
-    }
+    // Build: single oscillator → gainL / gainR → merger (left / right channels)
+    // Gain is driven by tanh(EMDR_SHARPNESS × sin(π × rate × t)) — the same
+    // algorithm used by bilateralfocus.com.  This produces a continuous tone that
+    // alternates sharply between ears (ping-pong) rather than discrete pulses.
+    const osc = ctx.createOscillator();
+    osc.type = "sine";
+    osc.frequency.value = EMDR_TONE_HZ;
 
-    const interval = 60 / bpm;
-    nextPulseTimeRef.current = ctx.currentTime;
-    emdrSideRef.current = 0;
+    const gainL = ctx.createGain();
+    const gainR = ctx.createGain();
+    gainL.gain.value = EMDR_MIN_GAIN;
+    gainR.gain.value = EMDR_MIN_GAIN;
+
+    osc.connect(gainL);
+    osc.connect(gainR);
+    gainL.connect(merger, 0, 0); // → left channel
+    gainR.connect(merger, 0, 1); // → right channel
+    osc.start();
+
+    emdrOscRef.current          = osc;
+    emdrGainLRef.current        = gainL;
+    emdrGainRRef.current        = gainR;
+    emdrStartCtxTimeRef.current = ctx.currentTime;
+
+    // rate = BPM / 60 Hz
+    // At rate r: consecutive L→R peaks are (1/r) seconds apart = (60/BPM) seconds ✓
+    const rate = bpm / 60;
 
     emdrSchedulerRef.current = setInterval(() => {
-      const c      = audioCtxRef.current;
-      const merger = mergerRef.current;
-      const pBuf   = pulseBufferRef.current;
-      if (!c || !merger || !pBuf) return;
+      const c  = audioCtxRef.current;
+      const gL = emdrGainLRef.current;
+      const gR = emdrGainRRef.current;
+      if (!c || !gL || !gR) return;
 
-      while (nextPulseTimeRef.current < c.currentTime + 0.1) {
-        const side   = emdrSideRef.current;
-        const source = c.createBufferSource();
-        source.buffer = pBuf;
-        const g = c.createGain();
-        g.gain.value = 0.6 * (volumeRef.current / 100) * fadeMultiplierRef.current * fadeInMultRef.current;
-        source.connect(g);
-        g.connect(merger, 0, side);
-        source.start(nextPulseTimeRef.current);
-        emdrSideRef.current      = (1 - side) as 0 | 1;
-        nextPulseTimeRef.current += interval;
-      }
+      const elapsed  = c.currentTime - emdrStartCtxTimeRef.current;
+      const raw      = Math.sin(Math.PI * rate * elapsed);
+      const leftVal  = Math.max(EMDR_MIN_GAIN, 0.5 * (1 + Math.tanh(EMDR_SHARPNESS * raw)));
+      const rightVal = Math.max(EMDR_MIN_GAIN, 1.0 - leftVal);
+      const vol      = 0.6 * (volumeRef.current / 100) * fadeMultiplierRef.current * fadeInMultRef.current;
+      const now      = c.currentTime;
+      gL.gain.setTargetAtTime(leftVal  * vol, now, EMDR_CROSSFADE);
+      gR.gain.setTargetAtTime(rightVal * vol, now, EMDR_CROSSFADE);
     }, 25);
   }, [stopEMDRScheduler]);
 
