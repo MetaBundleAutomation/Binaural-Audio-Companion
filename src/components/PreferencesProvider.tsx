@@ -40,7 +40,7 @@ function validatePref<K extends keyof Preferences>(
         : undefined;
 
     case "launchScreen":
-      return (["home", "library", "lastPlayed"] as const).includes(value as never)
+      return (["home", "player"] as const).includes(value as never)
         ? value as Preferences[K]
         : undefined;
 

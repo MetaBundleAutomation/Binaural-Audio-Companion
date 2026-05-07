@@ -18,9 +18,7 @@ export default function LaunchScrollHandler() {
     if (!isHydrated || hasScrolledRef.current) return;
     hasScrolledRef.current = true;
 
-    if (prefs.launchScreen === "library" || prefs.launchScreen === "lastPlayed") {
-      // The track library is now embedded inside the player card, so both
-      // "library" and "lastPlayed" scroll to the same #player section.
+    if (prefs.launchScreen === "player") {
       setTimeout(() => {
         document.getElementById("player")?.scrollIntoView({ behavior: "smooth" });
       }, 150);

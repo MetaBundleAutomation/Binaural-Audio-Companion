@@ -13,7 +13,7 @@ export interface Preferences {
   defaultNoiseId:   string | null;
   defaultVolume:    number;          // 0–100, default 30
   defaultLoopState: boolean;
-  launchScreen:     "home" | "library" | "lastPlayed";
+  launchScreen:     "home" | "player";
   favouriteBeats:   string[];        // track names
   favouriteNoises:  string[];        // noise type strings
   brightness:         "dim" | "default" | "bright";
@@ -31,7 +31,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   defaultNoiseId:   null,
   defaultVolume:    30,
   defaultLoopState: false,
-  launchScreen:     "home",
+  launchScreen:     "home" as const,
   favouriteBeats:   [],
   favouriteNoises:  [],
   brightness:         "default",

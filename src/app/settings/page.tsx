@@ -246,16 +246,13 @@ export default function SettingsPage() {
               <Card>
                 <ControlLabel
                   label="Launch screen"
-                  description="Which screen opens when you start CRUX."
+                  description="Home stays at the top. Player scrolls straight to the audio controls."
                 />
                 <SegmentedControl
-                  options={["home", "library", "lastPlayed"] as const}
+                  options={["home", "player"] as const}
                   value={prefs.launchScreen}
                   onChange={v => set("launchScreen", v)}
-                  formatLabel={v =>
-                    v === "lastPlayed" ? "Last played"
-                    : v.charAt(0).toUpperCase() + v.slice(1)
-                  }
+                  formatLabel={v => v.charAt(0).toUpperCase() + v.slice(1)}
                 />
               </Card>
 
