@@ -65,14 +65,6 @@ export default function AromatherapyCard({ trackName }: AromatherapyCardProps) {
         </p>
       </div>
 
-      {/* Learn more link */}
-      <a
-        href="/instructions"
-        className="shrink-0 text-xs font-semibold text-[var(--primary)] hover:underline underline-offset-2 mt-0.5 whitespace-nowrap"
-        aria-label="Learn more about aromatherapy pairings"
-      >
-        Learn more
-      </a>
     </div>
   );
 }
