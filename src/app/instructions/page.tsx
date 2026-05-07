@@ -173,13 +173,13 @@ export default function Instructions() {
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
                 {[
-                  { step: "Inhale", seconds: "4 sec" },
-                  { step: "Hold",   seconds: "4 sec" },
-                  { step: "Exhale", seconds: "4 sec" },
-                  { step: "Hold",   seconds: "4 sec" },
-                ].map(({ step, seconds }) => (
+                  { id: "inhale",   step: "Inhale", seconds: "4 sec" },
+                  { id: "hold-in",  step: "Hold",   seconds: "4 sec" },
+                  { id: "exhale",   step: "Exhale", seconds: "4 sec" },
+                  { id: "hold-out", step: "Hold",   seconds: "4 sec" },
+                ].map(({ id, step, seconds }) => (
                   <div
-                    key={step + seconds}
+                    key={id}
                     className="rounded-xl p-4 text-center border border-[var(--border-color)] bg-[var(--background-light)]"
                   >
                     <p className="font-bold text-[var(--text-primary)] text-[15px]">{step}</p>
