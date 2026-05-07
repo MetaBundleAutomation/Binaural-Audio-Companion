@@ -37,6 +37,8 @@ interface AudioCarouselProps {
   onSelect:     (index: number) => void;
   /** When true, renders compactly inside the player card with auto-load on browse */
   embedded?:    boolean;
+  /** Called whenever the centred (browsed) track changes — used by AromatherapyCard */
+  onBrowse?:    (trackName: string) => void;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -90,6 +92,7 @@ export default function AudioCarousel({
   isPlaying,
   onSelect,
   embedded = false,
+  onBrowse,
 }: AudioCarouselProps) {
   const { prefs, toggleFavouriteBeat } = usePreferences();
 
@@ -119,8 +122,9 @@ export default function AudioCarousel({
 
   // Sync browse position when the audio engine advances to a new track
   useEffect(() => {
-    browseTrackRef.current = tracks[currentIndex]?.name ?? tracks[0].name;
-    forceUpdate(n => n + 1);
+    const name = tracks[currentIndex]?.name ?? tracks[0].name;
+    setBrowseTrack(name);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
 
   const touchStartX  = useRef(0);
@@ -128,14 +132,20 @@ export default function AudioCarousel({
   const pointerDownX = useRef(0);
   const pointerDownY = useRef(0);
 
+  /** Central helper — updates browse position and notifies parent. */
+  function setBrowseTrack(name: string) {
+    browseTrackRef.current = name;
+    forceUpdate(n => n + 1);
+    onBrowse?.(name);
+  }
+
   // Scroll carousel left/right.
   // In embedded mode, browsing immediately loads the centred track.
   function go(delta: number) {
     const len      = displayTracks.length;
     const newIdx   = (browseIndex + delta + len) % len;
     const newTrack = displayTracks[newIdx];
-    browseTrackRef.current = newTrack.name;
-    forceUpdate(n => n + 1);
+    setBrowseTrack(newTrack.name);
     if (embedded) onSelect(tracks.indexOf(newTrack));
   }
 
@@ -187,8 +197,7 @@ export default function AudioCarousel({
               if (!isATap(e)) return;
               if (embedded) {
                 // Any tap: centre the card and immediately load it
-                browseTrackRef.current = track.name;
-                forceUpdate(n => n + 1);
+                setBrowseTrack(track.name);
                 onSelect(tracks.indexOf(track));
               } else {
                 if (isHero) {
@@ -196,8 +205,7 @@ export default function AudioCarousel({
                   onSelect(tracks.indexOf(track));
                 } else {
                   // Tapping a side card centres it (no load yet)
-                  browseTrackRef.current = track.name;
-                  forceUpdate(n => n + 1);
+                  setBrowseTrack(track.name);
                 }
               }
             }}
@@ -339,8 +347,7 @@ export default function AudioCarousel({
         <button
           key={t.name}
           onClick={() => {
-            browseTrackRef.current = t.name;
-            forceUpdate(n => n + 1);
+            setBrowseTrack(t.name);
             if (embedded) onSelect(tracks.indexOf(t));
           }}
           className="rounded-full transition-all duration-300 cursor-pointer"

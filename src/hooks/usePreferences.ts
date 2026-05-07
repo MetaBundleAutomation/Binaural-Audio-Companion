@@ -16,7 +16,8 @@ export interface Preferences {
   launchScreen:     "home" | "library" | "lastPlayed";
   favouriteBeats:   string[];        // track names
   favouriteNoises:  string[];        // noise type strings
-  brightness:       "dim" | "default" | "bright";
+  brightness:         "dim" | "default" | "bright";
+  showAromatherapy:   boolean;
 }
 
 // ─── Defaults ─────────────────────────────────────────────────────────────────
@@ -33,7 +34,8 @@ export const DEFAULT_PREFERENCES: Preferences = {
   launchScreen:     "home",
   favouriteBeats:   [],
   favouriteNoises:  [],
-  brightness:       "default",
+  brightness:         "default",
+  showAromatherapy:   true,
 };
 
 // ─── localStorage key map ─────────────────────────────────────────────────────
@@ -50,7 +52,8 @@ export const PREF_KEYS: Record<keyof Preferences, string> = {
   launchScreen:     "crux:launchScreen",
   favouriteBeats:   "crux:favouriteBeats",
   favouriteNoises:  "crux:favouriteNoises",
-  brightness:       "crux:brightness",
+  brightness:         "crux:brightness",
+  showAromatherapy:   "crux:showAromatherapy",
 };
 
 // Keys cleared by "Reset to app defaults" (auto-saved "last*" are intentionally excluded)
@@ -61,6 +64,7 @@ export const RESETTABLE_KEYS: (keyof Preferences)[] = [
   "defaultLoopState",
   "launchScreen",
   "brightness",
+  "showAromatherapy",
 ];
 
 // ─── Context ──────────────────────────────────────────────────────────────────

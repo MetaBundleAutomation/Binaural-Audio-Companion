@@ -273,6 +273,46 @@ export default function SettingsPage() {
 
           <hr className="border-[var(--border-color)] mb-10" />
 
+          {/* ── Personalisation ────────────────────────────────────────────── */}
+          <div className="mb-10">
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-1">Personalisation</h2>
+            <p className="text-sm text-[var(--text-secondary)] mb-6">
+              Tailor the CRUX experience to how you like it.
+            </p>
+
+            <div className="space-y-4">
+              <Card>
+                <div className="flex items-center justify-between gap-6">
+                  <div>
+                    <p className="font-semibold text-[var(--text-primary)] mb-1">
+                      Aromatherapy suggestions
+                    </p>
+                    <p className="text-sm text-[var(--text-secondary)]">
+                      Show an essential oil pairing recommendation above the player.
+                    </p>
+                  </div>
+                  <button
+                    role="switch"
+                    aria-checked={prefs.showAromatherapy}
+                    aria-label="Show aromatherapy suggestions"
+                    onClick={() => set("showAromatherapy", !prefs.showAromatherapy)}
+                    className={`relative shrink-0 w-12 h-6 rounded-full border-0 cursor-pointer transition-colors ${
+                      prefs.showAromatherapy ? "bg-[var(--primary)]" : "bg-[var(--border-color)]"
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${
+                        prefs.showAromatherapy ? "translate-x-6" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
+                </div>
+              </Card>
+            </div>
+          </div>
+
+          <hr className="border-[var(--border-color)] mb-10" />
+
           {/* ── Brightness ─────────────────────────────────────────────────── */}
           <div>
             <h2 className="text-xl font-bold text-[var(--text-primary)] mb-1">Brightness</h2>

@@ -55,6 +55,9 @@ function validatePref<K extends keyof Preferences>(
         ? value as Preferences[K]
         : undefined;
 
+    case "showAromatherapy":
+      return typeof value === "boolean" ? value as Preferences[K] : undefined;
+
     default:
       return undefined;
   }

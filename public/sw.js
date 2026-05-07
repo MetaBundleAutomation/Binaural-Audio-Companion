@@ -4,7 +4,7 @@
 //   navigation requests    → network-first, cache fallback (works offline)
 //   everything else        → network-first, cache fallback
 
-const CACHE = "crux-v4";
+const CACHE = "crux-v5";
 const PRECACHE = ["/", "/about"];
 
 // ── Install: pre-cache the app shell ──────────────────────────────────────────

@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { tracks, hexToRgbTriplet } from "@/data/tracks";
 import { useAudioEngine } from "@/hooks/useAudioEngine";
 import { usePreferences } from "@/hooks/usePreferences";
 import AudioCarousel from "./AudioCarousel";
+import AromatherapyCard from "./AromatherapyCard";
 import BoxBreathing from "./BoxBreathing";
 import NoiseGenerator from "./NoiseGenerator";
 import VolumeWarningModal from "./VolumeWarningModal";
@@ -23,6 +24,14 @@ export default function Player() {
   const track          = tracks[engine.currentTrackIndex];
   const { prefs, set } = usePreferences();
 
+  // Track which card is centred in the carousel so AromatherapyCard updates live
+  const [browseTrackName, setBrowseTrackName] = useState(
+    tracks[engine.currentTrackIndex]?.name ?? tracks[0].name
+  );
+  useEffect(() => {
+    setBrowseTrackName(tracks[engine.currentTrackIndex]?.name ?? tracks[0].name);
+  }, [engine.currentTrackIndex]);
+
   function handleSetDefault() {
     const alreadyDefault =
       prefs.defaultBeatId    === track.name &&
@@ -39,6 +48,11 @@ export default function Player() {
     <>
       <VolumeWarningModal />
 
+      {/* ── Aromatherapy pairing card ────────────────────────────────────────── */}
+      {prefs.showAromatherapy && (
+        <AromatherapyCard trackName={browseTrackName} />
+      )}
+
       {/* ── Player ──────────────────────────────────────────────────────────── */}
       <section id="player" className="my-16">
         <div
@@ -54,6 +68,7 @@ export default function Player() {
             currentIndex={engine.currentTrackIndex}
             isPlaying={engine.isPlaying}
             onSelect={(idx) => engine.loadTrack(idx)}
+            onBrowse={setBrowseTrackName}
           />
 
           {/* Controls */}
