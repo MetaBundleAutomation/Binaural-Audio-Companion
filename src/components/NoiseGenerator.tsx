@@ -5,7 +5,7 @@ import { usePreferences } from "@/hooks/usePreferences";
 
 // ─── Types & Data ─────────────────────────────────────────────────────────────
 
-type NoiseType = "white" | "pink" | "brown";
+type NoiseType = "white" | "pink" | "brown" | "rain";
 
 const NOISE_INFO: Record<
   NoiseType,
@@ -32,9 +32,16 @@ const NOISE_INFO: Record<
       "A heavy bass rumble — like distant thunder or ocean swells. Brown noise carries the deepest tone of all three and is preferred by many veterans for reducing hypervigilance at night.",
     color: "#3A8FA3",
   },
+  rain: {
+    label: "Rain",
+    tagline: "Soft. Natural. Immersive.",
+    description:
+      "Real recorded rainfall — slow, steady, and free of thunder. The most natural of the four options. Rain grounds the mind through familiarity, masking distractions without drawing attention to itself.",
+    color: "#5B9CB8",
+  },
 };
 
-const NOISE_TYPES: NoiseType[] = ["white", "pink", "brown"];
+const NOISE_TYPES: NoiseType[] = ["white", "pink", "brown", "rain"];
 
 // ─── Audio Generation ─────────────────────────────────────────────────────────
 
@@ -76,6 +83,16 @@ function fillBrownNoise(buffer: AudioBuffer) {
 // ─── Inline wave icons ─────────────────────────────────────────────────────────
 
 function NoiseIcon({ type, size }: { type: NoiseType; size: number }) {
+  if (type === "rain") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" />
+        <line x1="8"  y1="19" x2="6"  y2="23" />
+        <line x1="12" y1="19" x2="10" y2="23" />
+        <line x1="16" y1="19" x2="14" y2="23" />
+      </svg>
+    );
+  }
   if (type === "white") {
     return (
       <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden>
@@ -137,15 +154,19 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
   const [volume, setVolumeState] = useState(3);
   const [autoSync, setAutoSync] = useState(false);
 
-  const audioCtxRef    = useRef<AudioContext | null>(null);
-  const sourceRef      = useRef<AudioBufferSourceNode | null>(null);
-  const gainRef        = useRef<GainNode | null>(null);
-  const volumeRef      = useRef(3);
-  const isPlayingRef   = useRef(false);
-  const noiseRef       = useRef<NoiseType>("pink");
+  const audioCtxRef      = useRef<AudioContext | null>(null);
+  const sourceRef        = useRef<AudioBufferSourceNode | null>(null);
+  const gainRef          = useRef<GainNode | null>(null);
+  const volumeRef        = useRef(3);
+  const isPlayingRef     = useRef(false);
+  const noiseRef         = useRef<NoiseType>("pink");
   // Fade-in state
   const fadeInActiveRef  = useRef(false);
   const fadeIntervalRef  = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Rain: cached decoded buffer + request-ID for async cancellation
+  const rainBufferRef    = useRef<AudioBuffer | null>(null);
+  const playRequestIdRef = useRef(0);
+  const [isLoadingRain, setIsLoadingRain] = useState(false);
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -169,6 +190,8 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
   }
 
   function stopNoise() {
+    playRequestIdRef.current++;          // invalidate any pending async startNoise
+    setIsLoadingRain(false);
     clearFadeInterval();
     if (sourceRef.current) {
       try { sourceRef.current.stop(); sourceRef.current.disconnect(); } catch { /* already stopped */ }
@@ -179,16 +202,40 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     setIsPlaying(false);
   }
 
-  function startNoise(type: NoiseType, vol: number) {
+  async function startNoise(type: NoiseType, vol: number) {
+    const requestId = ++playRequestIdRef.current;
     const ctx = getCtx();
     if (ctx.state === "suspended") ctx.resume();
 
-    // 3-second looping buffer
-    const bufLen = ctx.sampleRate * 3;
-    const buf    = ctx.createBuffer(1, bufLen, ctx.sampleRate);
-    if (type === "white")      fillWhiteNoise(buf);
-    else if (type === "pink")  fillPinkNoise(buf);
-    else                       fillBrownNoise(buf);
+    let buf: AudioBuffer;
+
+    if (type === "rain") {
+      // Use cached buffer if available, otherwise fetch and decode once
+      if (!rainBufferRef.current) {
+        setIsLoadingRain(true);
+        try {
+          const res         = await fetch("/audio/rain.mp3");
+          const arrayBuffer = await res.arrayBuffer();
+          rainBufferRef.current = await ctx.decodeAudioData(arrayBuffer);
+        } catch {
+          if (requestId === playRequestIdRef.current) setIsLoadingRain(false);
+          return;
+        }
+        if (requestId !== playRequestIdRef.current) return; // user stopped/switched
+        setIsLoadingRain(false);
+      }
+      buf = rainBufferRef.current;
+    } else {
+      // Synthesised noise — 3-second looping buffer
+      const bufLen = ctx.sampleRate * 3;
+      buf          = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+      if (type === "white")     fillWhiteNoise(buf);
+      else if (type === "pink") fillPinkNoise(buf);
+      else                      fillBrownNoise(buf);
+    }
+
+    // Final guard after any awaits
+    if (requestId !== playRequestIdRef.current) return;
 
     const source = ctx.createBufferSource();
     source.buffer = buf;
@@ -220,7 +267,6 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
       }
       const elapsed = (Date.now() - startTime) / 1000; // seconds
       if (elapsed >= 3) {
-        // Fade-in complete — set target volume and stop polling
         gainRef.current.gain.setValueAtTime(
           volumeRef.current / 100,
           audioCtxRef.current.currentTime,
@@ -320,7 +366,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
         </p>
 
         {/* Noise Type Selection */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {displayNoiseTypes.map((type) => {
             const n = NOISE_INFO[type];
             const isSelected = selectedNoise === type;
@@ -391,14 +437,19 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
           <div className="flex justify-center">
             <button
               onClick={handleTogglePlay}
-              className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-white"
+              disabled={isLoadingRain}
+              className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-white disabled:opacity-70 disabled:cursor-wait"
               style={{
                 background: "var(--primary)",
                 boxShadow: "0 8px 24px rgba(43, 107, 127, 0.4)",
               }}
-              aria-label={isPlaying ? "Stop noise" : "Play noise"}
+              aria-label={isLoadingRain ? "Loading rain audio…" : isPlaying ? "Stop noise" : "Play noise"}
             >
-              {isPlaying ? (
+              {isLoadingRain ? (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-7 h-7 animate-spin">
+                  <path d="M12 2a10 10 0 0 1 10 10" />
+                </svg>
+              ) : isPlaying ? (
                 <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
                   <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
                 </svg>
