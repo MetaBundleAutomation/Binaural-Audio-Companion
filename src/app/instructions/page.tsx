@@ -75,6 +75,18 @@ export default function Instructions() {
                   <strong className="text-[var(--text-primary)]">Anxiety (8 Hz Alpha)</strong> —
                   Reducing acute stress and quieting an overactive nervous system.
                 </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">EMDR 50 (50 BPM Bilateral)</strong> —
+                  Slow, grounding bilateral stimulation for deep trauma processing and emotional integration.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">EMDR 60 (60 BPM Bilateral)</strong> —
+                  Standard-pace bilateral stimulation for EMDR-style desensitisation and memory reconsolidation.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">EMDR 70 (70 BPM Bilateral)</strong> —
+                  Faster bilateral stimulation for active processing sessions that benefit from a more energised rhythm.
+                </li>
               </ul>
             </div>
 
