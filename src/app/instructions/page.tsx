@@ -207,6 +207,47 @@ export default function Instructions() {
 
             <hr className="border-[var(--border-color)]" />
 
+            {/* Aromatherapy */}
+            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🌿 Aromatherapy Pairing</h2>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
+                Above the player you&apos;ll see an <strong className="text-[var(--text-primary)]">Aromatherapy Pairing</strong> card
+                that updates as you browse tracks. Each suggestion pairs a specific essential oil with the session you&apos;re about
+                to play — certain scents have well-documented effects on alertness, calm, and sleep that complement the audio.
+                It&apos;s entirely optional; the audio works perfectly without it.
+              </p>
+
+              <ul className="space-y-4 text-[var(--text-secondary)] leading-relaxed mb-4">
+                <li>
+                  <strong className="text-[var(--text-primary)]">Electric diffuser.</strong>{" "}
+                  Add two or three drops of the recommended oil to your diffuser and switch it on
+                  two to three minutes before pressing play. This gives the scent time to spread
+                  through the room so it&apos;s already present when your session starts.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Candle (tea-light) diffuser.</strong>{" "}
+                  Light the tea-light and add two to three drops of oil to the water in the dish.
+                  Allow three to five minutes for the heat to release the scent before starting
+                  your session. Never leave a candle diffuser unattended, and keep it away from
+                  anything flammable.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">No diffuser.</strong>{" "}
+                  Place one drop on your wrists or the back of your hands, rub together gently,
+                  and cup your hands over your nose for a few slow breaths before pressing play.
+                  Always use a carrier oil (such as coconut or jojoba) if applying directly to skin,
+                  and avoid contact with eyes.
+                </li>
+              </ul>
+
+              <p className="text-[var(--text-secondary)] text-[14px] leading-relaxed">
+                The pairing card can be turned off at any time in{" "}
+                <strong className="text-[var(--text-primary)]">Settings → Personalisation → Aromatherapy suggestions</strong>.
+              </p>
+            </div>
+
+            <hr className="border-[var(--border-color)]" />
+
             {/* Combining Sessions */}
             <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">✨ Combining Sessions for Deeper Relaxation</h2>
