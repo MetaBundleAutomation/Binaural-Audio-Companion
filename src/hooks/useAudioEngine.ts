@@ -21,17 +21,15 @@ export interface AudioEngine {
 }
 
 function createEMDRPulseBuffer(ctx: AudioContext): AudioBuffer {
-  const sr = ctx.sampleRate;
-  const n  = Math.floor(sr * 0.1); // 100 ms
+  const sr  = ctx.sampleRate;
+  const n   = Math.floor(sr * 0.45); // 450 ms — matches measured file pulse length
   const buf = ctx.createBuffer(1, n, sr);
   const d   = buf.getChannelData(0);
-  const atk = Math.floor(sr * 0.005);
-  const rel = Math.floor(sr * 0.005);
+  const atk = Math.floor(sr * 0.015); // 15 ms linear attack (measured from files)
+  const tau = sr * 0.090;             // 90 ms exponential decay constant (measured)
   for (let i = 0; i < n; i++) {
-    let env = 1;
-    if (i < atk) env = i / atk;
-    else if (i >= n - rel) env = (n - i) / rel;
-    d[i] = Math.sin(2 * Math.PI * 250 * i / sr) * env * 0.4;
+    const env = i < atk ? i / atk : Math.exp(-(i - atk) / tau);
+    d[i] = Math.sin(2 * Math.PI * 176 * i / sr) * env; // 176 Hz (measured from files)
   }
   return buf;
 }
@@ -150,7 +148,8 @@ export function useAudioEngine(): AudioEngine {
         needsFadeInRef.current = false;
       }
       fadeInMultRef.current = fadeInMult;
-      if (gainNodeRef.current) {
+      // EMDR tracks: oscillators are silent — only update gain for non-EMDR tracks
+      if (gainNodeRef.current && !tracks[currentTrackRef.current].emdrBpm) {
         const vol  = volumeRef.current / 100;
         const gain = 0.25 * vol * fadeMultiplierRef.current * fadeInMult;
         gainNodeRef.current.left.gain.setValueAtTime(gain, ctx.currentTime);
@@ -186,7 +185,8 @@ export function useAudioEngine(): AudioEngine {
           const t        = clamped - fadeStart;                // 0 → fadeOutDuration
           const fadeMult = Math.pow(0.001, t / fadeOutDuration);
           fadeMultiplierRef.current = fadeMult;
-          if (gainNodeRef.current) {
+          // EMDR tracks: oscillators are silent — fade-out is applied via pulse gain
+          if (gainNodeRef.current && !tracks[currentTrackRef.current].emdrBpm) {
             const vol  = volumeRef.current / 100;
             // fadeInMult will be 1 by the time fade-out starts (3s vs 10min)
             const gain = 0.25 * vol * fadeMult * fadeInMultRef.current;
@@ -235,7 +235,7 @@ export function useAudioEngine(): AudioEngine {
         const source = c.createBufferSource();
         source.buffer = pBuf;
         const g = c.createGain();
-        g.gain.value = (volumeRef.current / 100) * fadeMultiplierRef.current;
+        g.gain.value = 0.6 * (volumeRef.current / 100) * fadeMultiplierRef.current * fadeInMultRef.current;
         source.connect(g);
         g.connect(merger, 0, side);
         source.start(nextPulseTimeRef.current);
@@ -273,7 +273,9 @@ export function useAudioEngine(): AudioEngine {
     // Fade-in: every playback (including resume) starts at near-silence.
     needsFadeInRef.current = true;
     fadeInMultRef.current  = 0.001;
-    const initialGain = 0.25 * vol * fadeMult * 0.001;
+    // EMDR tracks: oscillators are silenced — only the pulse scheduler produces audio
+    const isEMDR      = !!track.emdrBpm;
+    const initialGain = isEMDR ? 0 : 0.25 * vol * fadeMult * 0.001;
 
     const merger  = ctx.createChannelMerger(2);
     mergerRef.current = merger;
@@ -389,7 +391,8 @@ export function useAudioEngine(): AudioEngine {
       // Cancel any in-progress logarithmic fade and restore the gain to the
       // user's chosen volume immediately (respecting current fade-in mult).
       fadeMultiplierRef.current = 1;
-      if (gainNodeRef.current && audioCtxRef.current) {
+      // EMDR tracks: oscillators are silent — skip gain restoration
+      if (gainNodeRef.current && audioCtxRef.current && !tracks[currentTrackRef.current].emdrBpm) {
         const vol  = volumeRef.current / 100;
         const gain = 0.25 * vol * 1 * fadeInMultRef.current;
         const now  = audioCtxRef.current.currentTime;
@@ -462,7 +465,8 @@ export function useAudioEngine(): AudioEngine {
     // Debounce: don't write to localStorage on every pixel of a slider drag
     if (volumeDebounceRef.current) clearTimeout(volumeDebounceRef.current);
     volumeDebounceRef.current = setTimeout(() => { set("lastVolume", value); }, 300);
-    if (gainNodeRef.current && audioCtxRef.current) {
+    // EMDR tracks: oscillators are silent — don't restore their gain on volume change
+    if (gainNodeRef.current && audioCtxRef.current && !tracks[currentTrackRef.current].emdrBpm) {
       const now  = audioCtxRef.current.currentTime;
       const vol  = value / 100;
       // Respect both the fade-out and fade-in multipliers so a volume change

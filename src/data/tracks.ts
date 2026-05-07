@@ -96,35 +96,35 @@ export const tracks: Track[] = [
   {
     name: "EMDR 50",
     description:
-      "10 Minutes of 6 Hz Theta binaural beat with 50 BPM bilateral pulse for trauma processing and emotional integration — fades gently over the final 2 minutes",
-    duration: "10:00",
+      "5 Minutes of 50 BPM bilateral tones alternating left and right for slow, deep trauma processing and emotional integration — fades gently over the final minute",
+    duration: "5:00",
     binauralFreq: 6,
     emdrBpm: 50,
     icon: "emdr",
     color: "#2D6B7A",
-    fadeOutDuration: 120,
+    fadeOutDuration: 60,
   },
   {
     name: "EMDR 60",
     description:
-      "10 Minutes of 6 Hz Theta binaural beat with 60 BPM bilateral pulse for eye movement desensitisation and memory reconsolidation — fades gently over the final 2 minutes",
-    duration: "10:00",
+      "5 Minutes of 60 BPM bilateral tones alternating left and right for standard eye movement desensitisation and memory reconsolidation — fades gently over the final minute",
+    duration: "5:00",
     binauralFreq: 6,
     emdrBpm: 60,
     icon: "emdr",
     color: "#3D5A8B",
-    fadeOutDuration: 120,
+    fadeOutDuration: 60,
   },
   {
     name: "EMDR 70",
     description:
-      "10 Minutes of 6 Hz Theta binaural beat with 70 BPM bilateral pulse for focused bilateral stimulation and emotional processing — fades gently over the final 2 minutes",
-    duration: "10:00",
+      "5 Minutes of 70 BPM bilateral tones alternating left and right for active bilateral stimulation and focused emotional processing — fades gently over the final minute",
+    duration: "5:00",
     binauralFreq: 6,
     emdrBpm: 70,
     icon: "emdr",
     color: "#5A3D8B",
-    fadeOutDuration: 120,
+    fadeOutDuration: 60,
   },
 ];
 
