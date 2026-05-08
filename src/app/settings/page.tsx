@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+import Link from "next/link";
 import { tracks } from "@/data/tracks";
 import { usePreferences } from "@/hooks/usePreferences";
 import type { Preferences } from "@/hooks/usePreferences";
@@ -408,6 +409,16 @@ export default function SettingsPage() {
               </Card>
 
             </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <Link
+              href="/"
+              className="inline-block px-8 py-3 rounded-lg text-base font-semibold text-white transition-all duration-300 hover:-translate-y-0.5"
+              style={{ background: "var(--primary)", boxShadow: "var(--shadow)" }}
+            >
+              Start Listening
+            </Link>
           </div>
 
         </div>
