@@ -14,7 +14,28 @@ const NOISE_OPTIONS: { id: string; label: string }[] = [
   { id: "rain",  label: "Rain"        },
 ];
 
+// ─── Theme metadata ───────────────────────────────────────────────────────────
+
+const THEMES: {
+  id:      Preferences["theme"];
+  label:   string;
+  swatch:  string;   // accent colour for the preview dot
+  bg:      string;   // background colour for the preview dot ring
+}[] = [
+  { id: "airforce", label: "Air Force", swatch: "#5592E8", bg: "#0D1830" },
+  { id: "army",     label: "Army",      swatch: "#7A8C38", bg: "#131610" },
+  { id: "midnight", label: "Midnight",  swatch: "#3A7080", bg: "#08090C" },
+  { id: "navy",     label: "Navy",      swatch: "#2878A8", bg: "#0E1822" },
+];
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function applyTheme(theme: Preferences["theme"]) {
+  document.documentElement.classList.remove("theme-army", "theme-airforce", "theme-midnight");
+  if (theme !== "navy") {
+    document.documentElement.classList.add(`theme-${theme}`);
+  }
+}
 
 function applyBrightness(level: Preferences["brightness"]) {
   document.documentElement.classList.remove("brightness-dim", "brightness-bright");
@@ -86,10 +107,17 @@ function SegmentedControl<T extends string>({
 export default function SettingsPage() {
   const { prefs, set, resetDefaults, isHydrated } = usePreferences();
 
-  // Keep <html> class in sync with stored brightness while on this page
+  // Keep <html> classes in sync with stored appearance while on this page
   useEffect(() => {
-    if (isHydrated) applyBrightness(prefs.brightness);
-  }, [prefs.brightness, isHydrated]);
+    if (!isHydrated) return;
+    applyTheme(prefs.theme);
+    applyBrightness(prefs.brightness);
+  }, [prefs.theme, prefs.brightness, isHydrated]);
+
+  function handleTheme(theme: Preferences["theme"]) {
+    set("theme", theme);
+    applyTheme(theme);
+  }
 
   function handleBrightness(level: Preferences["brightness"]) {
     set("brightness", level);
@@ -115,7 +143,7 @@ export default function SettingsPage() {
             <div className="h-10 w-40 bg-[var(--border-color)] rounded-lg animate-pulse mb-4 mx-auto" />
             <div className="h-5 w-72 bg-[var(--border-color)] rounded animate-pulse mb-12 mx-auto" />
             <div className="space-y-4">
-              {[1, 2, 3, 4, 5, 6].map(i => (
+              {[1, 2, 3, 4, 5, 6, 7].map(i => (
                 <div
                   key={i}
                   className="h-24 bg-[var(--background-card)] rounded-2xl border border-[var(--border-color)] animate-pulse"
@@ -311,20 +339,75 @@ export default function SettingsPage() {
 
           <hr className="border-[var(--border-color)] mb-10" />
 
-          {/* ── Brightness ─────────────────────────────────────────────────── */}
+          {/* ── Appearance ─────────────────────────────────────────────────── */}
           <div>
-            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-1">Brightness</h2>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-1">Appearance</h2>
             <p className="text-sm text-[var(--text-secondary)] mb-6">
-              Adjust screen brightness to suit your environment or time of day.
+              Choose a colour theme and adjust brightness to suit your environment.
             </p>
-            <Card>
-              <SegmentedControl
-                options={["dim", "default", "bright"] as const}
-                value={prefs.brightness}
-                onChange={handleBrightness}
-                formatLabel={v => v.charAt(0).toUpperCase() + v.slice(1)}
-              />
-            </Card>
+
+            <div className="space-y-4">
+
+              {/* Theme picker */}
+              <Card>
+                <ControlLabel
+                  label="Theme"
+                  description="Sets the overall colour of the app."
+                />
+                <div className="grid grid-cols-2 gap-3">
+                  {THEMES.map(t => {
+                    const isSelected = prefs.theme === t.id;
+                    return (
+                      <button
+                        key={t.id}
+                        onClick={() => handleTheme(t.id)}
+                        aria-pressed={isSelected}
+                        className="flex items-center gap-3 rounded-xl px-4 py-3 text-left transition-all cursor-pointer"
+                        style={isSelected ? {
+                          background:  "var(--primary)",
+                          color:       "white",
+                          boxShadow:   "0 4px 12px rgba(0,0,0,0.3)",
+                        } : {
+                          background:  "var(--background-light)",
+                          color:       "var(--text-secondary)",
+                          border:      "1px solid var(--border-color)",
+                        }}
+                      >
+                        {/* Swatch — two-tone circle showing bg + accent */}
+                        <span
+                          className="shrink-0 w-7 h-7 rounded-full border-2 flex items-center justify-center"
+                          style={{
+                            background:   t.bg,
+                            borderColor:  isSelected ? "rgba(255,255,255,0.5)" : t.swatch,
+                          }}
+                        >
+                          <span
+                            className="w-3 h-3 rounded-full"
+                            style={{ background: t.swatch }}
+                          />
+                        </span>
+                        <span className="text-[13px] font-semibold">{t.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </Card>
+
+              {/* Brightness */}
+              <Card>
+                <ControlLabel
+                  label="Brightness"
+                  description="Adjust to suit your environment or time of day."
+                />
+                <SegmentedControl
+                  options={["dim", "default", "bright"] as const}
+                  value={prefs.brightness}
+                  onChange={handleBrightness}
+                  formatLabel={v => v.charAt(0).toUpperCase() + v.slice(1)}
+                />
+              </Card>
+
+            </div>
           </div>
 
         </div>

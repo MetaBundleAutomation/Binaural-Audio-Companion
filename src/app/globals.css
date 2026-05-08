@@ -10,35 +10,133 @@
   --color-accent: #4A5568;
 }
 
+/* ── Navy (default — Royal Australian Navy inspired) ─────────────────────── */
+
 :root {
-  color-scheme: dark;
-  --primary: #3A8FA3;
-  --primary-dark: #2B6B7F;
-  --primary-light: #4BA8BD;
-  --secondary: #7A8B9A;
-  --accent: #5A6B7A;
-  --background: #151A1E;
-  --background-light: #1C2228;
-  --background-card: #222A32;
-  --text-primary: #E8ECF0;
-  --text-secondary: #8C9BAA;
-  --border-color: #2D3748;
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.4);
+  color-scheme: only dark;
+  --primary:          #2878A8;
+  --primary-dark:     #1A5C88;
+  --primary-light:    #3A98C8;
+  --secondary:        #7A8B9A;
+  --accent:           #3A5A78;
+  --background:       #0E1822;
+  --background-light: #152030;
+  --background-card:  #1C2B3E;
+  --text-primary:     #E8ECF0;
+  --text-secondary:   #8C9BAA;
+  --border-color:     #243555;
+  --shadow:    0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
-
-/* ── Brightness overrides ──────────────────────────────────────────────────── */
-/* Applied as a class on <html> by BrightnessSync. "default" = no extra class. */
-
 html.brightness-dim {
-  --background:       #0D1014;
-  --background-light: #121619;
-  --background-card:  #181E24;
+  --background:       #060C14;
+  --background-light: #0A1220;
+  --background-card:  #101A2C;
+  --text-secondary:   #6A7A8A;
+  --border-color:     #182840;
 }
 html.brightness-bright {
-  --background:       #1E2830;
-  --background-light: #243040;
-  --background-card:  #2A3848;
+  --background:       #1C2E42;
+  --background-light: #263A52;
+  --background-card:  #304862;
+  --text-secondary:   #AABACB;
+  --border-color:     #3A5478;
+}
+
+/* ── Army (Australian Army inspired — olive / earth) ─────────────────────── */
+
+html.theme-army {
+  --primary:          #7A8C38;
+  --primary-dark:     #5C6A28;
+  --primary-light:    #9AAE50;
+  --secondary:        #8A8E7A;
+  --accent:           #4A5030;
+  --background:       #131610;
+  --background-light: #1A1E14;
+  --background-card:  #22261C;
+  --text-primary:     #E8ECE0;
+  --text-secondary:   #94987A;
+  --border-color:     #30351E;
+  --shadow:    0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+html.theme-army.brightness-dim {
+  --background:       #080B06;
+  --background-light: #0C1008;
+  --background-card:  #141810;
+  --text-secondary:   #707460;
+  --border-color:     #1E2214;
+}
+html.theme-army.brightness-bright {
+  --background:       #252A1A;
+  --background-light: #2E3422;
+  --background-card:  #383E2C;
+  --text-secondary:   #B2B698;
+  --border-color:     #484E30;
+}
+
+/* ── Air Force (RAAF inspired — bright cobalt / slate) ───────────────────── */
+
+html.theme-airforce {
+  --primary:          #5592E8;
+  --primary-dark:     #3570C8;
+  --primary-light:    #75ACFC;
+  --secondary:        #7888B0;
+  --accent:           #2A4480;
+  --background:       #0D1830;
+  --background-light: #162438;
+  --background-card:  #1E2E50;
+  --text-primary:     #ECF2FF;
+  --text-secondary:   #8898C8;
+  --border-color:     #2C4888;
+  --shadow:    0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+html.theme-airforce.brightness-dim {
+  --background:       #070C18;
+  --background-light: #0E1624;
+  --background-card:  #141E34;
+  --text-secondary:   #667098;
+  --border-color:     #1C306A;
+}
+html.theme-airforce.brightness-bright {
+  --background:       #182846;
+  --background-light: #223454;
+  --background-card:  #2C4268;
+  --text-secondary:   #A0B2D4;
+  --border-color:     #3C5898;
+}
+
+/* ── Midnight (ultra dark — branch-neutral) ──────────────────────────────── */
+
+html.theme-midnight {
+  --primary:          #3A7080;
+  --primary-dark:     #285060;
+  --primary-light:    #508898;
+  --secondary:        #6A7A88;
+  --accent:           #283540;
+  --background:       #08090C;
+  --background-light: #0D1318;
+  --background-card:  #12181E;
+  --text-primary:     #D8DCE0;
+  --text-secondary:   #6A7A88;
+  --border-color:     #1A2530;
+  --shadow:    0 10px 30px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+html.theme-midnight.brightness-dim {
+  --background:       #040508;
+  --background-light: #07090E;
+  --background-card:  #0B0F14;
+  --text-secondary:   #566472;
+  --border-color:     #0E1820;
+}
+html.theme-midnight.brightness-bright {
+  --background:       #151C24;
+  --background-light: #1E2830;
+  --background-card:  #263240;
+  --text-secondary:   #8A9CAA;
+  --border-color:     #2A3C4C;
 }
 
 /*

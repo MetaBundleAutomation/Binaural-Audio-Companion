@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import PreferencesProvider from "@/components/PreferencesProvider";
-import BrightnessSync from "@/components/BrightnessSync";
+import AppearanceSync from "@/components/AppearanceSync";
 import Toast from "@/components/Toast";
 import { baseURL, description, siteName, title } from "@/config";
 
@@ -66,6 +66,7 @@ export const metadata: Metadata = {
     ],
   },
   other: {
+    "color-scheme": "dark",
     "theme-color": "#0F1B2D",
   },
 };
@@ -80,7 +81,7 @@ export default function RootLayout({
       <body>
         <ServiceWorkerRegistration />
         <PreferencesProvider>
-          <BrightnessSync />
+          <AppearanceSync />
           <Toast />
           <Header />
           {children}

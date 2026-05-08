@@ -17,6 +17,7 @@ export interface Preferences {
   favouriteBeats:   string[];        // track names
   favouriteNoises:  string[];        // noise type strings
   brightness:         "dim" | "default" | "bright";
+  theme:              "navy" | "army" | "airforce" | "midnight";
   showAromatherapy:   boolean;
 }
 
@@ -35,6 +36,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   favouriteBeats:   [],
   favouriteNoises:  [],
   brightness:         "default",
+  theme:              "navy" as const,
   showAromatherapy:   true,
 };
 
@@ -53,6 +55,7 @@ export const PREF_KEYS: Record<keyof Preferences, string> = {
   favouriteBeats:   "crux:favouriteBeats",
   favouriteNoises:  "crux:favouriteNoises",
   brightness:         "crux:brightness",
+  theme:              "crux:theme",
   showAromatherapy:   "crux:showAromatherapy",
 };
 
@@ -64,6 +67,7 @@ export const RESETTABLE_KEYS: (keyof Preferences)[] = [
   "defaultLoopState",
   "launchScreen",
   "brightness",
+  "theme",
   "showAromatherapy",
 ];
 

@@ -55,6 +55,11 @@ function validatePref<K extends keyof Preferences>(
         ? value as Preferences[K]
         : undefined;
 
+    case "theme":
+      return (["navy", "army", "airforce", "midnight"] as const).includes(value as never)
+        ? value as Preferences[K]
+        : undefined;
+
     case "showAromatherapy":
       return typeof value === "boolean" ? value as Preferences[K] : undefined;
 
