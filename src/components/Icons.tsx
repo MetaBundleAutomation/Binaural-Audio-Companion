@@ -58,6 +58,12 @@ const icons: Record<string, React.ReactNode> = {
       fill="currentColor"
     />
   ),
+  emdr: (
+    <path
+      d="M3 12 L9 8 L9 11 L15 11 L15 8 L21 12 L15 16 L15 13 L9 13 L9 16 Z"
+      fill="currentColor"
+    />
+  ),
 };
 
 export default function Icon({ name, size = 24, className = "" }: IconProps) {

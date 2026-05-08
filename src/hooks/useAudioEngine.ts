@@ -20,6 +20,22 @@ export interface AudioEngine {
   setVolume: (value: number) => void;
 }
 
+function createEMDRPulseBuffer(ctx: AudioContext): AudioBuffer {
+  const sr = ctx.sampleRate;
+  const n  = Math.floor(sr * 0.1); // 100 ms
+  const buf = ctx.createBuffer(1, n, sr);
+  const d   = buf.getChannelData(0);
+  const atk = Math.floor(sr * 0.005);
+  const rel = Math.floor(sr * 0.005);
+  for (let i = 0; i < n; i++) {
+    let env = 1;
+    if (i < atk) env = i / atk;
+    else if (i >= n - rel) env = (n - i) / rel;
+    d[i] = Math.sin(2 * Math.PI * 250 * i / sr) * env * 0.4;
+  }
+  return buf;
+}
+
 export function useAudioEngine(): AudioEngine {
   const { set, prefs, isHydrated } = usePreferences();
 
@@ -31,11 +47,16 @@ export function useAudioEngine(): AudioEngine {
 
   const audioCtxRef       = useRef<AudioContext | null>(null);
   const volumeDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const analyserRef     = useRef<AnalyserNode | null>(null);
-  const oscLeftRef      = useRef<OscillatorNode | null>(null);
-  const oscRightRef     = useRef<OscillatorNode | null>(null);
-  const gainNodeRef     = useRef<{ left: GainNode; right: GainNode } | null>(null);
-  const startTimeRef    = useRef(0);
+  const analyserRef       = useRef<AnalyserNode | null>(null);
+  const oscLeftRef        = useRef<OscillatorNode | null>(null);
+  const oscRightRef       = useRef<OscillatorNode | null>(null);
+  const gainNodeRef       = useRef<{ left: GainNode; right: GainNode } | null>(null);
+  const mergerRef         = useRef<ChannelMergerNode | null>(null);
+  const emdrSchedulerRef  = useRef<ReturnType<typeof setInterval> | null>(null);
+  const nextPulseTimeRef  = useRef(0);
+  const emdrSideRef       = useRef<0 | 1>(0);
+  const pulseBufferRef    = useRef<AudioBuffer | null>(null);
+  const startTimeRef      = useRef(0);
   const pauseTimeRef    = useRef(0);
   const isPlayingRef    = useRef(false);
   const isLoopingRef    = useRef(false);
@@ -61,7 +82,15 @@ export function useAudioEngine(): AudioEngine {
     analyser.fftSize = 256;
     audioCtxRef.current = ctx;
     analyserRef.current = analyser;
+    pulseBufferRef.current = null; // invalidate on new context
     return ctx;
+  }, []);
+
+  const stopEMDRScheduler = useCallback(() => {
+    if (emdrSchedulerRef.current) {
+      clearInterval(emdrSchedulerRef.current);
+      emdrSchedulerRef.current = null;
+    }
   }, []);
 
   const stopOscillators = useCallback(() => {
@@ -74,9 +103,14 @@ export function useAudioEngine(): AudioEngine {
       oscRightRef.current = null;
     }
     gainNodeRef.current = null;
+    if (mergerRef.current) {
+      try { mergerRef.current.disconnect(); } catch { /* already disconnected */ }
+      mergerRef.current = null;
+    }
   }, []);
 
   const stopAudio = useCallback(() => {
+    stopEMDRScheduler();
     stopOscillators();
     isPlayingRef.current = false;
     setIsPlaying(false);
@@ -97,7 +131,7 @@ export function useAudioEngine(): AudioEngine {
     if ("mediaSession" in navigator) {
       navigator.mediaSession.playbackState = "none";
     }
-  }, [stopOscillators]);
+  }, [stopEMDRScheduler, stopOscillators]);
 
   const updateProgress = useCallback(() => {
     if (!isPlayingRef.current || !audioCtxRef.current) return;
@@ -177,12 +211,47 @@ export function useAudioEngine(): AudioEngine {
     animFrameRef.current = requestAnimationFrame(updateProgress);
   }, [stopAudio]);
 
+  const startEMDRScheduler = useCallback((bpm: number) => {
+    stopEMDRScheduler();
+    const ctx = audioCtxRef.current;
+    if (!ctx) return;
+
+    if (!pulseBufferRef.current) {
+      pulseBufferRef.current = createEMDRPulseBuffer(ctx);
+    }
+
+    const interval = 60 / bpm;
+    nextPulseTimeRef.current = ctx.currentTime;
+    emdrSideRef.current = 0;
+
+    emdrSchedulerRef.current = setInterval(() => {
+      const c      = audioCtxRef.current;
+      const merger = mergerRef.current;
+      const pBuf   = pulseBufferRef.current;
+      if (!c || !merger || !pBuf) return;
+
+      while (nextPulseTimeRef.current < c.currentTime + 0.1) {
+        const side   = emdrSideRef.current;
+        const source = c.createBufferSource();
+        source.buffer = pBuf;
+        const g = c.createGain();
+        g.gain.value = (volumeRef.current / 100) * fadeMultiplierRef.current;
+        source.connect(g);
+        g.connect(merger, 0, side);
+        source.start(nextPulseTimeRef.current);
+        emdrSideRef.current      = (1 - side) as 0 | 1;
+        nextPulseTimeRef.current += interval;
+      }
+    }, 25);
+  }, [stopEMDRScheduler]);
+
   const playAudio = useCallback(() => {
     const ctx   = getOrCreateContext();
     const track = tracks[currentTrackRef.current];
 
     if (ctx.state === "suspended") ctx.resume();
 
+    stopEMDRScheduler();
     stopOscillators();
 
     const freq    = track.binauralFreq || 10;
@@ -207,6 +276,7 @@ export function useAudioEngine(): AudioEngine {
     const initialGain = 0.25 * vol * fadeMult * 0.001;
 
     const merger  = ctx.createChannelMerger(2);
+    mergerRef.current = merger;
     const analyser = analyserRef.current!;
 
     const oscL  = ctx.createOscillator();
@@ -248,6 +318,8 @@ export function useAudioEngine(): AudioEngine {
     set("lastBeatId", track.name);
     animFrameRef.current = requestAnimationFrame(updateProgress);
 
+    if (track.emdrBpm) startEMDRScheduler(track.emdrBpm);
+
     if ("mediaSession" in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: track.name,
@@ -256,7 +328,7 @@ export function useAudioEngine(): AudioEngine {
       });
       navigator.mediaSession.playbackState = "playing";
     }
-  }, [getOrCreateContext, stopOscillators, updateProgress]);
+  }, [getOrCreateContext, stopEMDRScheduler, stopOscillators, startEMDRScheduler, updateProgress]);
 
   const pauseAudio = useCallback(() => {
     if (!isPlayingRef.current) return;
@@ -269,6 +341,7 @@ export function useAudioEngine(): AudioEngine {
     needsFadeInRef.current = false;
     fadeInMultRef.current  = 1;
 
+    stopEMDRScheduler();
     stopOscillators();
     isPlayingRef.current = false;
     setIsPlaying(false);
@@ -280,7 +353,7 @@ export function useAudioEngine(): AudioEngine {
     if ("mediaSession" in navigator) {
       navigator.mediaSession.playbackState = "paused";
     }
-  }, [stopOscillators]);
+  }, [stopEMDRScheduler, stopOscillators]);
 
   const loadTrack = useCallback((index: number) => {
     stopAudio();

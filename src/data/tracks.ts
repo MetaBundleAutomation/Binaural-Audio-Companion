@@ -8,6 +8,8 @@ export interface Track {
   color: string;
   /** Seconds from end at which the track begins to fade to silence */
   fadeOutDuration?: number;
+  /** BPM for EMDR bilateral pulse tracks — omit for standard binaural beats */
+  emdrBpm?: number;
 }
 
 export const tracks: Track[] = [
@@ -90,6 +92,39 @@ export const tracks: Track[] = [
     icon: "anxiety",
     color: "#5E7461",
     fadeOutDuration: 300,
+  },
+  {
+    name: "EMDR 50",
+    description:
+      "10 Minutes of 6 Hz Theta binaural beat with 50 BPM bilateral pulse for trauma processing and emotional integration — fades gently over the final 2 minutes",
+    duration: "10:00",
+    binauralFreq: 6,
+    emdrBpm: 50,
+    icon: "emdr",
+    color: "#2D6B7A",
+    fadeOutDuration: 120,
+  },
+  {
+    name: "EMDR 60",
+    description:
+      "10 Minutes of 6 Hz Theta binaural beat with 60 BPM bilateral pulse for eye movement desensitisation and memory reconsolidation — fades gently over the final 2 minutes",
+    duration: "10:00",
+    binauralFreq: 6,
+    emdrBpm: 60,
+    icon: "emdr",
+    color: "#3D5A8B",
+    fadeOutDuration: 120,
+  },
+  {
+    name: "EMDR 70",
+    description:
+      "10 Minutes of 6 Hz Theta binaural beat with 70 BPM bilateral pulse for focused bilateral stimulation and emotional processing — fades gently over the final 2 minutes",
+    duration: "10:00",
+    binauralFreq: 6,
+    emdrBpm: 70,
+    icon: "emdr",
+    color: "#5A3D8B",
+    fadeOutDuration: 120,
   },
 ];
 
