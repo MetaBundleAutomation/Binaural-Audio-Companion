@@ -108,9 +108,15 @@ export default function Instructions() {
                   Each session is <strong className="text-[var(--text-primary)]">15 minutes</strong> and fades
                   out gently over the final five minutes — no abrupt ending.
                 </li>
-                <li>
-                  Use the <strong className="text-[var(--text-primary)]">progress bar</strong> to skip
-                  to any point. The ← → arrow buttons jump to the previous or next track.
+                <li className="flex items-center flex-wrap gap-2">
+                  The
+                  <span className="inline-flex w-8 h-8 rounded-full items-center justify-center bg-[var(--background-card)] border border-[var(--border-color)]" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-[var(--text-secondary)]"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" /></svg>
+                  </span>
+                  <span className="inline-flex w-8 h-8 rounded-full items-center justify-center bg-[var(--background-card)] border border-[var(--border-color)]" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-[var(--text-secondary)]"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
+                  </span>
+                  buttons jump to the previous or next binaural beat.
                 </li>
                 <li>
                   <strong className="text-[var(--text-primary)]">Space bar</strong> pauses and resumes;
