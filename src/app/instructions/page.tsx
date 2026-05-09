@@ -73,7 +73,7 @@ export default function Instructions() {
                 </li>
                 <li>
                   <strong className="text-[var(--text-primary)]">Anxiety (8 Hz Alpha)</strong> —
-                  Reducing acute stress and quieting an overactive nervous system.
+                  Reducing stress and quieting an overactive nervous system.
                 </li>
                 <li>
                   <strong className="text-[var(--text-primary)]">EMDR 50 (50 BPM Bilateral)</strong> —
