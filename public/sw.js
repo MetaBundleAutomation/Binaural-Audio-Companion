@@ -4,7 +4,7 @@
 //   navigation requests    → network-first, cache fallback (works offline)
 //   everything else        → network-first, cache fallback
 
-const CACHE = "crux-v5";
+const CACHE = "crux-v6";
 const PRECACHE = ["/", "/about"];
 
 // ── Install: pre-cache the app shell ──────────────────────────────────────────
@@ -37,8 +37,10 @@ self.addEventListener("fetch", (event) => {
   // Only handle GET requests from the same origin
   if (request.method !== "GET" || url.origin !== self.location.origin) return;
 
-  // Skip Next.js internal routes and analytics
+  // Skip Next.js internal routes, analytics, and API routes
+  // API routes must never be served from cache — they should always be fresh
   if (url.pathname.startsWith("/_next/webpack-hmr")) return;
+  if (url.pathname.startsWith("/api/")) return;
 
   // ── Static assets (/_next/static/) — cache-first ──────────────────────────
   // These filenames include a content hash, so they are safe to serve forever.

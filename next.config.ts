@@ -24,11 +24,14 @@ const CSP = [
   // 'unsafe-eval' added in dev only — webpack eval-source-map requires it
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data:",
+  // data: removed — no data-URI images are used in this app
+  "img-src 'self'",
   "font-src 'self'",
   "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com",
   "media-src 'self'",
   "worker-src 'self'",
+  // Explicitly block plugins (Flash, PDF viewers, etc.)
+  "object-src 'none'",
   "frame-ancestors 'none'",
 ].join("; ");
 
@@ -79,6 +82,12 @@ const nextConfig: NextConfig = {
             // as that would break the Google Analytics script (cross-origin, no CORP).
             key: "Cross-Origin-Resource-Policy",
             value: "same-origin",
+          },
+          {
+            // Prevent browsers pre-resolving DNS for links on the page,
+            // which can leak browsing patterns to DNS resolvers.
+            key: "X-DNS-Prefetch-Control",
+            value: "off",
           },
           {
             // Restrict browser APIs this app has no need for.
