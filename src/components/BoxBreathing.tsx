@@ -182,7 +182,7 @@ export default function BoxBreathing() {
       if (!ctx) return;
       if (
         document.visibilityState === "visible" &&
-        (ctx.state === "suspended" || ctx.state === "interrupted")
+        (ctx.state === "suspended" || (ctx.state as string) === "interrupted")
       ) {
         ctx.resume().catch(() => {});
       }
@@ -430,7 +430,7 @@ export default function BoxBreathing() {
     // This is the fundamental difference from HTMLAudioElement: with the Web
     // Audio API you unlock the context once and the unlock persists for the
     // entire session, rather than needing a fresh gesture for every play().
-    if (ctx && (ctx.state === "suspended" || ctx.state === "interrupted")) {
+    if (ctx && (ctx.state === "suspended" || (ctx.state as string) === "interrupted")) {
       try { await ctx.resume(); } catch { /* continue; playback won't work but animation will */ }
     }
 
@@ -488,14 +488,6 @@ export default function BoxBreathing() {
     }
   }
 
-  function pause() {
-    stopAllAudio();
-    isRunningRef.current = false;
-    cancelAnimationFrame(rafRef.current);
-    setStatus("paused");
-    draw(false); // Freeze canvas on the current frame
-  }
-
   function reset() {
     stopAllAudio();
     isRunningRef.current  = false;
@@ -535,7 +527,6 @@ export default function BoxBreathing() {
       cancelAnimationFrame(rafRef.current);
       stopAllAudio();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── Render ────────────────────────────────────────────────────────────────

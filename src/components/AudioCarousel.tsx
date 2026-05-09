@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useMemo } from "react";
-import { tracks, parseDuration, formatTime, lightenHex } from "@/data/tracks";
+import { tracks, lightenHex } from "@/data/tracks";
 import Icon from "./Icons";
 import { usePreferences } from "@/hooks/usePreferences";
 
