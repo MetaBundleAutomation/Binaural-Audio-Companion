@@ -43,6 +43,10 @@ const NOISE_INFO: Record<
 
 const NOISE_TYPES: NoiseType[] = ["white", "pink", "brown", "rain"];
 
+// Rain MP3 is recorded at a lower amplitude than synthesised noise.
+// This multiplier brings it in line with white/pink/brown at the same slider position.
+const RAIN_GAIN_BOOST = 3.5;
+
 // ─── Audio Generation ─────────────────────────────────────────────────────────
 
 function fillWhiteNoise(buffer: AudioBuffer) {
@@ -242,8 +246,9 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     source.loop   = true;
 
     const gain = ctx.createGain();
+    const boost = type === "rain" ? RAIN_GAIN_BOOST : 1;
     // Start near-silent for fade-in
-    gain.gain.value = 0.001 * (vol / 100);
+    gain.gain.value = 0.001 * (vol / 100) * boost;
 
     source.connect(gain);
     gain.connect(ctx.destination);
@@ -267,16 +272,18 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
       }
       const elapsed = (Date.now() - startTime) / 1000; // seconds
       if (elapsed >= 3) {
+        const boost = noiseRef.current === "rain" ? RAIN_GAIN_BOOST : 1;
         gainRef.current.gain.setValueAtTime(
-          volumeRef.current / 100,
+          (volumeRef.current / 100) * boost,
           audioCtxRef.current.currentTime,
         );
         clearFadeInterval();
         return;
       }
       const fadeInMult = Math.pow(1000, (elapsed / 3) - 1); // 0.001 → 1
+      const boost = noiseRef.current === "rain" ? RAIN_GAIN_BOOST : 1;
       gainRef.current.gain.setValueAtTime(
-        (volumeRef.current / 100) * fadeInMult,
+        (volumeRef.current / 100) * fadeInMult * boost,
         audioCtxRef.current.currentTime,
       );
     }, 50);
@@ -306,7 +313,8 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     setVolumeState(value);
     // Skip direct gain write during fade-in — the interval will use volumeRef.current
     if (gainRef.current && audioCtxRef.current && !fadeInActiveRef.current) {
-      gainRef.current.gain.setValueAtTime(value / 100, audioCtxRef.current.currentTime);
+      const boost = noiseRef.current === "rain" ? RAIN_GAIN_BOOST : 1;
+      gainRef.current.gain.setValueAtTime((value / 100) * boost, audioCtxRef.current.currentTime);
     }
   }
 
