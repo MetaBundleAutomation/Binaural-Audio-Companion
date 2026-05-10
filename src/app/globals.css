@@ -154,7 +154,6 @@ html.theme-midnight.brightness-bright {
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
   overscroll-behavior: none;
 }
 
