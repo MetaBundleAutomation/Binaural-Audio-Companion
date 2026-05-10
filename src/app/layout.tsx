@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import PreferencesProvider from "@/components/PreferencesProvider";
 import AppearanceSync from "@/components/AppearanceSync";
+import IOSTouchFix from "@/components/IOSTouchFix";
 import Toast from "@/components/Toast";
 import { baseURL, description, siteName, title } from "@/config";
 
@@ -82,6 +83,7 @@ export default function RootLayout({
         <ServiceWorkerRegistration />
         <PreferencesProvider>
           <AppearanceSync />
+          <IOSTouchFix />
           <Toast />
           <Header />
           {children}
