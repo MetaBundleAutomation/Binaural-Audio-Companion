@@ -561,12 +561,6 @@ export default function BoxBreathing() {
           >
             {btnLabel}
           </button>
-          <button
-            onClick={reset}
-            className="px-6 py-2 rounded-full border border-[var(--border-color)] text-[var(--text-secondary)] font-semibold text-sm transition-all hover:border-[var(--primary)] cursor-pointer"
-          >
-            Reset
-          </button>
         </div>
 
         {/* ── Voice guidance toggle (master on/off) ────────────────────
