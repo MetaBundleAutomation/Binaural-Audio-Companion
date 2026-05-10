@@ -163,6 +163,8 @@ body {
   line-height: 1.7;
   min-height: 100vh;
   overflow-x: hidden;
+  /* Prevent iOS Safari rubber-band bounce scrolling the whole page */
+  overscroll-behavior: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

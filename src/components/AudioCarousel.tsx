@@ -127,10 +127,26 @@ export default function AudioCarousel({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
 
-  const touchStartX  = useRef(0);
-  const touchStartY  = useRef(0);
-  const pointerDownX = useRef(0);
-  const pointerDownY = useRef(0);
+  const touchStartX   = useRef(0);
+  const touchStartY   = useRef(0);
+  const pointerDownX  = useRef(0);
+  const pointerDownY  = useRef(0);
+  const carouselRef   = useRef<HTMLDivElement>(null);
+
+  // Non-passive touchmove: actively prevents page scroll during horizontal swipes.
+  // Must be attached via useEffect (not React's onTouchMove) because React 17+
+  // attaches touch listeners as passive by default, which blocks preventDefault().
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const onMove = (e: TouchEvent) => {
+      const dx = Math.abs(e.touches[0].clientX - touchStartX.current);
+      const dy = Math.abs(e.touches[0].clientY - touchStartY.current);
+      if (dx > dy) e.preventDefault();
+    };
+    el.addEventListener("touchmove", onMove, { passive: false });
+    return () => el.removeEventListener("touchmove", onMove);
+  }, []);
 
   /** Central helper — updates browse position and notifies parent. */
   function setBrowseTrack(name: string) {
@@ -174,8 +190,9 @@ export default function AudioCarousel({
 
   const carouselTrack = (
     <div
+      ref={carouselRef}
       className="relative overflow-hidden"
-      style={{ height: cardH + (embedded ? 48 : 60) }}
+      style={{ height: cardH + (embedded ? 48 : 60), touchAction: "pan-y" }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
