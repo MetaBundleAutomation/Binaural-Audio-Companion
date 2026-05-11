@@ -153,14 +153,14 @@ export default function Instructions() {
             <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🌊 Noise Therapy</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
-                White, pink, and brown noise can be played alongside — or instead of — binaural
+                White, pink, brown noise, and rain can be played alongside — or instead of — binaural
                 beats. Steady background noise masks sudden environmental sounds that can trigger
                 a stress response, giving your nervous system something predictable to hold on to.
               </p>
               <ul className="space-y-3 text-[var(--text-secondary)] leading-relaxed">
                 <li>
                   <strong className="text-[var(--text-primary)]">White noise</strong> — all frequencies
-                  at equal strength, like a fan or static rain. Good for concentration and blocking
+                  at equal strength, like a fan or static. Good for concentration and blocking
                   unpredictable sounds.
                 </li>
                 <li>
@@ -171,6 +171,11 @@ export default function Instructions() {
                 <li>
                   <strong className="text-[var(--text-primary)]">Brown noise</strong> — a deep bass
                   rumble like distant thunder. Preferred by many for reducing hypervigilance at night.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Rain</strong> — a natural recording
+                  of steady rainfall. Familiar and grounding, it blends well with any binaural beat
+                  and is particularly effective for sleep and deep focus.
                 </li>
                 <li>
                   Enable <strong className="text-[var(--text-primary)]">Auto-sync</strong> to have
@@ -264,7 +269,7 @@ export default function Instructions() {
               <ol className="space-y-4 text-[var(--text-secondary)] leading-relaxed list-decimal list-outside pl-5">
                 <li>
                   <strong className="text-[var(--text-primary)]">Start with Noise Therapy.</strong>{" "}
-                  Pick a background sound — Brown Noise, Pink Noise, or White Noise work well —
+                  Pick a background sound — Brown Noise, Pink Noise, White Noise, or Rain work well —
                   and set the volume low (around 30%). This becomes your gentle base layer.
                 </li>
                 <li>
