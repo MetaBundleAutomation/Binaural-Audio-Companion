@@ -77,15 +77,15 @@ export default function Instructions() {
                 </li>
                 <li>
                   <strong className="text-[var(--text-primary)]">EMDR 50 (50 BPM Bilateral)</strong> —
-                  Slow, grounding bilateral stimulation for deep trauma processing and emotional integration.
+                  Slow, rhythmic left-right audio — a gentle pace for unwinding or quieting a busy mind.
                 </li>
                 <li>
                   <strong className="text-[var(--text-primary)]">EMDR 60 (60 BPM Bilateral)</strong> —
-                  Standard-pace bilateral stimulation for EMDR-style desensitisation and memory reconsolidation.
+                  Steady left-right audio at a natural, comfortable rhythm — easy to settle into.
                 </li>
                 <li>
                   <strong className="text-[var(--text-primary)]">EMDR 70 (70 BPM Bilateral)</strong> —
-                  Faster bilateral stimulation for active processing sessions that benefit from a more energised rhythm.
+                  Brisker left-right audio for those who find a livelier rhythm easier to relax with.
                 </li>
               </ul>
             </div>
