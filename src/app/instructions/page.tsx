@@ -325,6 +325,12 @@ export default function Instructions() {
                   open straight to the player or the library — no scrolling required.
                 </li>
                 <li>
+                  <strong className="text-[var(--text-primary)]">Choose a colour theme.</strong>{" "}
+                  The Appearance section in Settings offers four colour schemes — Air Force, Army,
+                  Midnight, and Navy — each inspired by an Australian Defence Force branch. Pick
+                  whichever suits your environment or personal preference.
+                </li>
+                <li>
                   <strong className="text-[var(--text-primary)]">Adjust brightness.</strong>{" "}
                   The Brightness control in Settings dims or brightens the entire interface — useful for
                   low-light environments or before bed.
