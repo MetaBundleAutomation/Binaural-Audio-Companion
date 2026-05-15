@@ -1,50 +1,73 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
-    <footer className="border-t border-[var(--border-color)] mt-20 py-10 px-5 text-[var(--text-secondary)]">
+    <footer className="border-t border-[var(--border-color)] mt-20 px-5 pt-10 pb-8 text-[var(--text-secondary)]">
 
-      {/* Metabundle funding line */}
-      <p className="text-center text-[13px] font-semibold mb-6 opacity-80">
-        This website and application is funded and powered by{" "}
-        <a
-          href="https://metabundle.ai"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[var(--primary)] hover:underline"
-        >
-          Metabundle
-        </a>
-        .
-      </p>
+      {/* ── Two-column block: Contact | Legal ── */}
+      <div className="max-w-2xl mx-auto grid grid-cols-2 gap-8 mb-8 text-[13px]">
 
-      {/* Contact block */}
-      <div className="flex flex-col items-center gap-1 text-[13px] mb-6 opacity-70">
-        <p className="font-semibold text-[var(--text-primary)] opacity-100">Contact</p>
-        <a
-          href="mailto:Joshua@metabundle.ai"
-          className="hover:text-[var(--primary)] transition-colors"
-        >
-          Joshua@metabundle.ai
-        </a>
-        <a
-          href="tel:+61402503653"
-          className="hover:text-[var(--primary)] transition-colors"
-        >
-          0402 503 653
-        </a>
-        <a
-          href="https://metabundle.ai"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-[var(--primary)] transition-colors"
-        >
-          metabundle.ai
-        </a>
+        {/* Contact */}
+        <div>
+          <p className="font-semibold text-[var(--text-primary)] mb-3 text-[12px] uppercase tracking-widest opacity-60">
+            Contact
+          </p>
+          <div className="space-y-1.5 opacity-70">
+            <a
+              href="mailto:Joshua@metabundle.ai"
+              className="block hover:text-[var(--primary)] transition-colors"
+            >
+              Joshua@metabundle.ai
+            </a>
+            <a
+              href="tel:+61402503653"
+              className="block hover:text-[var(--primary)] transition-colors"
+            >
+              0402 503 653
+            </a>
+            <a
+              href="https://metabundle.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block hover:text-[var(--primary)] transition-colors"
+            >
+              metabundle.ai
+            </a>
+          </div>
+        </div>
+
+        {/* Legal */}
+        <div>
+          <p className="font-semibold text-[var(--text-primary)] mb-3 text-[12px] uppercase tracking-widest opacity-60">
+            Legal
+          </p>
+          <div className="space-y-1.5 opacity-70">
+            <Link
+              href="/disclaimer"
+              className="block hover:text-[var(--primary)] transition-colors"
+            >
+              Disclaimer
+            </Link>
+          </div>
+        </div>
+
       </div>
 
-      {/* Legal */}
-      <div className="text-center text-[12px] opacity-50 space-y-1">
-        <p>&copy; {new Date().getFullYear()} CRUX. All rights reserved.</p>
-        <p>For educational and wellness purposes only. Not intended to diagnose or treat medical conditions.</p>
+      {/* ── Bottom bar ── */}
+      <div className="text-center text-[12px] opacity-40 space-y-1">
+        <p>For educational and wellness purposes only. Not a substitute for professional medical care.</p>
+        <p>
+          &copy; {new Date().getFullYear()} CRUX. All rights reserved. &middot; Funded and powered by{" "}
+          <a
+            href="https://metabundle.ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:opacity-80 transition-opacity underline"
+          >
+            Metabundle
+          </a>
+          .
+        </p>
       </div>
 
     </footer>

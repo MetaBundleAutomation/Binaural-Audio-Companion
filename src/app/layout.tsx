@@ -9,6 +9,7 @@ import PreferencesProvider from "@/components/PreferencesProvider";
 import AppearanceSync from "@/components/AppearanceSync";
 import IOSTouchFix from "@/components/IOSTouchFix";
 import Toast from "@/components/Toast";
+import DisclaimerBanner from "@/components/DisclaimerBanner";
 import { baseURL, description, siteName, title } from "@/config";
 
 export const metadata: Metadata = {
@@ -85,6 +86,7 @@ export default function RootLayout({
           <AppearanceSync />
           <IOSTouchFix />
           <Toast />
+          <DisclaimerBanner />
           <Header />
           {children}
           <Footer />

@@ -413,40 +413,58 @@ export default function Instructions() {
               style={{ borderColor: "rgba(220, 38, 38, 0.25)" }}
             >
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">⚠️ Safety Information</h2>
-              <ul className="space-y-3 text-[var(--text-secondary)] leading-relaxed">
+              <ul className="space-y-3 text-[var(--text-secondary)] leading-relaxed mb-6">
+                <li>
+                  <strong className="text-[var(--text-primary)]">Not medical advice.</strong>{" "}
+                  CRUX is a wellness aid, not a medical device. It does not replace professional
+                  mental health care.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Do not use while driving or operating machinery.</strong>{" "}
+                  Binaural beats and guided breathing are designed to relax and alter your mental
+                  state — always use CRUX in a safe, stationary environment.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Keep the volume comfortable.</strong>{" "}
+                  Set your device to a low level before pressing play. Prolonged exposure to
+                  high-volume audio can cause permanent hearing damage.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Epilepsy and seizure disorders.</strong>{" "}
+                  Do not use binaural beats without first consulting your doctor if you have
+                  epilepsy, a history of seizures, or any neurological condition.
+                </li>
                 <li>
                   <strong className="text-[var(--text-primary)]">Stop immediately</strong> if you
                   experience discomfort, dizziness, or heightened anxiety.
                 </li>
-                <li>
-                  Do not use binaural beats if you have{" "}
-                  <strong className="text-[var(--text-primary)]">epilepsy or a seizure disorder</strong>{" "}
-                  without first consulting your doctor.
+              </ul>
+
+              <p className="text-[var(--text-secondary)] text-[14px] font-semibold mb-3">
+                If you or someone you know is in crisis, help is available 24/7:
+              </p>
+              <ul className="space-y-2 text-[14px] text-[var(--text-secondary)]">
+                <li className="flex flex-wrap justify-between gap-x-4">
+                  <span>Lifeline</span>
+                  <a href="tel:131114" className="text-[var(--primary)] underline underline-offset-2 hover:opacity-80 whitespace-nowrap font-semibold">13 11 14</a>
                 </li>
-                <li>
-                  Do not use while{" "}
-                  <strong className="text-[var(--text-primary)]">driving or operating machinery</strong> —
-                  binaural beats are designed to alter your mental state.
+                <li className="flex flex-wrap justify-between gap-x-4">
+                  <span>Open Arms Veterans &amp; Families Counselling</span>
+                  <a href="tel:1800011046" className="text-[var(--primary)] underline underline-offset-2 hover:opacity-80 whitespace-nowrap font-semibold">1800 011 046</a>
                 </li>
-                <li>
-                  CRUX is a <strong className="text-[var(--text-primary)]">wellness aid</strong>,
-                  not a medical device. It does not replace professional mental health care.
-                </li>
-                <li>
-                  If you are in crisis, contact{" "}
-                  <strong className="text-[var(--text-primary)]">
-                    Open Arms Veterans &amp; Families Counselling
-                  </strong>{" "}
-                  on{" "}
-                  <a
-                    href="tel:1800011046"
-                    className="underline underline-offset-2 text-[var(--primary)] hover:opacity-80"
-                  >
-                    1800 011 046
-                  </a>{" "}
-                  (free, 24/7).
+                <li className="flex flex-wrap justify-between gap-x-4">
+                  <span>Emergency services</span>
+                  <a href="tel:000" className="text-[var(--primary)] underline underline-offset-2 hover:opacity-80 whitespace-nowrap font-semibold">000</a>
                 </li>
               </ul>
+
+              <p className="mt-4 text-[13px] text-[var(--text-secondary)] opacity-60">
+                See our full{" "}
+                <Link href="/disclaimer" className="underline underline-offset-2 hover:opacity-80">
+                  Disclaimer
+                </Link>{" "}
+                for complete safety and liability information.
+              </p>
             </div>
 
           </div>
