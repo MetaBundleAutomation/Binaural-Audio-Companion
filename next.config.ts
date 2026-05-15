@@ -58,9 +58,10 @@ const nextConfig: NextConfig = {
             value: "nosniff",
           },
           {
-            // Send only the origin (not the full URL) in Referer headers
+            // Send no Referer header at all — prevents leaking the app domain
+            // to any external services the user navigates to from within the app.
             key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin",
+            value: "no-referrer",
           },
           {
             // Force HTTPS for 1 year; prevents protocol-downgrade attacks.

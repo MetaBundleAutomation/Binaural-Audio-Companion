@@ -378,7 +378,7 @@ export default function BoxBreathing() {
   function playNarration(offsetSeconds: number) {
     const ctx    = audioCtxRef.current;
     const buffer = audioBufferRef.current;
-    if (!ctx || !buffer) return;
+    if (!ctx || !buffer || ctx.state === "closed") return;
 
     // Stop previous source (clears onended first to suppress the loop callback).
     if (audioSourceRef.current) {

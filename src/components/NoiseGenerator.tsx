@@ -266,7 +266,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     const startTime = Date.now();
 
     fadeIntervalRef.current = setInterval(() => {
-      if (!gainRef.current || !audioCtxRef.current) {
+      if (!gainRef.current || !audioCtxRef.current || audioCtxRef.current.state === "closed") {
         clearFadeInterval();
         return;
       }
@@ -344,6 +344,25 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHydrated]);
+
+  // ── iOS audio-session recovery ────────────────────────────────────────────────
+  // iOS suspends the AudioContext when the screen locks, a call comes in, or
+  // the app goes to background.  Resume it the moment the page is visible again
+  // so playback continues without requiring another tap.
+  useEffect(() => {
+    const handleVisibility = () => {
+      const ctx = audioCtxRef.current;
+      if (!ctx) return;
+      if (
+        document.visibilityState === "visible" &&
+        (ctx.state === "suspended" || (ctx.state as string) === "interrupted")
+      ) {
+        ctx.resume().catch(() => {});
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
 
   // ── Cleanup ───────────────────────────────────────────────────────────────────
 

@@ -250,7 +250,7 @@ export function useAudioEngine(): AudioEngine {
       const c   = audioCtxRef.current;
       const mrg = mergerRef.current;
       const buf = emdrPulseBufferRef.current;
-      if (!c || !mrg || !buf) return;
+      if (!c || !mrg || !buf || c.state === "closed") return;
 
       while (emdrNextTimeRef.current < c.currentTime + 0.1) {
         const side   = emdrSideRef.current;
