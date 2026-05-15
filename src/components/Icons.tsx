@@ -60,7 +60,7 @@ const icons: Record<string, React.ReactNode> = {
   ),
   emdr: (
     <path
-      d="M3 12 L9 8 L9 11 L15 11 L15 8 L21 12 L15 16 L15 13 L9 13 L9 16 Z"
+      d="M12 3a9 9 0 0 0-9 9v5a3 3 0 0 0 3 3h1a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H5v-1a7 7 0 0 1 14 0v1h-2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h1a3 3 0 0 0 3-3v-5a9 9 0 0 0-9-9z"
       fill="currentColor"
     />
   ),
