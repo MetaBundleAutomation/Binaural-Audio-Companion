@@ -12,7 +12,7 @@ export default function Footer() {
           <p className="font-semibold text-[var(--text-primary)] mb-3 text-[12px] uppercase tracking-widest opacity-60">
             Contact
           </p>
-          <div className="space-y-1.5 opacity-70">
+          <div className="space-y-1.5 opacity-80">
             <a
               href="mailto:Joshua@metabundle.ai"
               className="block hover:text-[var(--primary)] transition-colors"
@@ -41,7 +41,7 @@ export default function Footer() {
           <p className="font-semibold text-[var(--text-primary)] mb-3 text-[12px] uppercase tracking-widest opacity-60">
             Legal
           </p>
-          <div className="space-y-1.5 opacity-70">
+          <div className="space-y-1.5 opacity-80">
             <Link
               href="/disclaimer"
               className="block hover:text-[var(--primary)] transition-colors"
@@ -54,7 +54,7 @@ export default function Footer() {
       </div>
 
       {/* ── Bottom bar ── */}
-      <div className="text-center text-[12px] opacity-40 space-y-1">
+      <div className="text-center text-[12px] opacity-60 space-y-1">
         <p>For educational and wellness purposes only. Not a substitute for professional medical care.</p>
         <p>
           &copy; {new Date().getFullYear()} CRUX. All rights reserved. &middot; Funded and powered by{" "}
