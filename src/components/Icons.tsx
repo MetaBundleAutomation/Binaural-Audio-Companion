@@ -77,6 +77,7 @@ export default function Icon({ name, size = 24, className = "" }: IconProps) {
       height={size}
       className={className}
       aria-hidden="true"
+      suppressHydrationWarning
     >
       {path}
     </svg>
