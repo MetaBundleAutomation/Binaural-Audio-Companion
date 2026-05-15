@@ -9,8 +9,20 @@ export default function Footer() {
 
         {/* Contact */}
         <div>
-          <p className="font-semibold text-[var(--text-primary)] mb-3 text-[12px] uppercase tracking-widest opacity-60">
+          <p className="font-semibold text-[var(--text-primary)] mb-1 text-[12px] uppercase tracking-widest opacity-60">
             Contact
+          </p>
+          <p className="text-[13px] opacity-80 mb-3">
+            This website and application is funded and powered by{" "}
+            <a
+              href="https://metabundle.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--primary)] hover:underline"
+            >
+              Metabundle
+            </a>
+            .
           </p>
           <div className="space-y-1.5 opacity-80">
             <a
@@ -56,18 +68,7 @@ export default function Footer() {
       {/* ── Bottom bar ── */}
       <div className="text-center text-[12px] opacity-60 space-y-1">
         <p>For educational and wellness purposes only. Not a substitute for professional medical care.</p>
-        <p>
-          &copy; {new Date().getFullYear()} CRUX. All rights reserved. &middot; Funded and powered by{" "}
-          <a
-            href="https://metabundle.ai"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:opacity-80 transition-opacity underline"
-          >
-            Metabundle
-          </a>
-          .
-        </p>
+        <p>&copy; {new Date().getFullYear()} CRUX. All rights reserved.</p>
       </div>
 
     </footer>
