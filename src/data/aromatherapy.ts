@@ -16,9 +16,9 @@ export const AROMA_PAIRINGS: Record<string, AromaPairing> = {
   "Meditation": { oil: "Sandalwood or Frankincense",     hint: "Ground and deepen your practice" },
   "Learning":   { oil: "Rosemary or Lemon",              hint: "Support memory retention and focus" },
   "Anxiety":    { oil: "Lavender or Bergamot",           hint: "Soothe and ground the nervous system" },
-  "EMDR 50":    { oil: "Bergamot or Frankincense",       hint: "Uplifting yet calming — diffuse before your session" },
-  "EMDR 60":    { oil: "Lavender or Frankincense",       hint: "Light your diffuser 2–3 min before starting" },
-  "EMDR 70":    { oil: "Frankincense or Cedarwood",      hint: "Light your diffuser 2–3 min before starting" },
+  "50 BPM Bilateral": { oil: "Bergamot or Frankincense",  hint: "Uplifting yet calming — diffuse before your session" },
+  "60 BPM Bilateral": { oil: "Lavender or Frankincense",  hint: "Light your diffuser 2–3 min before starting" },
+  "70 BPM Bilateral": { oil: "Frankincense or Cedarwood", hint: "Light your diffuser 2–3 min before starting" },
 };
 
 export const DEFAULT_AROMA: AromaPairing = {

@@ -76,15 +76,15 @@ export default function Instructions() {
                   Reducing stress and quieting an overactive nervous system.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">EMDR 50 (50 BPM Bilateral)</strong> —
+                  <strong className="text-[var(--text-primary)]">50 BPM Bilateral</strong> —
                   Slow, rhythmic left-right audio — a gentle pace for unwinding or quieting a busy mind.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">EMDR 60 (60 BPM Bilateral)</strong> —
+                  <strong className="text-[var(--text-primary)]">60 BPM Bilateral</strong> —
                   Steady left-right audio at a natural, comfortable rhythm — easy to settle into.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">EMDR 70 (70 BPM Bilateral)</strong> —
+                  <strong className="text-[var(--text-primary)]">70 BPM Bilateral</strong> —
                   Brisker left-right audio for those who find a livelier rhythm easier to relax with.
                 </li>
               </ul>

@@ -94,9 +94,9 @@ export const tracks: Track[] = [
     fadeOutDuration: 300,
   },
   {
-    name: "EMDR 50",
+    name: "50 BPM Bilateral",
     description:
-      "5 Minutes of 50 BPM bilateral tones alternating left and right for slow, deep trauma processing and emotional integration — fades gently over the final minute",
+      "5 Minutes of slow, rhythmic 50 BPM bilateral tones alternating left and right — a gentle pace for unwinding or quieting a busy mind — fades gently over the final minute",
     duration: "5:00",
     binauralFreq: 6,
     emdrBpm: 50,
@@ -105,9 +105,9 @@ export const tracks: Track[] = [
     fadeOutDuration: 60,
   },
   {
-    name: "EMDR 60",
+    name: "60 BPM Bilateral",
     description:
-      "5 Minutes of 60 BPM bilateral tones alternating left and right for standard eye movement desensitisation and memory reconsolidation — fades gently over the final minute",
+      "5 Minutes of steady 60 BPM bilateral tones alternating left and right at a natural, comfortable rhythm — easy to settle into — fades gently over the final minute",
     duration: "5:00",
     binauralFreq: 6,
     emdrBpm: 60,
@@ -116,9 +116,9 @@ export const tracks: Track[] = [
     fadeOutDuration: 60,
   },
   {
-    name: "EMDR 70",
+    name: "70 BPM Bilateral",
     description:
-      "5 Minutes of 70 BPM bilateral tones alternating left and right for active bilateral stimulation and focused emotional processing — fades gently over the final minute",
+      "5 Minutes of 70 BPM bilateral tones alternating left and right — a brisker rhythm for those who find a livelier pace easier to relax with — fades gently over the final minute",
     duration: "5:00",
     binauralFreq: 6,
     emdrBpm: 70,
