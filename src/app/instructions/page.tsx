@@ -416,7 +416,7 @@ export default function Instructions() {
               <ul className="space-y-3 text-[var(--text-secondary)] leading-relaxed mb-6">
                 <li>
                   <strong className="text-[var(--text-primary)]">Not medical advice.</strong>{" "}
-                  CRUX is a wellness aid, not a medical device. It does not replace professional
+                  CRUX is a wellness tool, not a medical device. It does not replace professional
                   mental health care.
                 </li>
                 <li>
