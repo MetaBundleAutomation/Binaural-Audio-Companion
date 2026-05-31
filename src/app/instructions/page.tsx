@@ -312,8 +312,8 @@ export default function Instructions() {
                 </li>
                 <li>
                   <strong className="text-[var(--text-primary)]">Save a default session.</strong>{" "}
-                  Press the <span className="font-semibold text-[var(--text-primary)]">Default</span> bookmark
-                  button in the player controls to lock in the current beat, volume, and loop state as your
+                  Press the <span className="font-semibold text-[var(--text-primary)]">Save</span> bookmark
+                  button in the player controls to lock in the current beat and volume as your
                   starting point. The same button appears as{" "}
                   <span className="font-semibold text-[var(--text-primary)]">Set as my default</span> in
                   Noise Therapy.

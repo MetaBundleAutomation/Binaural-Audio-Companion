@@ -605,17 +605,17 @@ export default function BoxBreathing() {
 
         {/* ── Description block ───────────────────────────────────────── */}
         <div className="flex flex-col items-center gap-2 text-center" style={{ maxWidth: 420 }}>
-          {/* Tier 1 – regular weight, muted */}
-          <p className="text-sm text-[var(--text-secondary)] opacity-70 leading-relaxed">
-            Box breathing works best with regular use, first thing in the morning,
-            just before bed or throughout the day when ever you feel anxious.
+          {/* Tier 1 – regular weight */}
+          <p className="text-sm text-[var(--text-secondary)] opacity-80 leading-relaxed">
+            Box breathing works best with regular use — first thing in the morning,
+            just before bed, or whenever you feel anxious.
           </p>
           {/* Tier 2 – bold cadence line, primary colour */}
           <p className="text-sm font-bold text-[var(--text-primary)] tracking-wide">
             Inhale&nbsp;4s&nbsp;·&nbsp;Hold&nbsp;4s<br />Exhale&nbsp;4s&nbsp;·&nbsp;Hold&nbsp;4s
           </p>
-          {/* Tier 3 – muted, smaller */}
-          <p className="text-xs text-[var(--text-secondary)] opacity-50">
+          {/* Tier 3 – muted */}
+          <p className="text-sm text-[var(--text-secondary)] opacity-80">
             Repeat for 2–3 minutes.
           </p>
         </div>

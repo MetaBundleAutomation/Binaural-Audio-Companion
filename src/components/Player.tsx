@@ -37,11 +37,11 @@ export default function Player() {
       prefs.defaultBeatId    === track.name &&
       prefs.defaultVolume    === engine.volume &&
       prefs.defaultLoopState === engine.isLooping;
-    if (alreadyDefault) { fireToast("Already your default."); return; }
+    if (alreadyDefault) { fireToast("Already saved."); return; }
     set("defaultBeatId",    track.name);
     set("defaultVolume",    engine.volume);
     set("defaultLoopState", engine.isLooping);
-    fireToast("Saved as your default.");
+    fireToast("Saved.");
   }
 
   return (
@@ -102,43 +102,14 @@ export default function Player() {
               </button>
             </div>
 
-            {/* Secondary controls — loop & default */}
-            <div className="flex justify-center items-center gap-6">
-
-              {/* Loop toggle */}
-              <div className="flex flex-col items-center gap-1">
-                <button
-                  onClick={engine.toggleLoop}
-                  className="w-[38px] h-[38px] rounded-full flex items-center justify-center transition-all cursor-pointer"
-                  style={
-                    engine.isLooping
-                      ? { background: "var(--primary)", boxShadow: "0 4px 12px rgba(43, 107, 127, 0.35)", color: "white" }
-                      : { background: "var(--background-light)", color: "var(--text-secondary)" }
-                  }
-                  aria-label={engine.isLooping ? "Loop is on — tap to stop looping" : "Toggle loop — play continuously"}
-                  aria-pressed={engine.isLooping}
-                >
-                  <svg
-                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                    className="w-4 h-4"
-                  >
-                    <polyline points="17 1 21 5 17 9" />
-                    <path d="M3 11V9a4 4 0 0 1 4-4h14" />
-                    <polyline points="7 23 3 19 7 15" />
-                    <path d="M21 13v2a4 4 0 0 1-4 4H3" />
-                  </svg>
-                </button>
-                <span className="text-[10px] font-semibold text-[var(--text-secondary)]">
-                  {engine.isLooping ? "Loop: On" : "Loop"}
-                </span>
-              </div>
+            {/* Secondary controls — default */}
+            <div className="flex justify-center items-center">
 
               {/* Save as default */}
               <div className="flex flex-col items-center gap-1">
                 <button
                   onClick={handleSetDefault}
-                  aria-label="Set current beat and settings as my default"
+                  aria-label="Save current beat and settings"
                   className="w-[38px] h-[38px] rounded-full flex items-center justify-center transition-all cursor-pointer bg-[var(--background-light)]"
                   style={{ color: "var(--text-secondary)" }}
                 >
@@ -150,7 +121,7 @@ export default function Player() {
                     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                   </svg>
                 </button>
-                <span className="text-[10px] font-semibold text-[var(--text-secondary)]">Default</span>
+                <span className="text-[10px] font-semibold text-[var(--text-secondary)]">Save</span>
               </div>
 
             </div>

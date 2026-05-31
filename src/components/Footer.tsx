@@ -68,7 +68,7 @@ export default function Footer() {
       {/* ── Bottom bar ── */}
       <div className="text-center text-[12px] opacity-60 space-y-1">
         <p>For educational and wellness purposes only. Not a substitute for professional medical care.</p>
-        <p>&copy; {new Date().getFullYear()} CRUX. All rights reserved.</p>
+        <p suppressHydrationWarning>&copy; {new Date().getFullYear()} CRUX. All rights reserved.</p>
       </div>
 
     </footer>
