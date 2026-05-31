@@ -10,6 +10,12 @@
 !.yarn/releases
 !.yarn/versions
 
+# This project uses pnpm — keep a single lockfile (pnpm-lock.yaml).
+# Ignore other package managers' lockfiles so they can't drift back in.
+package-lock.json
+npm-shrinkwrap.json
+yarn.lock
+
 # testing
 /coverage
 

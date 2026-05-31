@@ -2,6 +2,7 @@
   "name": "crux",
   "version": "0.2.1",
   "private": true,
+  "packageManager": "pnpm@11.0.9",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
