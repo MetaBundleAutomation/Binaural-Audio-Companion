@@ -23,7 +23,7 @@
   --background-light: #152030;
   --background-card:  #1C2B3E;
   --text-primary:     #E8ECF0;
-  --text-secondary:   #8C9BAA;
+  --text-secondary:   #A2B0BE;
   --border-color:     #243555;
   --shadow:    0 10px 30px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
@@ -55,7 +55,7 @@ html.theme-army {
   --background-light: #1A1E14;
   --background-card:  #22261C;
   --text-primary:     #E8ECE0;
-  --text-secondary:   #94987A;
+  --text-secondary:   #AAAE90;
   --border-color:     #30351E;
   --shadow:    0 10px 30px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
@@ -87,7 +87,7 @@ html.theme-airforce {
   --background-light: #162438;
   --background-card:  #1E2E50;
   --text-primary:     #ECF2FF;
-  --text-secondary:   #8898C8;
+  --text-secondary:   #A0AED8;
   --border-color:     #2C4888;
   --shadow:    0 10px 30px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
@@ -119,7 +119,7 @@ html.theme-midnight {
   --background-light: #0D1318;
   --background-card:  #12181E;
   --text-primary:     #D8DCE0;
-  --text-secondary:   #6A7A88;
+  --text-secondary:   #8E9EAC;
   --border-color:     #1A2530;
   --shadow:    0 10px 30px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.7);

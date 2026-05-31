@@ -34,13 +34,11 @@ export default function Player() {
 
   function handleSetDefault() {
     const alreadyDefault =
-      prefs.defaultBeatId    === track.name &&
-      prefs.defaultVolume    === engine.volume &&
-      prefs.defaultLoopState === engine.isLooping;
+      prefs.defaultBeatId === track.name &&
+      prefs.defaultVolume === engine.volume;
     if (alreadyDefault) { fireToast("Already saved."); return; }
-    set("defaultBeatId",    track.name);
-    set("defaultVolume",    engine.volume);
-    set("defaultLoopState", engine.isLooping);
+    set("defaultBeatId", track.name);
+    set("defaultVolume", engine.volume);
     fireToast("Saved.");
   }
 

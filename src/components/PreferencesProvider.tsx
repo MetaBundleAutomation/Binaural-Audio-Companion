@@ -27,10 +27,6 @@ function validatePref<K extends keyof Preferences>(
         ? n as Preferences[K]
         : undefined;
     }
-    case "lastLoopState":
-    case "defaultLoopState":
-      return typeof value === "boolean" ? value as Preferences[K] : undefined;
-
     case "lastBeatId":
     case "lastNoiseId":
     case "defaultBeatId":

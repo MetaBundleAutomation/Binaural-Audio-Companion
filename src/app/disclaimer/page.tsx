@@ -13,7 +13,7 @@ export default function DisclaimerPage() {
       <h1 className="text-[36px] font-bold tracking-tight text-[var(--text-primary)] mb-2">
         Disclaimer
       </h1>
-      <p className="text-[15px] text-[var(--text-secondary)] mb-12 opacity-70">
+      <p className="text-[15px] text-[var(--text-secondary)] mb-12">
         Last updated May 2026
       </p>
 

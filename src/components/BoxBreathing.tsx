@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 declare global {
   interface Window { webkitAudioContext?: typeof AudioContext; }
@@ -536,7 +537,7 @@ export default function BoxBreathing() {
   const btnClick = status === "running" || status === "intro" ? reset : start;
 
   return (
-    <section id="box-breathing" className="my-16">
+    <section id="box-breathing" className="my-16 scroll-mt-24">
       <div
         className="flex flex-col items-center gap-6 rounded-3xl p-10 border border-[var(--border-color)] bg-[var(--background-card)]"
         style={{ boxShadow: "var(--shadow-lg)" }}
@@ -544,6 +545,24 @@ export default function BoxBreathing() {
         <h2 className="text-[32px] font-bold tracking-tight text-[var(--text-primary)]">
           Box Breathing
         </h2>
+
+        {/* Link to the full how-to guide in Instructions */}
+        <Link
+          href="/instructions#box-breathing"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+        >
+          <svg
+            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+            className="w-4 h-4"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 16v-4" />
+            <path d="M12 8h.01" />
+          </svg>
+          Tap to learn how to use Box Breathing
+        </Link>
 
         <canvas
           ref={canvasRef}
@@ -605,17 +624,11 @@ export default function BoxBreathing() {
 
         {/* ── Description block ───────────────────────────────────────── */}
         <div className="flex flex-col items-center gap-2 text-center" style={{ maxWidth: 420 }}>
-          {/* Tier 1 – regular weight */}
-          <p className="text-sm text-[var(--text-secondary)] opacity-80 leading-relaxed">
-            Box breathing works best with regular use — first thing in the morning,
-            just before bed, or whenever you feel anxious.
-          </p>
-          {/* Tier 2 – bold cadence line, primary colour */}
+          {/* Bold cadence line, primary colour */}
           <p className="text-sm font-bold text-[var(--text-primary)] tracking-wide">
             Inhale&nbsp;4s&nbsp;·&nbsp;Hold&nbsp;4s<br />Exhale&nbsp;4s&nbsp;·&nbsp;Hold&nbsp;4s
           </p>
-          {/* Tier 3 – muted */}
-          <p className="text-sm text-[var(--text-secondary)] opacity-80">
+          <p className="text-sm text-[var(--text-secondary)]">
             Repeat for 2–3 minutes.
           </p>
         </div>

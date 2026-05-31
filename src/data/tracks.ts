@@ -16,9 +16,9 @@ export const tracks: Track[] = [
   {
     name: "Focus",
     description:
-      "15 Minutes of 25 Hz Beta waves for deep concentration — fades gently over the final 5 minutes",
+      "15 Minutes of 10 Hz Alpha waves for deep concentration — fades gently over the final 5 minutes",
     duration: "15:00",
-    binauralFreq: 25,
+    binauralFreq: 10,
     icon: "focus",
     color: "#4B4A6B",
     fadeOutDuration: 300,
@@ -36,9 +36,9 @@ export const tracks: Track[] = [
   {
     name: "Sleep",
     description:
-      "15 Minutes of 4 Hz Delta waves for deep sleep — fades gently over the final 5 minutes",
+      "15 Minutes of 1 Hz Delta waves for deep sleep — fades gently over the final 5 minutes",
     duration: "15:00",
-    binauralFreq: 4,
+    binauralFreq: 1,
     icon: "sleep",
     color: "#3B5C6B",
     fadeOutDuration: 300,
@@ -46,9 +46,9 @@ export const tracks: Track[] = [
   {
     name: "Creativity",
     description:
-      "15 Minutes of 8 Hz Alpha waves for exploring creativity — fades gently over the final 5 minutes",
+      "15 Minutes of 7 Hz Theta waves for exploring creativity — fades gently over the final 5 minutes",
     duration: "15:00",
-    binauralFreq: 8,
+    binauralFreq: 7,
     icon: "creativity",
     color: "#7C5A47",
     fadeOutDuration: 300,
@@ -56,9 +56,9 @@ export const tracks: Track[] = [
   {
     name: "Energy",
     description:
-      "15 Minutes of 30 Hz Beta waves for exercise and mental alertness — fades gently over the final 5 minutes",
+      "15 Minutes of 25 Hz Beta waves for exercise and mental alertness — fades gently over the final 5 minutes",
     duration: "15:00",
-    binauralFreq: 30,
+    binauralFreq: 25,
     icon: "energy",
     color: "#8B5E47",
     fadeOutDuration: 300,
@@ -74,21 +74,21 @@ export const tracks: Track[] = [
     fadeOutDuration: 300,
   },
   {
-    name: "Learning",
+    name: "Pain Management",
     description:
-      "15 Minutes of 10 Hz Alpha waves for attention and memory — fades gently over the final 5 minutes",
+      "15 Minutes of 9 Hz Alpha waves to encourage relaxation and ease physical tension — fades gently over the final 5 minutes",
     duration: "15:00",
-    binauralFreq: 10,
-    icon: "learning",
+    binauralFreq: 9,
+    icon: "pain",
     color: "#506B5A",
     fadeOutDuration: 300,
   },
   {
     name: "Anxiety",
     description:
-      "15 Minutes of 8 Hz Alpha waves for calming the mind and relieving stress — fades gently over the final 5 minutes",
+      "15 Minutes of 4 Hz Theta waves for calming the mind and relieving stress — fades gently over the final 5 minutes",
     duration: "15:00",
-    binauralFreq: 8,
+    binauralFreq: 4,
     icon: "anxiety",
     color: "#5E7461",
     fadeOutDuration: 300,

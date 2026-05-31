@@ -12,7 +12,7 @@ export default function Footer() {
           <p className="font-semibold text-[var(--text-primary)] mb-1 text-[12px] uppercase tracking-widest opacity-60">
             Contact
           </p>
-          <p className="text-[13px] opacity-80 mb-3">
+          <p className="text-[13px] mb-3">
             This website and application is funded and powered by{" "}
             <a
               href="https://metabundle.ai"
@@ -24,7 +24,7 @@ export default function Footer() {
             </a>
             .
           </p>
-          <div className="space-y-1.5 opacity-80">
+          <div className="space-y-1.5">
             <a
               href="mailto:Joshua@metabundle.ai"
               className="block hover:text-[var(--primary)] transition-colors"
@@ -53,7 +53,7 @@ export default function Footer() {
           <p className="font-semibold text-[var(--text-primary)] mb-3 text-[12px] uppercase tracking-widest opacity-60">
             Legal
           </p>
-          <div className="space-y-1.5 opacity-80">
+          <div className="space-y-1.5">
             <Link
               href="/disclaimer"
               className="block hover:text-[var(--primary)] transition-colors"
@@ -66,7 +66,7 @@ export default function Footer() {
       </div>
 
       {/* ── Bottom bar ── */}
-      <div className="text-center text-[12px] opacity-60 space-y-1">
+      <div className="text-center text-[12px] space-y-1">
         <p>For educational and wellness purposes only. Not a substitute for professional medical care.</p>
         <p suppressHydrationWarning>&copy; {new Date().getFullYear()} CRUX. All rights reserved.</p>
       </div>

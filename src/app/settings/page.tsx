@@ -244,33 +244,6 @@ export default function SettingsPage() {
                 />
               </Card>
 
-              {/* Loop by default */}
-              <Card>
-                <div className="flex items-center justify-between gap-6">
-                  <div>
-                    <p className="font-semibold text-[var(--text-primary)] mb-1">Loop by default</p>
-                    <p className="text-sm text-[var(--text-secondary)]">
-                      Beats play continuously unless you turn loop off manually.
-                    </p>
-                  </div>
-                  <button
-                    role="switch"
-                    aria-checked={prefs.defaultLoopState}
-                    aria-label="Loop by default"
-                    onClick={() => set("defaultLoopState", !prefs.defaultLoopState)}
-                    className={`relative shrink-0 w-12 h-6 rounded-full border-0 cursor-pointer transition-colors ${
-                      prefs.defaultLoopState ? "bg-[var(--primary)]" : "bg-[var(--border-color)]"
-                    }`}
-                  >
-                    <span
-                      className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                        prefs.defaultLoopState ? "translate-x-6" : "translate-x-0"
-                      }`}
-                    />
-                  </button>
-                </div>
-              </Card>
-
               {/* Launch screen */}
               <Card>
                 <ControlLabel

@@ -26,7 +26,7 @@ const Header = () => {
             <span className="text-4xl md:text-5xl font-bold text-[var(--primary)] tracking-tight leading-none">
               {siteName}
             </span>
-            <span className="text-[11px] md:text-[13px] font-medium text-[var(--text-secondary)] tracking-widest uppercase opacity-70 leading-none">
+            <span className="text-[11px] md:text-[13px] font-medium text-[var(--text-secondary)] tracking-widest uppercase leading-none">
               The Core of Calm
             </span>
           </Link>

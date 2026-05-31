@@ -44,7 +44,7 @@ export default function Instructions() {
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🧠 Choosing a Session</h2>
               <ul className="space-y-3 text-[var(--text-secondary)] leading-relaxed">
                 <li>
-                  <strong className="text-[var(--text-primary)]">Focus (25 Hz Beta)</strong> —
+                  <strong className="text-[var(--text-primary)]">Focus (10 Hz Alpha)</strong> —
                   Concentration, studying, or any task requiring sharp mental attention.
                 </li>
                 <li>
@@ -52,15 +52,15 @@ export default function Instructions() {
                   Unwinding after a demanding day or easing into rest.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">Sleep (4 Hz Delta)</strong> —
+                  <strong className="text-[var(--text-primary)]">Sleep (1 Hz Delta)</strong> —
                   Falling asleep or returning to sleep after waking at night.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">Creativity (8 Hz Alpha)</strong> —
+                  <strong className="text-[var(--text-primary)]">Creativity (7 Hz Theta)</strong> —
                   Open-ended thinking, problem solving, or creative work.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">Energy (30 Hz Beta)</strong> —
+                  <strong className="text-[var(--text-primary)]">Energy (25 Hz Beta)</strong> —
                   Physical exercise or building mental alertness before a demanding task.
                 </li>
                 <li>
@@ -68,11 +68,11 @@ export default function Instructions() {
                   Daily mindfulness practice or grounding after a stressful event.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">Learning (10 Hz Alpha)</strong> —
-                  Reading, studying, or absorbing new information.
+                  <strong className="text-[var(--text-primary)]">Pain Management (9 Hz Alpha)</strong> —
+                  Encouraging deep relaxation to help ease physical tension and discomfort.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">Anxiety (8 Hz Alpha)</strong> —
+                  <strong className="text-[var(--text-primary)]">Anxiety (4 Hz Theta)</strong> —
                   Reducing stress and quieting an overactive nervous system.
                 </li>
                 <li>
@@ -127,28 +127,6 @@ export default function Instructions() {
 
             <hr className="border-[var(--border-color)]" />
 
-            {/* Loop Mode */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🔁 Loop Mode</h2>
-              <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
-                Press the <strong className="text-[var(--text-primary)]">Loop button</strong> to repeat the
-                session continuously — useful for extended meditation, sleep support, or long work blocks.
-              </p>
-              <ul className="space-y-2 text-[var(--text-secondary)] leading-relaxed">
-                <li>
-                  While looping, the fade-out is suspended and a lap-timer shows how far through
-                  the current 15-minute cycle you are.
-                </li>
-                <li>
-                  Turning loop off re-anchors the timer to your current position in the cycle,
-                  so the fade-out resumes naturally from that point.
-                </li>
-                <li>Loop resets automatically when you switch tracks.</li>
-              </ul>
-            </div>
-
-            <hr className="border-[var(--border-color)]" />
-
             {/* Noise Therapy */}
             <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🌊 Noise Therapy</h2>
@@ -187,7 +165,7 @@ export default function Instructions() {
             <hr className="border-[var(--border-color)]" />
 
             {/* Box Breathing */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+            <div id="box-breathing" className="scroll-mt-24 bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">💨 Box Breathing</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 Box breathing is a regulated breathing technique used to reduce acute stress. It
@@ -210,10 +188,33 @@ export default function Instructions() {
                   </div>
                 ))}
               </div>
-              <p className="text-[var(--text-secondary)] text-[14px] leading-relaxed">
-                Works well combined with the <strong className="text-[var(--text-primary)]">Calm</strong> or{" "}
-                <strong className="text-[var(--text-primary)]">Meditation</strong> sessions.
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
+                Breathe from your belly, not your chest, and stay relaxed during each Hold —
+                there&apos;s no need to fill your lungs to their maximum capacity. The first few
+                cycles may feel awkward, so give yourself a few minutes to adjust.
               </p>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
+                Box breathing works best with regular use — first thing in the morning,
+                just before bed, or whenever you feel anxious.
+              </p>
+              <p className="text-[var(--text-secondary)] text-[14px] leading-relaxed">
+                Works well with the <strong className="text-[var(--text-primary)]">Binaural Beats</strong> sessions.
+              </p>
+              <Link
+                href="/#box-breathing"
+                className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+              >
+                <svg
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                  className="w-4 h-4"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <circle cx="12" cy="12" r="3.5" />
+                </svg>
+                Tap to open Box Breathing
+              </Link>
             </div>
 
             <hr className="border-[var(--border-color)]" />
@@ -458,7 +459,7 @@ export default function Instructions() {
                 </li>
               </ul>
 
-              <p className="mt-4 text-[13px] text-[var(--text-secondary)] opacity-60">
+              <p className="mt-4 text-[13px] text-[var(--text-secondary)]">
                 See our full{" "}
                 <Link href="/disclaimer" className="underline underline-offset-2 hover:opacity-80">
                   Disclaimer

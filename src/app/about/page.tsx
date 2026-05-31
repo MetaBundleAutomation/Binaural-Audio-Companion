@@ -33,9 +33,9 @@ const BENEFITS = [
     description: "Deepens and stabilises meditative states, making it easier to stay present and let thoughts pass. Useful for regular practice, or as an anchor when the mind is especially hard to quiet.",
   },
   {
-    icon:        "learning",
-    title:       "Learning",
-    description: "Supports focused absorption of new material. Well-suited to reading, studying, or any session where you want information to settle rather than slip away.",
+    icon:        "pain",
+    title:       "Pain Management",
+    description: "Encourages a calm, settled state that can help ease physical tension and take the edge off discomfort. A gentle option for winding down when aches or soreness make it hard to relax.",
   },
   {
     icon:        "anxiety",

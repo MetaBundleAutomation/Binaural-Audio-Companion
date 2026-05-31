@@ -8,11 +8,9 @@ export interface Preferences {
   lastBeatId:       string | null;   // track name e.g. "Focus"
   lastNoiseId:      string | null;   // "white" | "pink" | "brown"
   lastVolume:       number;          // 0–100
-  lastLoopState:    boolean;
   defaultBeatId:    string | null;
   defaultNoiseId:   string | null;
   defaultVolume:    number;          // 0–100, default 30
-  defaultLoopState: boolean;
   launchScreen:     "home" | "player";
   favouriteBeats:   string[];        // track names
   favouriteNoises:  string[];        // noise type strings
@@ -27,11 +25,9 @@ export const DEFAULT_PREFERENCES: Preferences = {
   lastBeatId:       null,
   lastNoiseId:      null,
   lastVolume:       30,
-  lastLoopState:    false,
   defaultBeatId:    null,
   defaultNoiseId:   null,
   defaultVolume:    30,
-  defaultLoopState: false,
   launchScreen:     "home" as const,
   favouriteBeats:   [],
   favouriteNoises:  [],
@@ -46,11 +42,9 @@ export const PREF_KEYS: Record<keyof Preferences, string> = {
   lastBeatId:       "crux:lastBeatId",
   lastNoiseId:      "crux:lastNoiseId",
   lastVolume:       "crux:lastVolume",
-  lastLoopState:    "crux:lastLoopState",
   defaultBeatId:    "crux:defaultBeatId",
   defaultNoiseId:   "crux:defaultNoiseId",
   defaultVolume:    "crux:defaultVolume",
-  defaultLoopState: "crux:defaultLoopState",
   launchScreen:     "crux:launchScreen",
   favouriteBeats:   "crux:favouriteBeats",
   favouriteNoises:  "crux:favouriteNoises",
@@ -64,7 +58,6 @@ export const RESETTABLE_KEYS: (keyof Preferences)[] = [
   "defaultBeatId",
   "defaultNoiseId",
   "defaultVolume",
-  "defaultLoopState",
   "launchScreen",
   "brightness",
   "theme",
