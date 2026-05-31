@@ -21,7 +21,7 @@ export default function Home() {
       </div>
 
       {/* Closing affirmation — a quiet bookend to the greeting at the top */}
-      <p className="text-center text-sm md:text-base font-light italic text-[var(--text-secondary)] max-w-[600px] mx-auto px-4 pb-20 pt-4 text-balance">
+      <p className="text-center text-base font-light italic text-[var(--text-secondary)] max-w-[600px] mx-auto px-4 pb-20 pt-4 text-balance">
         You&apos;re right where you&apos;re supposed to be.
       </p>
     </main>
