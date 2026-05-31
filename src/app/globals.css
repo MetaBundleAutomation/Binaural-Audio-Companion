@@ -32,7 +32,7 @@ html.brightness-dim {
   --background:       #060C14;
   --background-light: #0A1220;
   --background-card:  #101A2C;
-  --text-secondary:   #6A7A8A;
+  --text-secondary:   #94A2B0;
   --border-color:     #182840;
 }
 html.brightness-bright {
@@ -64,7 +64,7 @@ html.theme-army.brightness-dim {
   --background:       #080B06;
   --background-light: #0C1008;
   --background-card:  #141810;
-  --text-secondary:   #707460;
+  --text-secondary:   #9CA084;
   --border-color:     #1E2214;
 }
 html.theme-army.brightness-bright {
@@ -96,7 +96,7 @@ html.theme-airforce.brightness-dim {
   --background:       #070C18;
   --background-light: #0E1624;
   --background-card:  #141E34;
-  --text-secondary:   #667098;
+  --text-secondary:   #92A0CC;
   --border-color:     #1C306A;
 }
 html.theme-airforce.brightness-bright {
@@ -128,7 +128,7 @@ html.theme-midnight.brightness-dim {
   --background:       #040508;
   --background-light: #07090E;
   --background-card:  #0B0F14;
-  --text-secondary:   #566472;
+  --text-secondary:   #808F9D;
   --border-color:     #0E1820;
 }
 html.theme-midnight.brightness-bright {
