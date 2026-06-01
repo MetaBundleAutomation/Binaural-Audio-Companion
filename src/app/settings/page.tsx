@@ -9,10 +9,10 @@ import type { Preferences } from "@/hooks/usePreferences";
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const NOISE_OPTIONS: { id: string; label: string }[] = [
-  { id: "white", label: "White Noise" },
-  { id: "pink",  label: "Pink Noise"  },
-  { id: "brown", label: "Brown Noise" },
-  { id: "rain",  label: "Rain"        },
+  { id: "white",     label: "White Noise" },
+  { id: "pink",      label: "Pink Noise"  },
+  { id: "brown",     label: "Brown Noise" },
+  { id: "heavyrain", label: "Heavy Rain"  },
 ];
 
 // ─── Theme metadata ───────────────────────────────────────────────────────────
