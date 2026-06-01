@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { tracks, hexToRgbTriplet } from "@/data/tracks";
 import { useAudioEngine } from "@/hooks/useAudioEngine";
 import { usePreferences } from "@/hooks/usePreferences";
@@ -52,11 +53,31 @@ export default function Player() {
       )}
 
       {/* ── Player ──────────────────────────────────────────────────────────── */}
-      <section id="player" className="my-16">
+      <section id="player" className="my-16 scroll-mt-24">
         <div
           className="rounded-3xl p-8 border border-[var(--border-color)] player-bg"
           style={{ boxShadow: "var(--shadow-lg)", ...hexToRgbVars(track.color) }}
         >
+
+          {/* Link to the session guide in Instructions */}
+          <div className="flex justify-center mb-6">
+            <Link
+              href="/instructions#choosing-a-binaural-beat"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+            >
+              <svg
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                className="w-4 h-4"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4" />
+                <path d="M12 8h.01" />
+              </svg>
+              Tap to learn how to choose a Binaural Beat
+            </Link>
+          </div>
 
           {/* Track selector — swipeable carousel replaces the static hero card.
               Swiping / tapping a side card centres it and immediately loads that

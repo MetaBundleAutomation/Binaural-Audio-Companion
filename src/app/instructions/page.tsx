@@ -39,9 +39,9 @@ export default function Instructions() {
 
             <hr className="border-[var(--border-color)]" />
 
-            {/* Choosing a Session */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🧠 Choosing a Session</h2>
+            {/* Choosing a Binaural Beat */}
+            <div id="choosing-a-binaural-beat" className="scroll-mt-24 bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🧠 Choosing a Binaural Beat</h2>
               <ul className="space-y-3 text-[var(--text-secondary)] leading-relaxed">
                 <li>
                   <strong className="text-[var(--text-primary)]">Focus (10 Hz Alpha)</strong> —
@@ -88,6 +88,21 @@ export default function Instructions() {
                   Brisker left-right audio for those who find a livelier rhythm easier to relax with.
                 </li>
               </ul>
+              <Link
+                href="/#player"
+                className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+              >
+                <svg
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                  className="w-4 h-4"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polygon points="10 8 16 12 10 16 10 8" />
+                </svg>
+                Tap to open Binaural Beats
+              </Link>
             </div>
 
             <hr className="border-[var(--border-color)]" />
