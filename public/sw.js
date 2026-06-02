@@ -4,7 +4,15 @@
 //   navigation requests    → network-first, cache fallback (works offline)
 //   everything else        → network-first, cache fallback
 
-const CACHE = "crux-v6";
+// ── Cache version ─────────────────────────────────────────────────────────────
+// BUMP THIS on every release that changes cached assets (audio, icons, the app
+// shell). Renaming the cache makes the SW delete all older caches on activate,
+// so returning users get fresh files instead of a stale copy.
+//
+// For audio specifically, ALSO version the filename when its content changes
+// (e.g. heavy-rain.mp3 → heavy-rain-v2.mp3, or append ?v=N): a brand-new URL can
+// never be served from an old cache.
+const CACHE = "crux-v7";
 const PRECACHE = ["/", "/about"];
 
 // ── Install: pre-cache the app shell ──────────────────────────────────────────
