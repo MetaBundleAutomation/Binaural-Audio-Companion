@@ -26,18 +26,18 @@ export default function AromatherapyCard({ trackName }: AromatherapyCardProps) {
 
   return (
     <div
-      className="mx-auto mb-6 rounded-2xl border border-[var(--border-color)] px-5 py-4 flex items-start gap-4"
+      className="mx-auto mb-6 rounded-2xl border border-[var(--border-color)] px-6 py-5 flex flex-col items-center text-center gap-2"
       style={{
-        maxWidth:        500,
+        maxWidth:        400,
         background:      "var(--background-card)",
         boxShadow:       "0 2px 12px rgba(0,0,0,0.18)",
       }}
     >
       {/* Leaf icon */}
-      <span className="text-2xl leading-none mt-0.5 shrink-0" aria-hidden="true">🌿</span>
+      <span className="text-2xl leading-none shrink-0" aria-hidden="true">🌿</span>
 
       {/* Text content */}
-      <div className="flex-1 min-w-0">
+      <div className="text-center">
         <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--text-secondary)] mb-1">
           Aromatherapy pairing
         </p>
