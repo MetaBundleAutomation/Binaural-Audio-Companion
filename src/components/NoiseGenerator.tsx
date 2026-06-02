@@ -40,15 +40,26 @@ const NOISE_INFO: Record<
 const NOISE_TYPES: NoiseType[] = ["white", "pink", "brown", "heavyrain"];
 
 // Recorded (sampled) noise types are fetched and decoded once, then looped.
-// Their MP3s sit at a lower amplitude than the synthesised noise, so each carries
-// a gain boost — measured from mean-volume analysis — that brings it in line with
-// white/pink/brown at the same slider position.
-// Recorded (sampled) noise types are fetched and decoded once, then looped.
-// gainBoost balances the recording to sit at the same perceived level as the
-// synthesised white/pink/brown noise at a given slider position (1.4 derived
-// from mean-volume analysis of the recording).
-const SAMPLED_NOISES: Partial<Record<NoiseType, { url: string; gainBoost: number }>> = {
-  heavyrain: { url: "/audio/heavy-rain.mp3", gainBoost: 1.4 },
+// Heavy Rain plays from the ORIGINAL recording with NO compression or limiting:
+// boosting its loudness that way added transient distortion on the low-bitrate
+// source (audible as "clipping" on headphones). The "-v2" in the URL is purely
+// to bust stale caches when the file changes.
+const SAMPLED_NOISES: Partial<Record<NoiseType, { url: string }>> = {
+  heavyrain: { url: "/audio/heavy-rain-v2.mp3" },
+};
+
+// Per-noise output gain. All four are levelled to a low, matched RMS (~0.028)
+// with large headroom — the loudest peak (Heavy Rain) reaches only ~0.59 at full
+// slider, so nothing clips on any audio path. The synth noises are pulled right
+// down to meet Heavy Rain's clean, natural (and quiet) level rather than
+// compressing the rain up to theirs.
+//   raw RMS → factor → levelled RMS:
+//   white 0.58 ×0.048 · pink 0.24 ×0.115 · brown 0.20 ×0.139 · heavyrain 0.039 ×0.72 (peak 0.59)
+const NOISE_GAIN: Record<NoiseType, number> = {
+  white:     0.048,
+  pink:      0.115,
+  brown:     0.139,
+  heavyrain: 0.72,
 };
 
 // ─── Audio Generation ─────────────────────────────────────────────────────────
@@ -243,7 +254,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     source.loop   = true;
 
     const gain = ctx.createGain();
-    const boost = SAMPLED_NOISES[type]?.gainBoost ?? 1;
+    const boost = NOISE_GAIN[type];
     // Start near-silent for fade-in
     gain.gain.value = 0.001 * (vol / 100) * boost;
 
@@ -269,7 +280,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
       }
       const elapsed = (Date.now() - startTime) / 1000; // seconds
       if (elapsed >= 3) {
-        const boost = SAMPLED_NOISES[noiseRef.current]?.gainBoost ?? 1;
+        const boost = NOISE_GAIN[noiseRef.current];
         gainRef.current.gain.setValueAtTime(
           (volumeRef.current / 100) * boost,
           audioCtxRef.current.currentTime,
@@ -278,7 +289,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
         return;
       }
       const fadeInMult = Math.pow(1000, (elapsed / 3) - 1); // 0.001 → 1
-      const boost = SAMPLED_NOISES[noiseRef.current]?.gainBoost ?? 1;
+      const boost = NOISE_GAIN[noiseRef.current];
       gainRef.current.gain.setValueAtTime(
         (volumeRef.current / 100) * fadeInMult * boost,
         audioCtxRef.current.currentTime,
@@ -310,7 +321,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     setVolumeState(value);
     // Skip direct gain write during fade-in — the interval will use volumeRef.current
     if (gainRef.current && audioCtxRef.current && !fadeInActiveRef.current) {
-      const boost = SAMPLED_NOISES[noiseRef.current]?.gainBoost ?? 1;
+      const boost = NOISE_GAIN[noiseRef.current];
       gainRef.current.gain.setValueAtTime((value / 100) * boost, audioCtxRef.current.currentTime);
     }
   }
