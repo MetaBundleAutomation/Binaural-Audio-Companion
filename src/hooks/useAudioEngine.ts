@@ -446,8 +446,16 @@ export function useAudioEngine(): AudioEngine {
       // Respect both the fade-out and fade-in multipliers so a volume change
       // never snaps to the wrong level during either ramp.
       const gain = 0.25 * vol * fadeMultiplierRef.current * fadeInMultRef.current;
-      gainNodeRef.current.left.gain.setValueAtTime(gain, now);
-      gainNodeRef.current.right.gain.setValueAtTime(gain, now);
+      // 15 ms linear ramp — imperceptible but eliminates the click/pop ("zipper
+      // noise") that an instantaneous setValueAtTime causes on iOS when the user
+      // taps the slider track to jump to a new position.
+      const rampEnd = now + 0.015;
+      gainNodeRef.current.left.gain.cancelScheduledValues(now);
+      gainNodeRef.current.left.gain.setValueAtTime(gainNodeRef.current.left.gain.value, now);
+      gainNodeRef.current.left.gain.linearRampToValueAtTime(gain, rampEnd);
+      gainNodeRef.current.right.gain.cancelScheduledValues(now);
+      gainNodeRef.current.right.gain.setValueAtTime(gainNodeRef.current.right.gain.value, now);
+      gainNodeRef.current.right.gain.linearRampToValueAtTime(gain, rampEnd);
     }
   }, []);
 

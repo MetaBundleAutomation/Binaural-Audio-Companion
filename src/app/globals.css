@@ -178,6 +178,9 @@ input[type="range"] {
   background: transparent;
   outline: none;
   cursor: pointer;
+  /* Let the slider own its touch handling on iOS — prevents scroll interference
+     and ensures the thumb responds to touch without fighting IOSTouchFix. */
+  touch-action: none;
 }
 
 /* Track – webkit (Chrome, Safari, Edge) */

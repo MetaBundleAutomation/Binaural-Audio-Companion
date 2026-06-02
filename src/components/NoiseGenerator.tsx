@@ -322,7 +322,12 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     // Skip direct gain write during fade-in — the interval will use volumeRef.current
     if (gainRef.current && audioCtxRef.current && !fadeInActiveRef.current) {
       const boost = NOISE_GAIN[noiseRef.current];
-      gainRef.current.gain.setValueAtTime((value / 100) * boost, audioCtxRef.current.currentTime);
+      const now = audioCtxRef.current.currentTime;
+      const target = (value / 100) * boost;
+      // 15 ms linear ramp eliminates the click/pop on iOS when tapping the slider track.
+      gainRef.current.gain.cancelScheduledValues(now);
+      gainRef.current.gain.setValueAtTime(gainRef.current.gain.value, now);
+      gainRef.current.gain.linearRampToValueAtTime(target, now + 0.015);
     }
   }
 

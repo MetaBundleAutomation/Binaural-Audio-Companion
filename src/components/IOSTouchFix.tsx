@@ -24,8 +24,11 @@ export default function IOSTouchFix() {
     const onMove = (e: TouchEvent) => {
       const dx = Math.abs(e.touches[0].clientX - startX);
       const dy = Math.abs(e.touches[0].clientY - startY);
-      // If horizontal movement dominates, block page-level scroll entirely
-      if (dx > dy) e.preventDefault();
+      // If horizontal movement dominates, block page-level scroll —
+      // but never prevent on range inputs: that would kill slider dragging on iOS.
+      const isRangeInput =
+        e.target instanceof HTMLInputElement && e.target.type === "range";
+      if (dx > dy && !isRangeInput) e.preventDefault();
     };
 
     document.addEventListener("touchstart", onStart, { passive: true });
