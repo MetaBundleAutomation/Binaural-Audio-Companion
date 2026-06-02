@@ -173,7 +173,7 @@ export default function SettingsPage() {
           <div className="mb-10">
             <h2 className="text-xl font-bold text-[var(--text-primary)] mb-1">My Defaults</h2>
             <p className="text-sm text-[var(--text-secondary)] mb-6">
-              Choose how CRUX opens for you each time.
+              Your defaults are what CRUX automatically picks for you each time you open it.
             </p>
 
             <div className="space-y-4">

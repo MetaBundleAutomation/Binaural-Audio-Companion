@@ -42,6 +42,38 @@ export default function Instructions() {
             {/* Choosing a Binaural Beat */}
             <div id="choosing-a-binaural-beat" className="scroll-mt-24 bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🧠 Choosing a Binaural Beat</h2>
+
+              {/* How binaural beats work */}
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-5">
+                Binaural beats work by playing two slightly different tones — one in each ear.
+                Your brain perceives the small difference between them as a single pulsing
+                &quot;beat.&quot; Because the effect is created inside your brain from the two
+                separate signals, stereo headphones are essential — playing the sound through a
+                speaker won&apos;t work.
+              </p>
+
+              {/* How to use them */}
+              <p className="font-bold text-[var(--text-primary)] mb-3">How to use them</p>
+              <ol className="list-decimal list-outside pl-5 space-y-2 text-[var(--text-secondary)] leading-relaxed mb-6">
+                <li>Put on stereo headphones (not a single earbud or a speaker).</li>
+                <li>
+                  Pick a track matched to your goal — lower frequency ranges (delta/theta) are
+                  commonly used for sleep, deep relaxation, or meditation, while higher ranges
+                  (alpha/beta) are used for calm focus and alertness.
+                </li>
+                <li>Listen for around 10–15 minutes, ideally with your eyes closed or while doing a calm activity.</li>
+              </ol>
+
+              {/* Which beat to choose */}
+              <p className="font-bold text-[var(--text-primary)] mb-3">Which beat to choose</p>
+
+              {/* ── Binaural beats group ───────────────────────────────────── */}
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
+                <strong className="text-[var(--text-primary)]">Binaural beats</strong> — two tones,
+                one in each ear; the perceived beat gently encourages a matching mental state.
+                Slower beats (delta/theta) suit rest and relaxation, while faster beats (alpha/beta)
+                suit calm focus and alertness.
+              </p>
               <ul className="space-y-3 text-[var(--text-secondary)] leading-relaxed">
                 <li>
                   <strong className="text-[var(--text-primary)]">Focus (10 Hz Alpha)</strong> —
@@ -75,6 +107,21 @@ export default function Instructions() {
                   <strong className="text-[var(--text-primary)]">Anxiety (4 Hz Theta)</strong> —
                   Reducing stress and quieting an overactive nervous system.
                 </li>
+              </ul>
+
+              {/* ── Divider between the two track types ─────────────────────── */}
+              <hr className="border-[var(--border-color)] my-6" />
+
+              {/* ── Bilateral tracks group ─────────────────────────────────── */}
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
+                <strong className="text-[var(--text-primary)]">Bilateral tracks (left–right audio)</strong>{" "}
+                — these work differently from binaural beats: instead of two tones, a single soft tone
+                alternates between your left and right ear at a steady pace (50, 60 or 70 pulses per
+                minute), so stereo headphones are needed. Many people find the predictable side-to-side
+                rhythm grounding — a simple, steady pattern to settle into — with the slower pace
+                feeling calmer and the brisker pace a little more alert.
+              </p>
+              <ul className="space-y-3 text-[var(--text-secondary)] leading-relaxed">
                 <li>
                   <strong className="text-[var(--text-primary)]">50 BPM Bilateral</strong> —
                   Slow, rhythmic left-right audio — a gentle pace for unwinding or quieting a busy mind.
@@ -88,6 +135,7 @@ export default function Instructions() {
                   Brisker left-right audio for those who find a livelier rhythm easier to relax with.
                 </li>
               </ul>
+
               <Link
                 href="/#player"
                 className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
@@ -143,7 +191,7 @@ export default function Instructions() {
             <hr className="border-[var(--border-color)]" />
 
             {/* Noise Therapy */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+            <div id="noise-therapy" className="scroll-mt-24 bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🌊 Noise Therapy</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 White, pink, brown noise, and a heavy rain recording can be played alongside — or instead
@@ -153,29 +201,47 @@ export default function Instructions() {
               <ul className="space-y-3 text-[var(--text-secondary)] leading-relaxed">
                 <li>
                   <strong className="text-[var(--text-primary)]">White noise</strong> — all frequencies
-                  at equal strength, like a fan or static. Good for concentration and blocking
-                  unpredictable sounds.
+                  at equal strength, like a steady fan or static. It masks sudden sounds that can
+                  trigger a stress response, helping your nervous system settle, and is good for
+                  concentration and blocking unpredictable noise.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">Pink noise</strong> — stronger at low
-                  frequencies, like rainfall or wind. Promotes deeper sleep and reduces sensitivity
-                  to intrusive thoughts.
+                  <strong className="text-[var(--text-primary)]">Pink noise</strong> — louder at low
+                  frequencies, softer at high — the pattern of rainfall, wind, and rivers. Promotes
+                  deeper sleep stages and reduces the brain&apos;s sensitivity to intrusive thoughts.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">Brown noise</strong> — a deep bass
-                  rumble like distant thunder. Preferred by many for reducing hypervigilance at night.
+                  <strong className="text-[var(--text-primary)]">Brown noise</strong> — a heavy bass
+                  rumble, like distant thunder or ocean swells. The deepest tone of the group, and a
+                  popular choice for reducing hypervigilance at night.
                 </li>
                 <li>
                   <strong className="text-[var(--text-primary)]">Heavy Rain</strong> — Queensland rain
-                  on a COLORBOND roof. A dense, enveloping downpour that blends well with any binaural
-                  beat and masks even persistent background noise. Particularly effective for sleep
-                  and deep focus.
+                  on a COLORBOND roof — a dense, enveloping downpour that blends well with any binaural
+                  beat and masks even persistent background noise, wrapping the room in steady,
+                  grounding sound. Particularly effective for sleep and deep focus.
                 </li>
                 <li>
                   Enable <strong className="text-[var(--text-primary)]">Auto-sync</strong> to have
                   noise start and stop automatically with your binaural audio.
                 </li>
               </ul>
+              <Link
+                href="/#noise"
+                className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+              >
+                <svg
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                  className="w-4 h-4"
+                  aria-hidden="true"
+                >
+                  <path d="M11 5 6 9H2v6h4l5 4V5z" />
+                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                </svg>
+                Tap to open Noise Therapy
+              </Link>
             </div>
 
             <hr className="border-[var(--border-color)]" />
@@ -328,12 +394,12 @@ export default function Instructions() {
                   favourite. Favourites float to the top of each list automatically.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">Save a default session.</strong>{" "}
-                  Press the <span className="font-semibold text-[var(--text-primary)]">Save</span> bookmark
-                  button in the player controls to lock in the current beat and volume as your
-                  starting point. The same button appears as{" "}
-                  <span className="font-semibold text-[var(--text-primary)]">Set as my default</span> in
-                  Noise Therapy.
+                  <strong className="text-[var(--text-primary)]">Set what CRUX opens with.</strong>{" "}
+                  Your last-used beat and noise are remembered automatically. To pin a specific
+                  starting point instead, open{" "}
+                  <Link href="/settings" className="underline underline-offset-2 text-[var(--primary)] hover:opacity-80">Settings</Link>{" "}
+                  and choose your default beat, noise, and volume under{" "}
+                  <span className="font-semibold text-[var(--text-primary)]">My Defaults</span>.
                 </li>
                 <li>
                   <strong className="text-[var(--text-primary)]">Choose your launch screen.</strong>{" "}

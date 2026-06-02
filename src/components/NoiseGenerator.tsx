@@ -1,42 +1,38 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useMemo } from "react";
+import Link from "next/link";
 import { usePreferences } from "@/hooks/usePreferences";
 
 // ─── Types & Data ─────────────────────────────────────────────────────────────
 
 type NoiseType = "white" | "pink" | "brown" | "heavyrain";
 
+// Per-noise descriptions live in the Noise Therapy section under Instructions
+// (reachable via the "Tap to learn how to use Noise Therapy" pill) — kept out of
+// the cards here so selecting one doesn't expand its tile on small screens.
 const NOISE_INFO: Record<
   NoiseType,
-  { label: string; tagline: string; description: string; color: string }
+  { label: string; tagline: string; color: string }
 > = {
   white: {
     label: "White Noise",
     tagline: "Steady. Consistent. Grounding.",
-    description:
-      "All frequencies at equal strength — like a steady fan or static rain. White noise masks sudden sounds that can trigger a stress response, giving your nervous system permission to stand down.",
     color: "#8C9BAA",
   },
   pink: {
     label: "Pink Noise",
     tagline: "Natural. Balanced. Calming.",
-    description:
-      "Louder at low frequencies, softer at high — the pattern of rainfall, wind, and rivers. Pink noise promotes deeper sleep stages and reduces the brain's sensitivity to intrusive thoughts.",
     color: "#4BA8BD",
   },
   brown: {
     label: "Brown Noise",
     tagline: "Deep. Warm. Anchoring.",
-    description:
-      "A heavy bass rumble — like distant thunder or ocean swells. Brown noise carries the deepest tone of all three and is preferred by many veterans for reducing hypervigilance at night.",
     color: "#3A8FA3",
   },
   heavyrain: {
     label: "Heavy Rain",
     tagline: "Heavy. Enveloping. Grounding.",
-    description:
-      "Heavy Queensland rain on a COLORBOND roof — a dense, enveloping downpour. Fuller than light rainfall, it masks even persistent background noise and wraps the room in steady, grounding sound.",
     color: "#477A9E",
   },
 };
@@ -150,17 +146,6 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     const rest = NOISE_TYPES.filter(t => !favSet.has(t));
     return [...favs, ...rest];
   }, [prefs.favouriteNoises]);
-
-  function fireToast(msg: string) {
-    window.dispatchEvent(new CustomEvent("crux:toast", { detail: msg }));
-  }
-
-  function handleSetDefault() {
-    const alreadyDefault = prefs.defaultNoiseId === noiseRef.current;
-    if (alreadyDefault) { fireToast("Already your default."); return; }
-    set("defaultNoiseId", noiseRef.current);
-    fireToast("Saved as your default.");
-  }
 
   const [selectedNoise, setSelectedNoise] = useState<NoiseType>("pink");
   const [isPlaying, setIsPlaying] = useState(false);
@@ -392,17 +377,34 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
   // ── Render ────────────────────────────────────────────────────────────────────
 
   return (
-    <section id="noise" className="my-16">
+    <section id="noise" className="my-16 scroll-mt-24">
       <div
         className="rounded-3xl p-10 border border-[var(--border-color)] bg-[var(--background-card)]"
         style={{ boxShadow: "var(--shadow-lg)" }}
       >
-        <h2 className="text-[32px] font-bold mb-2 tracking-tight text-[var(--text-primary)]">
+        <h2 className="text-[32px] font-bold mb-4 tracking-tight text-[var(--text-primary)] text-center">
           Noise Therapy
         </h2>
-        <p className="text-[16px] text-[var(--text-secondary)] mb-8 leading-relaxed">
-          Background noise softens the environment, reduces sensory overload, and gives your nervous system something steady to hold on to. Choose what works for you.
-        </p>
+
+        {/* Link to the Noise Therapy guide in Instructions */}
+        <div className="flex justify-center mb-8">
+          <Link
+            href="/instructions#noise-therapy"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+          >
+            <svg
+              viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+              className="w-4 h-4"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 16v-4" />
+              <path d="M12 8h.01" />
+            </svg>
+            Tap to learn how to use Noise Therapy
+          </Link>
+        </div>
 
         {/* Noise Type Selection */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -437,11 +439,6 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
                   >
                     {n.tagline}
                   </div>
-                  {isSelected && (
-                    <div className="text-[13px] text-[var(--text-secondary)] leading-relaxed mt-2">
-                      {n.description}
-                    </div>
-                  )}
                 </button>
 
                 {/* Favourite heart */}
@@ -497,28 +494,6 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
                   <path d="M8 5v14l11-7z" />
                 </svg>
               )}
-            </button>
-          </div>
-
-          {/* Set as default */}
-          <div className="flex justify-center">
-            <button
-              onClick={handleSetDefault}
-              className="flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--text-secondary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all cursor-pointer"
-              aria-label="Set current noise as my default"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-4 h-4"
-              >
-                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-              </svg>
-              Set as my default
             </button>
           </div>
 

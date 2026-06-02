@@ -11,10 +11,6 @@ import BoxBreathing from "./BoxBreathing";
 import NoiseGenerator from "./NoiseGenerator";
 import VolumeWarningModal from "./VolumeWarningModal";
 
-function fireToast(msg: string) {
-  window.dispatchEvent(new CustomEvent("crux:toast", { detail: msg }));
-}
-
 function hexToRgbVars(hex: string): React.CSSProperties {
   const [r, g, b] = hexToRgbTriplet(hex);
   return { "--beat-r": r, "--beat-g": g, "--beat-b": b } as React.CSSProperties;
@@ -23,7 +19,7 @@ function hexToRgbVars(hex: string): React.CSSProperties {
 export default function Player() {
   const engine         = useAudioEngine();
   const track          = tracks[engine.currentTrackIndex];
-  const { prefs, set } = usePreferences();
+  const { prefs } = usePreferences();
 
   // Track which card is centred in the carousel so AromatherapyCard updates live
   const [browseTrackName, setBrowseTrackName] = useState(
@@ -32,16 +28,6 @@ export default function Player() {
   useEffect(() => {
     setBrowseTrackName(tracks[engine.currentTrackIndex]?.name ?? tracks[0].name);
   }, [engine.currentTrackIndex]);
-
-  function handleSetDefault() {
-    const alreadyDefault =
-      prefs.defaultBeatId === track.name &&
-      prefs.defaultVolume === engine.volume;
-    if (alreadyDefault) { fireToast("Already saved."); return; }
-    set("defaultBeatId", track.name);
-    set("defaultVolume", engine.volume);
-    fireToast("Saved.");
-  }
 
   return (
     <>
@@ -58,6 +44,11 @@ export default function Player() {
           className="rounded-3xl p-8 border border-[var(--border-color)] player-bg"
           style={{ boxShadow: "var(--shadow-lg)", ...hexToRgbVars(track.color) }}
         >
+
+          {/* Section title */}
+          <h2 className="text-[32px] font-bold mb-4 tracking-tight text-[var(--text-primary)] text-center">
+            Binaural Beats
+          </h2>
 
           {/* Link to the session guide in Instructions */}
           <div className="flex justify-center mb-6">
@@ -119,30 +110,6 @@ export default function Player() {
                   </svg>
                 )}
               </button>
-            </div>
-
-            {/* Secondary controls — default */}
-            <div className="flex justify-center items-center">
-
-              {/* Save as default */}
-              <div className="flex flex-col items-center gap-1">
-                <button
-                  onClick={handleSetDefault}
-                  aria-label="Save current beat and settings"
-                  className="w-[38px] h-[38px] rounded-full flex items-center justify-center transition-all cursor-pointer bg-[var(--background-light)]"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  <svg
-                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                    className="w-4 h-4"
-                  >
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                  </svg>
-                </button>
-                <span className="text-[10px] font-semibold text-[var(--text-secondary)]">Save</span>
-              </div>
-
             </div>
 
             {/* Volume slider */}
