@@ -276,6 +276,12 @@ export default function Instructions() {
                 cycles may feel awkward, so give yourself a few minutes to adjust.
               </p>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
+                Your mind may wander at first, but after a few minutes the rhythm will feel more
+                natural. Some people feel a little light-headed when they first start, so take a
+                break if you feel uncomfortable. Your mind and body will adapt after two to four
+                weeks of regular practice.
+              </p>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 Box breathing works best with regular use — first thing in the morning,
                 just before bed, or whenever you feel anxious.
               </p>
