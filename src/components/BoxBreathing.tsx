@@ -115,6 +115,10 @@ export default function BoxBreathing() {
   const elapsedRef   = useRef(0);
   const lastTsRef    = useRef(0);
   const isRunningRef = useRef(false);
+  // True when the OS "Reduce Motion" setting is on — the canvas then drops the
+  // decorative glow/orbiting-dot effects, keeping only the essential breathing
+  // circle and phase ring (read live in draw(), updated by the effect below).
+  const reducedMotionRef = useRef(false);
 
   // ── Audio (Web Audio API) ─────────────────────────────────────────────────
 
@@ -158,6 +162,22 @@ export default function BoxBreathing() {
 
   const [status,          setStatus]          = useState<Status>("idle");
   const [voiceEnabled, setVoiceEnabled] = useState(true); // default ON
+
+  // ── Reduce Motion preference ──────────────────────────────────────────────
+  // Tracked live so draw() can drop decorative motion the moment the OS setting
+  // changes, without re-creating the animation loop.
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    reducedMotionRef.current = mq.matches;
+    const onChange = () => {
+      reducedMotionRef.current = mq.matches;
+      if (!isRunningRef.current) draw(true); // refresh the idle canvas immediately
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ── Audio bootstrap ──────────────────────────────────────────────────────
 
@@ -232,21 +252,24 @@ export default function BoxBreathing() {
     const r         = getRadius(phase, elapsed, idle);
     const pc        = idle ? "#4a6b8a" : PHASES[phase].color;
     const countdown = idle ? "—" : String(Math.max(1, Math.ceil(4 * (1 - t))));
+    const reduced   = reducedMotionRef.current;
 
     ctx.clearRect(0, 0, S, S);
 
-    // Aura glow halos
-    const maxAura = TRACK_R - 18;
-    ([
-      [Math.min(r + 22, maxAura - 16), 0.16],
-      [Math.min(r + 38, maxAura - 8),  0.08],
-      [Math.min(r + 54, maxAura),       0.03],
-    ] as [number, number][]).forEach(([ar, a]) => {
-      ctx.beginPath();
-      ctx.arc(C, C, ar, 0, Math.PI * 2);
-      ctx.fillStyle = alpha(pc, a);
-      ctx.fill();
-    });
+    // Aura glow halos — skipped under Reduce Motion (decorative pulsing glow)
+    if (!reduced) {
+      const maxAura = TRACK_R - 18;
+      ([
+        [Math.min(r + 22, maxAura - 16), 0.16],
+        [Math.min(r + 38, maxAura - 8),  0.08],
+        [Math.min(r + 54, maxAura),       0.03],
+      ] as [number, number][]).forEach(([ar, a]) => {
+        ctx.beginPath();
+        ctx.arc(C, C, ar, 0, Math.PI * 2);
+        ctx.fillStyle = alpha(pc, a);
+        ctx.fill();
+      });
+    }
 
     // Breathing circle fill
     const grad = ctx.createRadialGradient(C, C - r * 0.25, 0, C, C, r);
@@ -292,8 +315,8 @@ export default function BoxBreathing() {
       }
     }
 
-    // Glowing dot on track ring
-    if (!idle) {
+    // Glowing dot on track ring — skipped under Reduce Motion (orbiting motion)
+    if (!idle && !reduced) {
       const sa = -Math.PI / 2 + phase * (Math.PI / 2) + SEG_GAP / 2;
       const ea = -Math.PI / 2 + (phase + 1) * (Math.PI / 2) - SEG_GAP / 2;
       const da = sa + (ea - sa) * t;
@@ -343,8 +366,10 @@ export default function BoxBreathing() {
       // sites automatically show the right text without extra parameters.
       ctx.fillText(introModeRef.current ? "breathe with me" : "press start", C, C + 46);
     } else {
-      ctx.shadowColor = pc;
-      ctx.shadowBlur  = 28;
+      if (!reduced) {
+        ctx.shadowColor = pc;
+        ctx.shadowBlur  = 28;
+      }
       ctx.font        = "200 72px Arial, sans-serif";
       ctx.fillStyle   = alpha(pc, 0.95);
       ctx.fillText(countdown, C, C);

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { tracks, hexToRgbTriplet } from "@/data/tracks";
+import { tracks, hexToRgbTriplet, parseDuration, formatTime } from "@/data/tracks";
 import { useAudioEngine } from "@/hooks/useAudioEngine";
 import { usePreferences } from "@/hooks/usePreferences";
 import AudioCarousel from "./AudioCarousel";
@@ -20,6 +20,10 @@ export default function Player() {
   const engine         = useAudioEngine();
   const track          = tracks[engine.currentTrackIndex];
   const { prefs } = usePreferences();
+
+  // Session progress for the player's time/progress display
+  const totalSeconds = parseDuration(track.duration);
+  const progressPct  = totalSeconds ? Math.min(100, (engine.elapsed / totalSeconds) * 100) : 0;
 
   // Track which card is centred in the carousel so AromatherapyCard updates live
   const [browseTrackName, setBrowseTrackName] = useState(
@@ -110,6 +114,18 @@ export default function Player() {
                   </svg>
                 )}
               </button>
+            </div>
+
+            {/* Session progress — elapsed · bar · total */}
+            <div className="flex items-center gap-3 px-1 text-[11px] tabular-nums text-[var(--text-secondary)]">
+              <span>{formatTime(Math.min(engine.elapsed, totalSeconds))}</span>
+              <div className="flex-1 h-1 rounded-full bg-[var(--background-light)] overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-[var(--primary)]"
+                  style={{ width: `${progressPct}%` }}
+                />
+              </div>
+              <span>{formatTime(totalSeconds)}</span>
             </div>
 
             {/* Volume slider */}

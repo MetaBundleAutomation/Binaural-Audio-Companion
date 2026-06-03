@@ -157,6 +157,20 @@ html {
   overscroll-behavior: none;
 }
 
+/* Respect the OS "Reduce Motion" setting — disable CSS animations, transitions,
+   and smooth scrolling for users who find motion uncomfortable. The Box
+   Breathing canvas additionally simplifies its visuals in JS (see BoxBreathing). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
   background: var(--background);
