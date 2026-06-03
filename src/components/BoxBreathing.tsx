@@ -17,9 +17,10 @@ const PHASES = [
   { name: "Hold",   subtitle: "hold still",  color: "#9ba8ff" },
 ];
 const PHASE_LABELS = ["Inhale", "Hold", "Exhale", "Hold"];
-// Each phase is 4 000 ms — equal durations, as close to 4 s as possible.
-// Animation starts at INTRO_END_S when "Inhale" is spoken; the 16 000 ms
-// cycle is within ~176 ms of the audio loop length (15 824 ms), imperceptible.
+// Each phase is 4 000 ms. Animation starts at INTRO_END_S when "Inhale" is
+// spoken; the audio buffer is padded so its gapless loop spans exactly this
+// 16 000 ms cycle (see LOOP_END_S / padBufferForLoop), keeping audio and
+// visuals in sync indefinitely.
 const PHASE_DURATIONS = [4000, 4000, 4000, 4000]; // ms [Inhale, Hold, Exhale, Hold]
 const MIN_R        = 28;
 const MAX_R        = 108;
@@ -40,7 +41,7 @@ const VOICE_KEY = "crux_voice_guidance_enabled";
  *   INTRO_END_S – end: one full breathing cycle cued at 4-second intervals,
  *                      starting on "Inhale"
  */
-const NARRATION_SRC = "/audio/Box Breathing.mp3?v=9";
+const NARRATION_SRC = "/audio/Box Breathing.mp3?v=10";
 
 /**
  * Timestamp (seconds) inside NARRATION_SRC where the word "Inhale" is spoken.
@@ -55,6 +56,31 @@ const INTRO_END_S = 12.780;
  * must be Inhale (index 0).
  */
 const PHASE_START_IDX = 0;
+
+/**
+ * End of the gapless loop section, in seconds. The looped breathing cues must
+ * span exactly one animation cycle (the sum of PHASE_DURATIONS) so the audio
+ * never drifts from the visuals. The narration file ends ~200 ms before this,
+ * so its buffer is padded with trailing silence on load (see padBufferForLoop).
+ */
+const CYCLE_MS   = PHASE_DURATIONS.reduce((a, b) => a + b, 0); // 16 000 ms
+const LOOP_END_S = INTRO_END_S + CYCLE_MS / 1000;             // 28.780 s
+
+/**
+ * Pad the decoded narration with trailing silence so the loop section
+ * (INTRO_END_S → LOOP_END_S) spans exactly one animation cycle. Without this,
+ * a sample-accurate gapless loop would be ~200 ms shorter than the 16 s visual
+ * cycle and drift out of sync. No-op if the buffer is already long enough.
+ */
+function padBufferForLoop(ctx: AudioContext, src: AudioBuffer): AudioBuffer {
+  const minLength = Math.ceil((LOOP_END_S + 0.05) * src.sampleRate);
+  if (src.length >= minLength) return src;
+  const padded = ctx.createBuffer(src.numberOfChannels, minLength, src.sampleRate);
+  for (let ch = 0; ch < src.numberOfChannels; ch++) {
+    padded.getChannelData(ch).set(src.getChannelData(ch));
+  }
+  return padded;
+}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -148,7 +174,7 @@ export default function BoxBreathing() {
     fetch(NARRATION_SRC)
       .then((r) => r.arrayBuffer())
       .then((ab) => ctx.decodeAudioData(ab))
-      .then((decoded) => { audioBufferRef.current = decoded; })
+      .then((decoded) => { audioBufferRef.current = padBufferForLoop(ctx, decoded); })
       .catch((e) => console.warn("[BoxBreathing] audio preload failed:", e));
 
     return () => {
@@ -373,15 +399,19 @@ export default function BoxBreathing() {
    * Create a new BufferSourceNode and begin playback from offsetSeconds.
    * Any previously playing source is stopped first.
    *
-   * When the source ends naturally, loops back to INTRO_END_S — skipping the
-   * intro speech so only the breathing cues repeat on subsequent cycles.
+   * Uses the Web Audio engine's native gapless looping of the breathing-cue
+   * section (loopStart = INTRO_END_S), so every repeat skips the intro speech.
+   * This replaces an onended→restart loop, which clicked audibly: stopping and
+   * re-starting the buffer at the loud "Inhale" onset each cycle produced a pop
+   * at the end of the second Hold. Native looping is sample-accurate and
+   * click-free.
    */
   function playNarration(offsetSeconds: number) {
     const ctx    = audioCtxRef.current;
     const buffer = audioBufferRef.current;
     if (!ctx || !buffer || ctx.state === "closed") return;
 
-    // Stop previous source (clears onended first to suppress the loop callback).
+    // Stop previous source.
     if (audioSourceRef.current) {
       audioSourceRef.current.onended = null;
       try { audioSourceRef.current.stop(); } catch { /* already stopped */ }
@@ -389,18 +419,16 @@ export default function BoxBreathing() {
     }
 
     const source = ctx.createBufferSource();
-    source.buffer = buffer;
+    source.buffer    = buffer;
+    // Native gapless loop over the breathing-cue section only — the intro
+    // (0 → INTRO_END_S) plays once, then 12.780s → end repeats seamlessly.
+    source.loop      = true;
+    source.loopStart = INTRO_END_S;
+    source.loopEnd   = LOOP_END_S;
     source.connect(ctx.destination);
 
-    // Keep a reference so the closure can verify it hasn't been superseded.
+    // Keep a reference so callers can verify it hasn't been superseded.
     audioSourceRef.current = source;
-
-    source.onended = () => {
-      // Always loop — voice guidance plays every cycle when voice is ON.
-      if (audioSourceRef.current === source) {
-        playNarration(INTRO_END_S);
-      }
-    };
 
     source.start(0, offsetSeconds);
   }
