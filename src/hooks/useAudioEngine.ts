@@ -346,8 +346,10 @@ export function useAudioEngine(): AudioEngine {
   const pauseAudio = useCallback(() => {
     if (!isPlayingRef.current) return;
 
-    if (audioCtxRef.current && startTimeRef.current > 0) {
-      pauseTimeRef.current = audioCtxRef.current.currentTime - startTimeRef.current;
+    const ctx = audioCtxRef.current;
+
+    if (ctx && startTimeRef.current > 0) {
+      pauseTimeRef.current = ctx.currentTime - startTimeRef.current;
     }
 
     // If paused mid-fade-in, reset so the next play starts a fresh fade-in.
@@ -355,7 +357,41 @@ export function useAudioEngine(): AudioEngine {
     fadeInMultRef.current  = 1;
 
     stopEMDRScheduler();
-    stopOscillators();
+
+    // Smooth stop: fade the oscillator gain to silence over ~20 ms before
+    // stopping the nodes. Cutting a waveform abruptly produces an audible
+    // click/pop (most noticeable on iOS with headphones); the short fade
+    // removes it while staying imperceptible as a fade.
+    const gainNode = gainNodeRef.current;
+    if (ctx && gainNode) {
+      const now  = ctx.currentTime;
+      const fade = 0.02;
+      try {
+        gainNode.left.gain.cancelScheduledValues(now);
+        gainNode.left.gain.setValueAtTime(gainNode.left.gain.value, now);
+        gainNode.left.gain.linearRampToValueAtTime(0, now + fade);
+        gainNode.right.gain.cancelScheduledValues(now);
+        gainNode.right.gain.setValueAtTime(gainNode.right.gain.value, now);
+        gainNode.right.gain.linearRampToValueAtTime(0, now + fade);
+      } catch { /* ignore */ }
+      // Detach refs now so an immediate re-tap of Play starts cleanly; stop the
+      // old nodes once the fade has completed.
+      const oscL = oscLeftRef.current;
+      const oscR = oscRightRef.current;
+      const merger = mergerRef.current;
+      oscLeftRef.current  = null;
+      oscRightRef.current = null;
+      gainNodeRef.current = null;
+      mergerRef.current   = null;
+      setTimeout(() => {
+        try { oscL?.stop(); oscL?.disconnect(); } catch { /* already stopped */ }
+        try { oscR?.stop(); oscR?.disconnect(); } catch { /* already stopped */ }
+        try { merger?.disconnect(); } catch { /* already disconnected */ }
+      }, fade * 1000 + 20);
+    } else {
+      stopOscillators();
+    }
+
     isPlayingRef.current = false;
     setIsPlaying(false);
     if (animFrameRef.current) {
