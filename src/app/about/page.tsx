@@ -5,42 +5,52 @@ const BENEFITS = [
   {
     icon:        "focus",
     title:       "Focus",
-    description: "Quiets mental scatter so you can lock onto one thing at a time. Useful when tasks feel hard to start, concentration keeps slipping, or you need to sustain deep work for longer.",
+    description: "Quiets mental scatter so you can lock onto one thing at a time. Pair the higher-frequency focus sessions with steady background noise to block distractions and sustain deep work for longer.",
   },
   {
     icon:        "relaxation",
     title:       "Calm",
-    description: "Eases the low-level tension and restlessness that build through the day. A reliable reset for the moments when your mind won't settle and you need to bring the pressure down.",
+    description: "Eases the low-level tension and restlessness that build through the day. Bring the pressure down with the calming alpha sessions, or steady yourself in a couple of minutes with box breathing.",
   },
   {
     icon:        "sleep",
     title:       "Sleep",
-    description: "Guides your brain toward the slower rhythms of deep rest. Helpful when you can't switch off at night, when sleep feels shallow, or when you wake in the early hours and struggle to return.",
+    description: "Guides your brain toward the slower rhythms of deep rest. Combine the delta sleep sessions with pink, brown, or rain noise to mask disturbances when you can't switch off at night.",
   },
   {
     icon:        "creativity",
     title:       "Creativity",
-    description: "Opens up looser, more associative thinking. Good for creative work, brainstorming, or any time you feel mentally stuck and need ideas to start flowing again.",
+    description: "Opens up looser, more associative thinking. Good for brainstorming or any time you feel mentally stuck — the theta sessions help ideas start flowing again.",
   },
   {
     icon:        "energy",
     title:       "Energy",
-    description: "Lifts mental alertness and physical readiness without caffeine. A useful way to begin a demanding day, push through an afternoon slump, or prepare your mind before something that requires full presence.",
+    description: "Lifts mental alertness and physical readiness without caffeine. A useful way to begin a demanding day or push through an afternoon slump with the higher-frequency beta and gamma sessions.",
   },
   {
     icon:        "meditation",
     title:       "Meditation",
-    description: "Deepens and stabilises meditative states, making it easier to stay present and let thoughts pass. Useful for regular practice, or as an anchor when the mind is especially hard to quiet.",
+    description: "Deepens and stabilises meditative states, making it easier to stay present and let thoughts pass. The theta sessions and the steady rhythm of box breathing both help you settle in.",
   },
   {
     icon:        "pain",
     title:       "Pain Management",
-    description: "Encourages a calm, settled state that can help ease physical tension and take the edge off discomfort. A gentle option for winding down when aches or soreness make it hard to relax.",
+    description: "Encourages a calm, settled state that can ease physical tension and take the edge off discomfort. A gentle wind-down using the calming sessions alongside slow box breathing.",
   },
   {
     icon:        "anxiety",
     title:       "Anxiety Relief",
-    description: "Lowers the background hum of worry and helps regulate an overactive nervous system. Useful during periods of acute stress or as part of a longer-term routine for managing chronic tension.",
+    description: "Lowers the background hum of worry and helps regulate an overactive nervous system. Reach for the calming sessions for a longer reset, or box breathing to settle yourself in the moment.",
+  },
+  {
+    icon:        "tinnitus",
+    title:       "Tinnitus Relief",
+    description: "A steady background sound — or the adjustable Pure Tone — can blend with the ringing of tinnitus and make it less noticeable, easing the distraction so it's easier to rest, focus, or fall asleep.",
+  },
+  {
+    icon:        "breath",
+    title:       "Mind-Body Relaxation",
+    description: "A gentle way to release tension in both mind and body. A few slow rounds of box breathing ease your heart rate and quiet the nervous system, letting you unwind at your own pace.",
   },
 ];
 
@@ -53,7 +63,8 @@ export default function About() {
             About CRUX
           </h1>
           <p className="text-lg text-[var(--text-secondary)] mb-12 text-center max-w-2xl mx-auto">
-            Enhance your mental well-being with scientifically-designed binaural beats audio therapy.
+            Enhance your mental well-being with binaural beats, noise therapy, and box breathing —
+            tools for focus, calm, and sleep.
           </p>
 
           <div className="space-y-8">
@@ -90,9 +101,39 @@ export default function About() {
               </ul>
             </div>
 
+            {/* What is Noise Therapy */}
+            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What is Noise Therapy?</h2>
+              <p className="text-[var(--text-secondary)] leading-relaxed">
+                Noise Therapy uses steady, broadband sound to soften the contrast between quiet and
+                sudden, unpredictable noises — a door slamming, a dog barking — that can jolt the
+                nervous system. By filling the gaps with a constant, predictable backdrop, those
+                startling sounds blend in instead of standing out, giving your brain less to react to.
+                White, pink, and brown noise differ in their balance of high and low frequencies, while
+                the Pure Tone option produces a single adjustable pitch you can tune just below your
+                tinnitus to make the ringing less noticeable.
+              </p>
+            </div>
+
+            {/* What is Box Breathing */}
+            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What is Box Breathing?</h2>
+              <p className="text-[var(--text-secondary)] leading-relaxed">
+                Box breathing is a paced breathing technique — inhale, hold, exhale, hold, each for an
+                equal count — used by everyone from athletes to emergency responders to steady
+                themselves under pressure. The slow, even rhythm and the gentle breath-holds activate
+                the parasympathetic nervous system, the body&apos;s &quot;rest and digest&quot; branch,
+                which lowers heart rate and dials down the stress response. With regular practice it
+                becomes a reliable way to return to calm in a couple of minutes.
+              </p>
+            </div>
+
             {/* Benefits */}
             <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-8 text-center">Benefits</h2>
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-3 text-center">Benefits</h2>
+              <p className="text-[var(--text-secondary)] leading-relaxed text-center max-w-2xl mx-auto mb-8">
+                Delivered across CRUX&apos;s three tools — binaural beats, noise therapy, and box breathing.
+              </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {BENEFITS.map(({ icon, title, description }) => (
                   <div key={title} className="flex flex-col items-center text-center">

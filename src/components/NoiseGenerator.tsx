@@ -3,105 +3,76 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import Link from "next/link";
 import { usePreferences } from "@/hooks/usePreferences";
+import { makeWhiteNoise, makePinkNoise, makeBrownNoise, makeGreenNoise, playLoop as playLoopRaw } from "@/lib/audio/cruxNoise";
+import PureToneTherapyRaw from "./noise-therapy/PureToneTherapy";
+
+// PureToneTherapy is intentionally untyped (@ts-nocheck); give it a typed shell
+// for the props we pass so this strict component still type-checks.
+const PureToneTherapy = PureToneTherapyRaw as unknown as React.ComponentType<{
+  getAudioEl: () => HTMLAudioElement | null;
+  isActive: boolean;
+  artworkUrl: string;
+  onActivate: () => void;
+  onDeactivate: () => void;
+}>;
+
+// playLoop comes from an untyped (@ts-nocheck) module — give it a precise signature.
+const playLoop = playLoopRaw as (
+  el: HTMLAudioElement,
+  url: string,
+  opts?: { title?: string; artworkUrl?: string },
+) => Promise<void>;
 
 // ─── Types & Data ─────────────────────────────────────────────────────────────
 
-type NoiseType = "white" | "pink" | "brown" | "heavyrain";
+type NoiseType = "white" | "pink" | "brown" | "green" | "heavyrain";
+type SoundType = NoiseType | "puretone";
 
-// Per-noise descriptions live in the Noise Therapy section under Instructions
-// (reachable via the "Tap to learn how to use Noise Therapy" pill) — kept out of
-// the cards here so selecting one doesn't expand its tile on small screens.
 const NOISE_INFO: Record<
-  NoiseType,
+  SoundType,
   { label: string; tagline: string; color: string }
 > = {
-  white: {
-    label: "White Noise",
-    tagline: "Steady. Consistent. Grounding.",
-    color: "#8C9BAA",
-  },
-  pink: {
-    label: "Pink Noise",
-    tagline: "Natural. Balanced. Calming.",
-    color: "#4BA8BD",
-  },
-  brown: {
-    label: "Brown Noise",
-    tagline: "Deep. Warm. Anchoring.",
-    color: "#3A8FA3",
-  },
-  heavyrain: {
-    label: "Heavy Rain",
-    tagline: "Heavy. Enveloping. Grounding.",
-    color: "#477A9E",
-  },
+  white:     { label: "White Noise", tagline: "Steady. Consistent. Grounding.", color: "#8C9BAA" },
+  pink:      { label: "Pink Noise",  tagline: "Natural. Balanced. Calming.",    color: "#4BA8BD" },
+  brown:     { label: "Brown Noise", tagline: "Deep. Warm. Anchoring.",         color: "#3A8FA3" },
+  green:     { label: "Green Noise", tagline: "Lush. Mellow. Soothing.",        color: "#4FA98C" },
+  heavyrain: { label: "Heavy Rain",  tagline: "Heavy. Enveloping. Grounding.",  color: "#477A9E" },
+  puretone:  { label: "Pure Tone",   tagline: "Tinnitus relief",                color: "#5EA0C8" },
 };
 
-const NOISE_TYPES: NoiseType[] = ["white", "pink", "brown", "heavyrain"];
+const TILE_TYPES: SoundType[] = ["white", "pink", "brown", "green", "heavyrain", "puretone"];
 
-// Recorded (sampled) noise types are fetched and decoded once, then looped.
-// Heavy Rain plays from the ORIGINAL recording with NO compression or limiting:
-// boosting its loudness that way added transient distortion on the low-bitrate
-// source (audible as "clipping" on headphones). The "-v2" in the URL is purely
-// to bust stale caches when the file changes.
-const SAMPLED_NOISES: Partial<Record<NoiseType, { url: string }>> = {
-  heavyrain: { url: "/audio/heavy-rain-v2.mp3" },
-};
+const RAIN_URL    = "/audio/heavy-rain-v2.mp3";
+const ARTWORK_URL = "/crux-icon-512.png";
 
-// Per-noise output gain. All four are levelled to a low, matched RMS (~0.028)
-// with large headroom — the loudest peak (Heavy Rain) reaches only ~0.59 at full
-// slider, so nothing clips on any audio path. The synth noises are pulled right
-// down to meet Heavy Rain's clean, natural (and quiet) level rather than
-// compressing the rain up to theirs.
-//   raw RMS → factor → levelled RMS:
-//   white 0.58 ×0.048 · pink 0.24 ×0.115 · brown 0.20 ×0.139 · heavyrain 0.039 ×0.72 (peak 0.59)
-const NOISE_GAIN: Record<NoiseType, number> = {
-  white:     0.048,
-  pink:      0.115,
-  brown:     0.139,
+// element.volume cap at full slider, per noise. Matches the previous engine's
+// balance — every noise levelled to RMS ~0.028, measured against cruxNoise's
+// peak-normalised output (white 0.214, pink/brown ~0.102 RMS) and Heavy Rain's
+// raw recording (~0.039 RMS, so its cap stays the proven 0.72, no clipping).
+const NOISE_VOL_CAP: Record<NoiseType, number> = {
+  white:     0.131,
+  pink:      0.274,
+  brown:     0.276,
+  green:     0.222,
   heavyrain: 0.72,
 };
 
-// ─── Audio Generation ─────────────────────────────────────────────────────────
+const MEDIA_TITLE: Record<NoiseType, string> = {
+  white: "White Noise", pink: "Pink Noise", brown: "Brown Noise", green: "Green Noise", heavyrain: "Heavy Rain",
+};
 
-function fillWhiteNoise(buffer: AudioBuffer) {
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < buffer.length; i++) {
-    data[i] = Math.random() * 2 - 1;
+const isNoise = (t: SoundType): t is NoiseType => t !== "puretone";
+
+// ─── Inline tile icons ──────────────────────────────────────────────────────────
+
+function NoiseIcon({ type, size }: { type: SoundType; size: number }) {
+  if (type === "puretone") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <path d="M2 12 Q7 3 12 12 Q17 21 22 12" />
+      </svg>
+    );
   }
-}
-
-function fillPinkNoise(buffer: AudioBuffer) {
-  // Paul Kellet's IIR approximation
-  const data = buffer.getChannelData(0);
-  let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
-  for (let i = 0; i < buffer.length; i++) {
-    const w = Math.random() * 2 - 1;
-    b0 = 0.99886 * b0 + w * 0.0555179;
-    b1 = 0.99332 * b1 + w * 0.0750759;
-    b2 = 0.96900 * b2 + w * 0.1538520;
-    b3 = 0.86650 * b3 + w * 0.3104856;
-    b4 = 0.55000 * b4 + w * 0.5329522;
-    b5 = -0.7616 * b5 - w * 0.0168980;
-    data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) / 7;
-    b6 = w * 0.115926;
-  }
-}
-
-function fillBrownNoise(buffer: AudioBuffer) {
-  const data = buffer.getChannelData(0);
-  let last = 0;
-  for (let i = 0; i < buffer.length; i++) {
-    const w = Math.random() * 2 - 1;
-    data[i] = (last + 0.02 * w) / 1.02;
-    last = data[i];
-    data[i] *= 3.5; // compensate for low amplitude
-  }
-}
-
-// ─── Inline wave icons ─────────────────────────────────────────────────────────
-
-function NoiseIcon({ type, size }: { type: NoiseType; size: number }) {
   if (type === "heavyrain") {
     return (
       <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -134,6 +105,13 @@ function NoiseIcon({ type, size }: { type: NoiseType; size: number }) {
       </svg>
     );
   }
+  if (type === "green") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <path d="M1 12 Q4 6 7 12 Q10 18 13 12 Q16 6 19 12 Q21 16 23 12" />
+      </svg>
+    );
+  }
   return (
     <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden>
       <path d="M1 14 Q6 4 12 14 Q18 22 23 14" />
@@ -151,241 +129,305 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
   const { set, prefs, isHydrated, toggleFavouriteNoise } = usePreferences();
 
   // Favourites-first display order
-  const displayNoiseTypes = useMemo(() => {
+  const displayTiles = useMemo(() => {
     const favSet = new Set(prefs.favouriteNoises);
-    const favs = NOISE_TYPES.filter(t => favSet.has(t));
-    const rest = NOISE_TYPES.filter(t => !favSet.has(t));
+    const favs = TILE_TYPES.filter(t => favSet.has(t));
+    const rest = TILE_TYPES.filter(t => !favSet.has(t));
     return [...favs, ...rest];
   }, [prefs.favouriteNoises]);
 
-  const [selectedNoise, setSelectedNoise] = useState<NoiseType>("pink");
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolumeState] = useState(3);
-  const [autoSync, setAutoSync] = useState(false);
+  const [selected, setSelected]       = useState<SoundType>("pink");
+  const [activeSound, setActiveSound] = useState<SoundType | null>(null); // what's actually sounding
+  const [volume, setVolumeState]      = useState(3);
+  const [autoSync, setAutoSync]       = useState(false);
+  const [isLoading, setIsLoading]     = useState(false);
 
-  const audioCtxRef      = useRef<AudioContext | null>(null);
-  const sourceRef        = useRef<AudioBufferSourceNode | null>(null);
-  const gainRef          = useRef<GainNode | null>(null);
-  const volumeRef        = useRef(3);
-  const isPlayingRef     = useRef(false);
-  const noiseRef         = useRef<NoiseType>("pink");
-  // Fade-in state
-  const fadeInActiveRef  = useRef(false);
-  const fadeIntervalRef  = useRef<ReturnType<typeof setInterval> | null>(null);
-  // Sampled noises: cached decoded buffers (keyed by type) + request-ID for async cancellation
-  const sampleBuffersRef = useRef<Partial<Record<NoiseType, AudioBuffer>>>({});
-  const playRequestIdRef = useRef(0);
-  const [isLoadingSample, setIsLoadingSample] = useState(false);
+  // ONE shared <audio> element for every sound — including Pure Tone. Playing
+  // through a real media element (not Web Audio) is what survives a locked
+  // screen and shows lock-screen controls on iOS/Android.
+  const audioElRef    = useRef<HTMLAudioElement | null>(null);
+  const rampRef       = useRef(0);                          // rAF id for el.volume ramps (Heavy Rain)
+  const pauseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const volumeRef     = useRef(3);
+  const activeRef     = useRef<SoundType | null>(null);
+
+  // Web Audio graph for the GENERATED noises (white/pink/brown/green). They loop
+  // sample-accurately via an AudioBufferSourceNode (gapless — no <audio loop> seam)
+  // and are routed through the shared <audio> element via a MediaStream, so
+  // lock-screen / background playback still work. Heavy Rain (a long recording)
+  // keeps playing through the element directly.
+  const audioCtxRef    = useRef<AudioContext | null>(null);
+  const noiseGainRef   = useRef<GainNode | null>(null);
+  const noiseStreamRef = useRef<MediaStreamAudioDestinationNode | null>(null);
+  const noiseSrcRef    = useRef<AudioBufferSourceNode | null>(null);
+  const bufferCacheRef = useRef<Partial<Record<NoiseType, AudioBuffer>>>({});
+
+  const noiseIsPlaying = activeSound !== null && isNoise(activeSound);
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
 
-  function getCtx(): AudioContext {
-    if (audioCtxRef.current && audioCtxRef.current.state !== "closed") {
-      return audioCtxRef.current;
-    }
-    const AudioCtx =
-      window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    audioCtxRef.current = new AudioCtx();
-    return audioCtxRef.current;
+  function noiseTargetVol(type: NoiseType) {
+    return (volumeRef.current / 100) * NOISE_VOL_CAP[type];
   }
 
-  function clearFadeInterval() {
-    if (fadeIntervalRef.current !== null) {
-      clearInterval(fadeIntervalRef.current);
-      fadeIntervalRef.current = null;
-    }
-    fadeInActiveRef.current = false;
+  // el.volume ramp — used for Heavy Rain (the recording plays through the element).
+  function rampVolume(to: number, ms: number) {
+    const el = audioElRef.current;
+    if (!el) return;
+    cancelAnimationFrame(rampRef.current);
+    const from = el.volume;
+    const t0 = performance.now();
+    const step = (now: number) => {
+      const k = Math.min(1, (now - t0) / Math.max(1, ms));
+      el.volume = Math.min(1, Math.max(0, from + (to - from) * k));
+      if (k < 1) rampRef.current = requestAnimationFrame(step);
+    };
+    rampRef.current = requestAnimationFrame(step);
   }
 
-  function stopNoise() {
-    playRequestIdRef.current++;          // invalidate any pending async startNoise
-    setIsLoadingSample(false);
-    clearFadeInterval();
-    if (sourceRef.current) {
-      try { sourceRef.current.stop(); sourceRef.current.disconnect(); } catch { /* already stopped */ }
-      sourceRef.current = null;
-    }
-    gainRef.current = null;
-    isPlayingRef.current = false;
-    setIsPlaying(false);
+  function clearPauseTimer() {
+    if (pauseTimerRef.current) { clearTimeout(pauseTimerRef.current); pauseTimerRef.current = null; }
   }
 
-  async function startNoise(type: NoiseType, vol: number) {
-    const requestId = ++playRequestIdRef.current;
-    const ctx = getCtx();
-    if (ctx.state === "suspended") ctx.resume();
+  // ── Web Audio graph (generated noises) ───────────────────────────────────────
 
-    let buf: AudioBuffer;
-
-    const sampled = SAMPLED_NOISES[type];
-    if (sampled) {
-      // Recorded noise — use cached buffer if available, otherwise fetch and decode once
-      let decoded = sampleBuffersRef.current[type];
-      if (!decoded) {
-        setIsLoadingSample(true);
-        try {
-          const res         = await fetch(sampled.url);
-          const arrayBuffer = await res.arrayBuffer();
-          decoded           = await ctx.decodeAudioData(arrayBuffer);
-          sampleBuffersRef.current[type] = decoded;
-        } catch {
-          if (requestId === playRequestIdRef.current) setIsLoadingSample(false);
-          return;
-        }
-        if (requestId !== playRequestIdRef.current) return; // user stopped/switched
-        setIsLoadingSample(false);
-      }
-      buf = decoded;
-    } else {
-      // Synthesised noise — 3-second looping buffer
-      const bufLen = ctx.sampleRate * 3;
-      buf          = ctx.createBuffer(1, bufLen, ctx.sampleRate);
-      if (type === "white")     fillWhiteNoise(buf);
-      else if (type === "pink") fillPinkNoise(buf);
-      else                      fillBrownNoise(buf);
-    }
-
-    // Final guard after any awaits
-    if (requestId !== playRequestIdRef.current) return;
-
-    const source = ctx.createBufferSource();
-    source.buffer = buf;
-    source.loop   = true;
-
+  function ensureGraph(): AudioContext {
+    if (audioCtxRef.current) return audioCtxRef.current;
+    const AC = window.AudioContext
+      || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const ctx = new AC();
     const gain = ctx.createGain();
-    const boost = NOISE_GAIN[type];
-    // Start near-silent for fade-in
-    gain.gain.value = 0.001 * (vol / 100) * boost;
+    gain.gain.value = 0;
+    const dest = ctx.createMediaStreamDestination();
+    gain.connect(dest); // NOT to ctx.destination — audio must flow through <audio>
+    audioCtxRef.current = ctx;
+    noiseGainRef.current = gain;
+    noiseStreamRef.current = dest;
+    return ctx;
+  }
 
-    source.connect(gain);
-    gain.connect(ctx.destination);
-    source.start();
+  // Click-free gain ramp on the Web Audio GainNode (sample-accurate).
+  function rampGain(to: number, ms: number) {
+    const g = noiseGainRef.current, ctx = audioCtxRef.current;
+    if (!g || !ctx) return;
+    const now = ctx.currentTime;
+    const dur = Math.max(0.005, ms / 1000);
+    try {
+      g.gain.cancelScheduledValues(now);
+      g.gain.setValueAtTime(g.gain.value, now);
+      g.gain.linearRampToValueAtTime(Math.max(0, to), now + dur);
+    } catch { try { g.gain.value = Math.max(0, to); } catch { /* noop */ } }
+  }
 
-    sourceRef.current    = source;
-    gainRef.current      = gain;
-    isPlayingRef.current = true;
-    setIsPlaying(true);
-    // Auto-save: record the noise type that just started playing
-    set("lastNoiseId", type);
+  // Generated noise WAV -> decoded AudioBuffer (cached). The WAV is internally
+  // crossfaded and looping it via Web Audio is sample-accurate, so the loop is
+  // gapless AND click-free.
+  async function getBuffer(type: NoiseType): Promise<AudioBuffer> {
+    const cached = bufferCacheRef.current[type];
+    if (cached) return cached;
+    const made = type === "white" ? makeWhiteNoise()
+               : type === "pink"  ? makePinkNoise()
+               : type === "green" ? makeGreenNoise()
+               :                     makeBrownNoise();
+    const arr = await made.blob.arrayBuffer();
+    try { URL.revokeObjectURL(made.url); } catch { /* noop */ }
+    const buf = await ensureGraph().decodeAudioData(arr);
+    bufferCacheRef.current[type] = buf;
+    return buf;
+  }
 
-    // ── 3-second logarithmic fade-in ─────────────────────────────────────────
-    fadeInActiveRef.current = true;
-    const startTime = Date.now();
+  function stopNoiseSource() {
+    const src = noiseSrcRef.current;
+    if (src) {
+      try { src.stop(); } catch { /* noop */ }
+      try { src.disconnect(); } catch { /* noop */ }
+      noiseSrcRef.current = null;
+    }
+  }
 
-    fadeIntervalRef.current = setInterval(() => {
-      if (!gainRef.current || !audioCtxRef.current || audioCtxRef.current.state === "closed") {
-        clearFadeInterval();
-        return;
-      }
-      const elapsed = (Date.now() - startTime) / 1000; // seconds
-      if (elapsed >= 3) {
-        const boost = NOISE_GAIN[noiseRef.current];
-        gainRef.current.gain.setValueAtTime(
-          (volumeRef.current / 100) * boost,
-          audioCtxRef.current.currentTime,
-        );
-        clearFadeInterval();
-        return;
-      }
-      const fadeInMult = Math.pow(1000, (elapsed / 3) - 1); // 0.001 → 1
-      const boost = NOISE_GAIN[noiseRef.current];
-      gainRef.current.gain.setValueAtTime(
-        (volumeRef.current / 100) * fadeInMult * boost,
-        audioCtxRef.current.currentTime,
-      );
-    }, 50);
+  function setNoiseMediaSession(type: NoiseType) {
+    if (typeof navigator === "undefined" || !("mediaSession" in navigator)) return;
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: MEDIA_TITLE[type], artist: "CRUX", album: "Noise Therapy",
+        artwork: [{ src: ARTWORK_URL, sizes: "512x512", type: "image/png" }],
+      });
+      navigator.mediaSession.playbackState = "playing";
+    } catch { /* noop */ }
+  }
+
+  async function startNoise(type: NoiseType) {
+    const el = audioElRef.current;
+    if (!el) return;
+    clearPauseTimer();
+
+    if (type === "heavyrain") {
+      // Long recording — play the file directly through the element.
+      stopNoiseSource();
+      try { el.srcObject = null; } catch { /* noop */ }
+      el.volume = 0;
+      setIsLoading(true);
+      try { await playLoop(el, RAIN_URL, { title: MEDIA_TITLE.heavyrain, artworkUrl: ARTWORK_URL }); }
+      catch { setIsLoading(false); return; }
+      setIsLoading(false);
+      rampVolume(noiseTargetVol("heavyrain"), 700);
+      activeRef.current = "heavyrain"; setActiveSound("heavyrain"); set("lastNoiseId", "heavyrain");
+      return;
+    }
+
+    // Generated noise — gapless Web Audio loop routed through the shared element.
+    const ctx = ensureGraph();
+    if (ctx.state === "suspended") { try { await ctx.resume(); } catch { /* noop */ } }
+    const replacing = !!noiseSrcRef.current; // already playing another generated noise
+    setIsLoading(!bufferCacheRef.current[type]);
+    let buf: AudioBuffer;
+    try { buf = await getBuffer(type); } catch { setIsLoading(false); return; }
+    setIsLoading(false);
+
+    stopNoiseSource();
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.loop = true;
+    src.connect(noiseGainRef.current!);
+    noiseSrcRef.current = src;
+    src.start();
+
+    const stream = noiseStreamRef.current!.stream;
+    if (el.srcObject !== stream) {
+      try { el.pause(); } catch { /* noop */ }
+      try { el.removeAttribute("src"); } catch { /* noop */ }
+      el.srcObject = stream;
+      el.loop = false;
+      el.volume = 1; // loudness is controlled by the Web Audio gain
+    }
+    if (!replacing) noiseGainRef.current!.gain.value = 0;
+    if (el.paused) { try { await el.play(); } catch { return; } }
+    rampGain(noiseTargetVol(type), replacing ? 240 : 700);
+    setNoiseMediaSession(type);
+
+    activeRef.current = type; setActiveSound(type); set("lastNoiseId", type);
+  }
+
+  function stopActive(fadeMs = 240) {
+    const el = audioElRef.current;
+    clearPauseTimer();
+    const generated = activeRef.current !== null && isNoise(activeRef.current) && activeRef.current !== "heavyrain";
+    if (generated) rampGain(0, fadeMs); else rampVolume(0, fadeMs);
+    pauseTimerRef.current = setTimeout(() => {
+      // only act if nothing else took over the shared element in the meantime
+      if (activeRef.current !== null) return;
+      try { el?.pause(); } catch { /* noop */ }
+      stopNoiseSource();
+      try { if (el) el.srcObject = null; } catch { /* noop */ }
+    }, fadeMs + 40);
+    activeRef.current = null;
+    setActiveSound(null);
+    if (typeof navigator !== "undefined" && "mediaSession" in navigator) {
+      try { navigator.mediaSession.playbackState = "paused"; } catch { /* noop */ }
+    }
   }
 
   // ── Controls ─────────────────────────────────────────────────────────────────
 
-  function handleTogglePlay() {
-    if (isPlayingRef.current) {
-      stopNoise();
-    } else {
-      startNoise(noiseRef.current, volumeRef.current);
-    }
+  function handleToggleNoisePlay() {
+    if (noiseIsPlaying) stopActive();
+    else if (isNoise(selected)) startNoise(selected);
   }
 
-  function handleSelectNoise(type: NoiseType) {
-    noiseRef.current = type;
-    setSelectedNoise(type);
-    if (isPlayingRef.current) {
-      stopNoise();
-      setTimeout(() => startNoise(type, volumeRef.current), 50);
+  function handleSelectTile(t: SoundType) {
+    if (t === selected) return;
+    const wasNoisePlaying = activeRef.current !== null && isNoise(activeRef.current);
+    const wasToneActive   = activeRef.current === "puretone";
+
+    // Leaving the currently-sounding source for a different kind of tile → stop it
+    // (Pure Tone → anything, or a noise → Pure Tone). noise → noise is handled below.
+    if (wasToneActive || (wasNoisePlaying && t === "puretone")) {
+      stopActive(180);
+    }
+
+    setSelected(t);
+
+    // noise → noise while playing: switch straight to the new noise (as before)
+    if (isNoise(t) && wasNoisePlaying) {
+      stopActive(120);
+      setTimeout(() => startNoise(t), 150);
     }
   }
 
   function handleVolume(value: number) {
     volumeRef.current = value;
     setVolumeState(value);
-    // Skip direct gain write during fade-in — the interval will use volumeRef.current
-    if (gainRef.current && audioCtxRef.current && !fadeInActiveRef.current) {
-      const boost = NOISE_GAIN[noiseRef.current];
-      const now = audioCtxRef.current.currentTime;
-      const target = (value / 100) * boost;
-      // 15 ms linear ramp eliminates the click/pop on iOS when tapping the slider track.
-      gainRef.current.gain.cancelScheduledValues(now);
-      gainRef.current.gain.setValueAtTime(gainRef.current.gain.value, now);
-      gainRef.current.gain.linearRampToValueAtTime(target, now + 0.015);
+    const t = activeRef.current;
+    if (t && isNoise(t)) {
+      if (t === "heavyrain") rampVolume(noiseTargetVol(t), 60);   // Heavy Rain via el.volume
+      else rampGain(noiseTargetVol(t), 60);                       // generated noises via the gain node
     }
   }
 
-  // ── Auto-sync ─────────────────────────────────────────────────────────────────
+  // Pure Tone took over the shared element
+  function handleToneActivate() {
+    cancelAnimationFrame(rampRef.current);
+    clearPauseTimer();
+    stopNoiseSource(); // stop any generated-noise source; Pure Tone drives the element now
+    activeRef.current = "puretone";
+    setActiveSound("puretone");
+  }
+
+  function handleToneDeactivate() {
+    activeRef.current = null;
+    setActiveSound(null);
+  }
+
+  // ── Auto-sync (noises only) ────────────────────────────────────────────────────
 
   useEffect(() => {
     if (!autoSync) return;
-    if (isAudioPlaying && !isPlayingRef.current) {
-      startNoise(noiseRef.current, volumeRef.current);
+    if (isAudioPlaying && activeRef.current === null && isNoise(selected)) {
+      startNoise(selected);
     }
-    if (!isAudioPlaying && isPlayingRef.current) {
-      stopNoise();
+    if (!isAudioPlaying && activeRef.current !== null && isNoise(activeRef.current)) {
+      stopActive();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAudioPlaying, autoSync]);
 
+  // ── MediaSession play/pause handlers — registered ONCE ─────────────────────────
+
+  useEffect(() => {
+    if (typeof navigator === "undefined" || !("mediaSession" in navigator)) return;
+    const onPlay  = () => { audioElRef.current?.play().catch(() => {}); try { navigator.mediaSession.playbackState = "playing"; } catch {} };
+    const onPause = () => { audioElRef.current?.pause();                 try { navigator.mediaSession.playbackState = "paused";  } catch {} };
+    try {
+      navigator.mediaSession.setActionHandler("play", onPlay);
+      navigator.mediaSession.setActionHandler("pause", onPause);
+    } catch { /* noop */ }
+    return () => {
+      try {
+        navigator.mediaSession.setActionHandler("play", null);
+        navigator.mediaSession.setActionHandler("pause", null);
+      } catch { /* noop */ }
+    };
+  }, []);
+
   // ── One-shot preference initialisation ───────────────────────────────────────
-  // Runs once after localStorage has been read. Pre-selects the saved default
-  // (or last-used) noise type so the component doesn't always cold-start on pink.
 
   useEffect(() => {
     if (!isHydrated) return;
-    const target = (prefs.defaultNoiseId ?? prefs.lastNoiseId) as NoiseType | null;
-    if (target && NOISE_TYPES.includes(target)) {
-      noiseRef.current = target;
-      setSelectedNoise(target);
-    }
+    const target = (prefs.defaultNoiseId ?? prefs.lastNoiseId) as SoundType | null;
+    if (target && TILE_TYPES.includes(target)) setSelected(target);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHydrated]);
-
-  // ── iOS audio-session recovery ────────────────────────────────────────────────
-  // iOS suspends the AudioContext when the screen locks, a call comes in, or
-  // the app goes to background.  Resume it the moment the page is visible again
-  // so playback continues without requiring another tap.
-  useEffect(() => {
-    const handleVisibility = () => {
-      const ctx = audioCtxRef.current;
-      if (!ctx) return;
-      if (
-        document.visibilityState === "visible" &&
-        (ctx.state === "suspended" || (ctx.state as string) === "interrupted")
-      ) {
-        ctx.resume().catch(() => {});
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibility);
-    return () => document.removeEventListener("visibilitychange", handleVisibility);
-  }, []);
 
   // ── Cleanup ───────────────────────────────────────────────────────────────────
 
   useEffect(() => {
+    const el = audioElRef.current;
     return () => {
-      stopNoise();
-      if (audioCtxRef.current && audioCtxRef.current.state !== "closed") {
-        audioCtxRef.current.close();
-        audioCtxRef.current = null;
-      }
+      cancelAnimationFrame(rampRef.current);
+      clearPauseTimer();
+      try { el?.pause(); } catch { /* noop */ }
+      try { noiseSrcRef.current?.stop(); } catch { /* noop */ }
+      try { audioCtxRef.current?.close(); } catch { /* noop */ }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -398,6 +440,9 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
         className="rounded-3xl p-10 border border-[var(--border-color)] bg-[var(--background-card)]"
         style={{ boxShadow: "var(--shadow-lg)" }}
       >
+        {/* One shared media element for every sound (survives a locked screen) */}
+        <audio ref={audioElRef} preload="auto" playsInline loop />
+
         <h2 className="text-[32px] font-bold mb-4 tracking-tight text-[var(--text-primary)] text-center">
           Noise Therapy
         </h2>
@@ -422,19 +467,19 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
           </Link>
         </div>
 
-        {/* Noise Type Selection */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {displayNoiseTypes.map((type) => {
+        {/* Sound selection — 5 tiles */}
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
+          {displayTiles.map((type) => {
             const n = NOISE_INFO[type];
-            const isSelected = selectedNoise === type;
+            const isSelected = selected === type;
             const isFav = prefs.favouriteNoises.includes(type);
             return (
               <div key={type} className="relative">
                 <button
-                  onClick={() => handleSelectNoise(type)}
+                  onClick={() => handleSelectTile(type)}
                   aria-label={n.label}
                   aria-pressed={isSelected}
-                  className={`w-full rounded-2xl p-5 text-left border-2 transition-all cursor-pointer ${
+                  className={`w-full h-full rounded-2xl p-5 text-left border-2 transition-all cursor-pointer ${
                     isSelected
                       ? "border-[var(--primary)] bg-[var(--background-light)]"
                       : "border-[var(--border-color)] bg-[var(--background-light)] hover:border-[var(--primary-light)]"
@@ -482,82 +527,92 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
           })}
         </div>
 
-        {/* Controls */}
-        <div className="flex flex-col gap-5">
+        {/* Controls — noise controls, or the Pure Tone panel */}
+        {selected === "puretone" ? (
+          <PureToneTherapy
+            getAudioEl={() => audioElRef.current}
+            isActive={activeSound === "puretone"}
+            artworkUrl={ARTWORK_URL}
+            onActivate={handleToneActivate}
+            onDeactivate={handleToneDeactivate}
+          />
+        ) : (
+          <div className="flex flex-col gap-5">
 
-          {/* Play / Stop button */}
-          <div className="flex justify-center">
-            <button
-              onClick={handleTogglePlay}
-              disabled={isLoadingSample}
-              className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-white disabled:opacity-70 disabled:cursor-wait"
-              style={{
-                background: "var(--primary)",
-                boxShadow: "0 8px 24px rgba(43, 107, 127, 0.4)",
-              }}
-              aria-label={isLoadingSample ? "Loading audio…" : isPlaying ? "Stop noise" : "Play noise"}
-            >
-              {isLoadingSample ? (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-7 h-7 animate-spin">
-                  <path d="M12 2a10 10 0 0 1 10 10" />
-                </svg>
-              ) : isPlaying ? (
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
-                  <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
-                </svg>
-              ) : (
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              )}
-            </button>
-          </div>
-
-          {/* Volume */}
-          <div className="flex items-center gap-4 bg-[var(--background-light)] rounded-xl px-5 py-3 border border-[var(--border-color)]">
-            <svg
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-6 h-6 shrink-0 text-[var(--text-secondary)]"
-            >
-              <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
-            </svg>
-            <input
-              type="range"
-              min={0}
-              max={100}
-              value={volume}
-              onChange={(e) => handleVolume(Number(e.target.value))}
-              className="flex-1"
-              style={{ "--fill": `${volume}%` } as React.CSSProperties}
-              aria-label="Noise volume"
-            />
-          </div>
-
-          {/* Auto-sync toggle */}
-          <div className="flex justify-center">
-            <label className="flex items-center gap-3 cursor-pointer select-none">
+            {/* Play / Stop button */}
+            <div className="flex justify-center">
               <button
-                role="switch"
-                aria-checked={autoSync}
-                aria-label="Auto-sync noise with audio playback"
-                onClick={() => setAutoSync((v) => !v)}
-                className={`relative w-11 h-6 rounded-full border-0 cursor-pointer transition-colors overflow-hidden ${
-                  autoSync ? "bg-[var(--primary)]" : "bg-[var(--border-color)]"
-                }`}
+                onClick={handleToggleNoisePlay}
+                disabled={isLoading}
+                className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-white disabled:opacity-70 disabled:cursor-wait"
+                style={{
+                  background: "var(--primary)",
+                  boxShadow: "0 8px 24px rgba(43, 107, 127, 0.4)",
+                }}
+                aria-label={isLoading ? "Loading audio…" : noiseIsPlaying ? "Stop noise" : "Play noise"}
               >
-                <span
-                  className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                    autoSync ? "translate-x-5" : "translate-x-0"
-                  }`}
-                />
+                {isLoading ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-7 h-7 animate-spin">
+                    <path d="M12 2a10 10 0 0 1 10 10" />
+                  </svg>
+                ) : noiseIsPlaying ? (
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
+                    <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                )}
               </button>
-              <span className="text-sm text-[var(--text-secondary)]">
-                Start and stop with the audio player
-              </span>
-            </label>
+            </div>
+
+            {/* Volume */}
+            <div className="flex items-center gap-4 bg-[var(--background-light)] rounded-xl px-5 py-3 border border-[var(--border-color)]">
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6 shrink-0 text-[var(--text-secondary)]"
+              >
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
+              </svg>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={volume}
+                onChange={(e) => handleVolume(Number(e.target.value))}
+                className="flex-1"
+                style={{ "--fill": `${volume}%` } as React.CSSProperties}
+                aria-label="Noise volume"
+              />
+            </div>
+
+            {/* Auto-sync toggle */}
+            <div className="flex justify-center">
+              <label className="flex items-center gap-3 cursor-pointer select-none">
+                <button
+                  role="switch"
+                  aria-checked={autoSync}
+                  aria-label="Auto-sync noise with audio playback"
+                  onClick={() => setAutoSync((v) => !v)}
+                  className={`relative w-11 h-6 rounded-full border-0 cursor-pointer transition-colors overflow-hidden ${
+                    autoSync ? "bg-[var(--primary)]" : "bg-[var(--border-color)]"
+                  }`}
+                >
+                  <span
+                    className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${
+                      autoSync ? "translate-x-5" : "translate-x-0"
+                    }`}
+                  />
+                </button>
+                <span className="text-sm text-[var(--text-secondary)]">
+                  Start and stop with the audio player
+                </span>
+              </label>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

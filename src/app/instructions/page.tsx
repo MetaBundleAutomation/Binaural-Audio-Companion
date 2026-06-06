@@ -222,6 +222,12 @@ export default function Instructions() {
                   grounding sound. Particularly effective for sleep and deep focus.
                 </li>
                 <li>
+                  <strong className="text-[var(--text-primary)]">Pure Tone</strong> — a single, clean
+                  tone you can tune to your own pitch and keep just below your tinnitus. Played gently,
+                  it blends with the ringing so your brain notices it less, easing the distraction and
+                  helping you rest or focus.
+                </li>
+                <li>
                   Enable <strong className="text-[var(--text-primary)]">Auto-sync</strong> to have
                   noise start and stop automatically with your binaural audio.
                 </li>
@@ -250,7 +256,7 @@ export default function Instructions() {
             <div id="box-breathing" className="scroll-mt-24 bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">💨 Box Breathing</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
-                Box breathing is a regulated breathing technique used to reduce acute stress. It
+                Box breathing is a regulated breathing technique used to ease stress and tension. It
                 activates the parasympathetic nervous system, slowing heart rate and calming
                 the body&apos;s threat response. The pattern is simple:
               </p>

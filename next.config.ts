@@ -28,7 +28,10 @@ const CSP = [
   "img-src 'self'",
   "font-src 'self'",
   "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com",
-  "media-src 'self'",
+  // blob: lets the in-browser-generated noise (White/Pink/Brown) and Pure Tone
+  // play through <audio> from URL.createObjectURL() blobs; 'self' covers the
+  // shipped audio files (Heavy Rain, binaural tracks, Box Breathing).
+  "media-src 'self' blob:",
   "worker-src 'self'",
   // Explicitly block plugins (Flash, PDF viewers, etc.)
   "object-src 'none'",
