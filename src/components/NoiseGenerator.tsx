@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import Link from "next/link";
 import { usePreferences } from "@/hooks/usePreferences";
-import { makeWhiteNoise, makePinkNoise, makeBrownNoise, makeGreenNoise, playLoop as playLoopRaw } from "@/lib/audio/cruxNoise";
+import { makeWhiteNoise, makePinkNoise, makeBrownNoise, makeGreenNoise } from "@/lib/audio/cruxNoise";
 import PureToneTherapyRaw from "./noise-therapy/PureToneTherapy";
 
 // PureToneTherapy is intentionally untyped (@ts-nocheck); give it a typed shell
@@ -15,13 +15,6 @@ const PureToneTherapy = PureToneTherapyRaw as unknown as React.ComponentType<{
   onActivate: () => void;
   onDeactivate: () => void;
 }>;
-
-// playLoop comes from an untyped (@ts-nocheck) module — give it a precise signature.
-const playLoop = playLoopRaw as (
-  el: HTMLAudioElement,
-  url: string,
-  opts?: { title?: string; artworkUrl?: string },
-) => Promise<void>;
 
 // ─── Types & Data ─────────────────────────────────────────────────────────────
 
@@ -146,16 +139,15 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
   // through a real media element (not Web Audio) is what survives a locked
   // screen and shows lock-screen controls on iOS/Android.
   const audioElRef    = useRef<HTMLAudioElement | null>(null);
-  const rampRef       = useRef(0);                          // rAF id for el.volume ramps (Heavy Rain)
   const pauseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const volumeRef     = useRef(3);
   const activeRef     = useRef<SoundType | null>(null);
 
-  // Web Audio graph for the GENERATED noises (white/pink/brown/green). They loop
-  // sample-accurately via an AudioBufferSourceNode (gapless — no <audio loop> seam)
-  // and are routed through the shared <audio> element via a MediaStream, so
-  // lock-screen / background playback still work. Heavy Rain (a long recording)
-  // keeps playing through the element directly.
+  // Web Audio graph for ALL noises (white/pink/brown/green + Heavy Rain). Each
+  // loops sample-accurately via an AudioBufferSourceNode (gapless — no <audio loop>
+  // seam) and is routed through the shared <audio> element via a MediaStream, so
+  // volume is set by the GainNode — which works on iOS, where el.volume is ignored —
+  // and lock-screen / background playback still work.
   const audioCtxRef    = useRef<AudioContext | null>(null);
   const noiseGainRef   = useRef<GainNode | null>(null);
   const noiseStreamRef = useRef<MediaStreamAudioDestinationNode | null>(null);
@@ -168,21 +160,6 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
 
   function noiseTargetVol(type: NoiseType) {
     return (volumeRef.current / 100) * NOISE_VOL_CAP[type];
-  }
-
-  // el.volume ramp — used for Heavy Rain (the recording plays through the element).
-  function rampVolume(to: number, ms: number) {
-    const el = audioElRef.current;
-    if (!el) return;
-    cancelAnimationFrame(rampRef.current);
-    const from = el.volume;
-    const t0 = performance.now();
-    const step = (now: number) => {
-      const k = Math.min(1, (now - t0) / Math.max(1, ms));
-      el.volume = Math.min(1, Math.max(0, from + (to - from) * k));
-      if (k < 1) rampRef.current = requestAnimationFrame(step);
-    };
-    rampRef.current = requestAnimationFrame(step);
   }
 
   function clearPauseTimer() {
@@ -219,19 +196,46 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     } catch { try { g.gain.value = Math.max(0, to); } catch { /* noop */ } }
   }
 
-  // Generated noise WAV -> decoded AudioBuffer (cached). The WAV is internally
-  // crossfaded and looping it via Web Audio is sample-accurate, so the loop is
-  // gapless AND click-free.
+  // Equal-power wrap crossfade so a decoded recording loops without a click
+  // (the generated-noise WAVs are already seamless; Heavy Rain is a raw recording).
+  function seamlessLoopBuffer(ctx: AudioContext, buf: AudioBuffer): AudioBuffer {
+    const F = Math.min(Math.floor(buf.length / 4), Math.round(buf.sampleRate * 0.08)); // 80 ms
+    if (F < 1) return buf;
+    const n = buf.length - F;
+    const out = ctx.createBuffer(buf.numberOfChannels, n, buf.sampleRate);
+    for (let c = 0; c < buf.numberOfChannels; c++) {
+      const src = buf.getChannelData(c);
+      const dst = out.getChannelData(c);
+      for (let i = 0; i < n; i++) dst[i] = src[i];
+      for (let i = 0; i < F; i++) {
+        const t = i / F;
+        dst[i] = src[i] * Math.sin((t * Math.PI) / 2) + src[n + i] * Math.cos((t * Math.PI) / 2);
+      }
+    }
+    return out;
+  }
+
+  // Each noise -> a decoded, seamlessly-loopable AudioBuffer (cached). Generated
+  // noises come from cruxNoise's crossfaded WAVs; Heavy Rain is fetched, decoded
+  // and wrap-crossfaded. Looping any of them via Web Audio is sample-accurate, so
+  // the loop is gapless AND click-free.
   async function getBuffer(type: NoiseType): Promise<AudioBuffer> {
     const cached = bufferCacheRef.current[type];
     if (cached) return cached;
-    const made = type === "white" ? makeWhiteNoise()
-               : type === "pink"  ? makePinkNoise()
-               : type === "green" ? makeGreenNoise()
-               :                     makeBrownNoise();
-    const arr = await made.blob.arrayBuffer();
-    try { URL.revokeObjectURL(made.url); } catch { /* noop */ }
-    const buf = await ensureGraph().decodeAudioData(arr);
+    const ctx = ensureGraph();
+    let buf: AudioBuffer;
+    if (type === "heavyrain") {
+      const resp = await fetch(RAIN_URL);
+      buf = seamlessLoopBuffer(ctx, await ctx.decodeAudioData(await resp.arrayBuffer()));
+    } else {
+      const made = type === "white" ? makeWhiteNoise()
+                 : type === "pink"  ? makePinkNoise()
+                 : type === "green" ? makeGreenNoise()
+                 :                     makeBrownNoise();
+      const arr = await made.blob.arrayBuffer();
+      try { URL.revokeObjectURL(made.url); } catch { /* noop */ }
+      buf = await ctx.decodeAudioData(arr);
+    }
     bufferCacheRef.current[type] = buf;
     return buf;
   }
@@ -261,21 +265,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     if (!el) return;
     clearPauseTimer();
 
-    if (type === "heavyrain") {
-      // Long recording — play the file directly through the element.
-      stopNoiseSource();
-      try { el.srcObject = null; } catch { /* noop */ }
-      el.volume = 0;
-      setIsLoading(true);
-      try { await playLoop(el, RAIN_URL, { title: MEDIA_TITLE.heavyrain, artworkUrl: ARTWORK_URL }); }
-      catch { setIsLoading(false); return; }
-      setIsLoading(false);
-      rampVolume(noiseTargetVol("heavyrain"), 700);
-      activeRef.current = "heavyrain"; setActiveSound("heavyrain"); set("lastNoiseId", "heavyrain");
-      return;
-    }
-
-    // Generated noise — gapless Web Audio loop routed through the shared element.
+    // Every noise loops gaplessly via Web Audio, routed through the shared element.
     const ctx = ensureGraph();
     if (ctx.state === "suspended") { try { await ctx.resume(); } catch { /* noop */ } }
     const replacing = !!noiseSrcRef.current; // already playing another generated noise
@@ -311,8 +301,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
   function stopActive(fadeMs = 240) {
     const el = audioElRef.current;
     clearPauseTimer();
-    const generated = activeRef.current !== null && isNoise(activeRef.current) && activeRef.current !== "heavyrain";
-    if (generated) rampGain(0, fadeMs); else rampVolume(0, fadeMs);
+    rampGain(0, fadeMs); // every noise now plays through the Web Audio gain
     pauseTimerRef.current = setTimeout(() => {
       // only act if nothing else took over the shared element in the meantime
       if (activeRef.current !== null) return;
@@ -358,15 +347,11 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     volumeRef.current = value;
     setVolumeState(value);
     const t = activeRef.current;
-    if (t && isNoise(t)) {
-      if (t === "heavyrain") rampVolume(noiseTargetVol(t), 60);   // Heavy Rain via el.volume
-      else rampGain(noiseTargetVol(t), 60);                       // generated noises via the gain node
-    }
+    if (t && isNoise(t)) rampGain(noiseTargetVol(t), 60); // every noise uses the Web Audio gain
   }
 
   // Pure Tone took over the shared element
   function handleToneActivate() {
-    cancelAnimationFrame(rampRef.current);
     clearPauseTimer();
     stopNoiseSource(); // stop any generated-noise source; Pure Tone drives the element now
     activeRef.current = "puretone";
@@ -423,7 +408,6 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
   useEffect(() => {
     const el = audioElRef.current;
     return () => {
-      cancelAnimationFrame(rampRef.current);
       clearPauseTimer();
       try { el?.pause(); } catch { /* noop */ }
       try { noiseSrcRef.current?.stop(); } catch { /* noop */ }

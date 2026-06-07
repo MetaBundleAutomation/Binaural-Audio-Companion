@@ -232,6 +232,50 @@ export default function Instructions() {
                   noise start and stop automatically with your binaural audio.
                 </li>
               </ul>
+
+              {/* Pure Tone — how to use it for tinnitus */}
+              <h3 className="text-lg font-bold text-[var(--text-primary)] mt-6 mb-3">Using Pure Tone for tinnitus</h3>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
+                Pure Tone is a self-help comfort tool, not a treatment — but used gently it can make
+                tinnitus easier to live with.
+              </p>
+              <ul className="space-y-3 text-[var(--text-secondary)] leading-relaxed">
+                <li>
+                  <strong className="text-[var(--text-primary)]">Find your pitch.</strong> Move the
+                  slider until the tone sits closest to your tinnitus — often a high pitch (roughly
+                  1,000–8,000 Hz). Nudging it slightly either side can improve the blend.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Keep it gentle.</strong> Set it low
+                  and comfortable — just below your tinnitus, never loud or painful. If it ever makes
+                  your symptoms worse, stop.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Use it the way that suits you.</strong> <em>In
+                  the moment</em> — short sessions (around 10–60 minutes) when the ringing bothers you
+                  most; <em>as a soft backdrop</em> — playing quietly for longer stretches, which some
+                  people find reduces their awareness of it over time; <em>blended</em> — layered or
+                  alternated with a noise or rain so you&apos;re not focused on the tinnitus alone.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Listen on good headphones</strong> for
+                  a steady, accurate tone, and keep the volume modest.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Check in weekly.</strong> A quick note
+                  on loudness, annoyance, sleep, and stress shows what&apos;s helping.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Pair it with other support.</strong> Relaxation,
+                  good sleep habits, and professional care (CBT, an audiologist, hearing aids if needed)
+                  do the most together.
+                </li>
+              </ul>
+              <p className="text-[var(--text-secondary)] leading-relaxed mt-4">
+                See a clinician if your tinnitus worsens or your hearing changes — and seek prompt care
+                for sudden, one-sided, or pulsing tinnitus, dizziness, ear pain, or hearing loss.
+              </p>
+
               <Link
                 href="/#noise"
                 className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
