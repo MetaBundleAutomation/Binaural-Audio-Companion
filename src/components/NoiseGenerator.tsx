@@ -18,7 +18,7 @@ const PureToneTherapy = PureToneTherapyRaw as unknown as React.ComponentType<{
 
 // ─── Types & Data ─────────────────────────────────────────────────────────────
 
-type NoiseType = "white" | "pink" | "brown" | "green" | "heavyrain";
+type NoiseType = "white" | "pink" | "brown" | "green" | "heavyrain" | "runningwater" | "oceanwaves";
 type SoundType = NoiseType | "puretone";
 
 const NOISE_INFO: Record<
@@ -30,13 +30,35 @@ const NOISE_INFO: Record<
   brown:     { label: "Brown Noise", tagline: "Deep. Warm. Anchoring.",         color: "#3A8FA3" },
   green:     { label: "Green Noise", tagline: "Lush. Mellow. Soothing.",        color: "#4FA98C" },
   heavyrain: { label: "Heavy Rain",  tagline: "Heavy. Enveloping. Grounding.",  color: "#477A9E" },
+  runningwater: { label: "Gentle Rainforest Waterfall", tagline: "Flowing. Fresh. Soothing.", color: "#3FA7D6" },
+  oceanwaves:   { label: "Gentle Ocean Waves", tagline: "Rolling. Soothing. Coastal.", color: "#2F9CB0" },
   puretone:  { label: "Pure Tone",   tagline: "Tinnitus relief",                color: "#5EA0C8" },
 };
 
-const TILE_TYPES: SoundType[] = ["white", "pink", "brown", "green", "heavyrain", "puretone"];
+const TILE_TYPES: SoundType[] = ["white", "pink", "brown", "green", "heavyrain", "runningwater", "oceanwaves", "puretone"];
 
 const RAIN_URL    = "/audio/heavy-rain-v2.mp3";
 const ARTWORK_URL = "/crux-icon-512.png";
+
+// Video sounds — a long stereo field recording paired with a matching looping video,
+// both large and lazy-loaded only on demand. The clips are 24 kHz, so we decode at
+// 24 kHz (not the 48 kHz graph rate) to halve the in-memory buffer with no quality
+// loss; the loop seam is handled by loopStart/loopEnd at playback.
+const RUNNING_WATER_URL    = "/audio/running-water.mp3";                 // ~8.6 MB
+const RUNNING_WATER_VIDEO  = "/video/running-water-loop.mp4";            // ~40 MB seamless loop — fetched only when the fullscreen video opens
+const RUNNING_WATER_POSTER = "/video/running-water-loop-poster.jpg";
+const OCEAN_WAVES_URL      = "/audio/gentle-ocean-waves.mp3";            // ~2.7 MB
+const OCEAN_WAVES_VIDEO    = "/video/gentle-ocean-waves-loop.mp4";       // ~50 MB seamless loop — fetched only when the fullscreen video opens
+const OCEAN_WAVES_POSTER   = "/video/gentle-ocean-waves-loop-poster.jpg";
+
+const VIDEO_SOUND: Partial<Record<NoiseType, { audio: string; video: string; poster: string; decodeRate: number }>> = {
+  runningwater: { audio: RUNNING_WATER_URL, video: RUNNING_WATER_VIDEO, poster: RUNNING_WATER_POSTER, decodeRate: 24000 },
+  oceanwaves:   { audio: OCEAN_WAVES_URL,   video: OCEAN_WAVES_VIDEO,   poster: OCEAN_WAVES_POSTER,   decodeRate: 24000 },
+};
+const isVideoSound = (t: SoundType): t is "runningwater" | "oceanwaves" => t === "runningwater" || t === "oceanwaves";
+// The MP3s carry a little silent encoder padding at each end; trim this much off EACH
+// end via the loop node's loopStart/loopEnd so the loop point doesn't click/gap.
+const VIDEO_AUDIO_LOOP_TRIM = 0.05; // seconds — tweak if a tick is ever audible
 
 // element.volume cap at full slider, per noise. Matches the previous engine's
 // balance — every noise levelled to RMS ~0.028, measured against cruxNoise's
@@ -48,10 +70,15 @@ const NOISE_VOL_CAP: Record<NoiseType, number> = {
   brown:     0.276,
   green:     0.222,
   heavyrain: 0.72,
+  // Running Water is a quiet recording (RMS ~0.0088, peak ~0.10), so its cap is >1
+  // to reach the same balanced loudness (RMS ~0.028) — peak stays well under clipping.
+  runningwater: 3.18,
+  // Gentle Ocean Waves: RMS ~0.0143, peak ~0.31 -> cap reaches RMS ~0.028, no clipping.
+  oceanwaves: 1.96,
 };
 
 const MEDIA_TITLE: Record<NoiseType, string> = {
-  white: "White Noise", pink: "Pink Noise", brown: "Brown Noise", green: "Green Noise", heavyrain: "Heavy Rain",
+  white: "White Noise", pink: "Pink Noise", brown: "Brown Noise", green: "Green Noise", heavyrain: "Heavy Rain", runningwater: "Gentle Rainforest Waterfall", oceanwaves: "Gentle Ocean Waves",
 };
 
 const isNoise = (t: SoundType): t is NoiseType => t !== "puretone";
@@ -74,6 +101,23 @@ function NoiseIcon({ type, size }: { type: SoundType; size: number }) {
         <line x1="11" y1="17" x2="9"  y2="22" />
         <line x1="15" y1="17" x2="13" y2="22" />
         <line x1="19" y1="17" x2="17" y2="22" />
+      </svg>
+    );
+  }
+  if (type === "runningwater") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <path d="M2 8 Q5 5 8 8 T14 8 T20 8" />
+        <path d="M2 13 Q5 10 8 13 T14 13 T20 13" />
+        <path d="M2 18 Q5 15 8 18 T14 18 T20 18" />
+      </svg>
+    );
+  }
+  if (type === "oceanwaves") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <path d="M2 13 Q5.5 9 9 13 T16 13 T23 13" />
+        <path d="M2 18 Q5.5 14 9 18 T16 18 T23 18" />
       </svg>
     );
   }
@@ -134,6 +178,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
   const [volume, setVolumeState]      = useState(3);
   const [autoSync, setAutoSync]       = useState(false);
   const [isLoading, setIsLoading]     = useState(false);
+  const [videoFullscreen, setVideoFullscreen] = useState<NoiseType | null>(null); // which video sound is showing fullscreen
 
   // ONE shared <audio> element for every sound — including Pure Tone. Playing
   // through a real media element (not Web Audio) is what survives a locked
@@ -152,7 +197,9 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
   const noiseGainRef   = useRef<GainNode | null>(null);
   const noiseStreamRef = useRef<MediaStreamAudioDestinationNode | null>(null);
   const noiseSrcRef    = useRef<AudioBufferSourceNode | null>(null);
-  const bufferCacheRef = useRef<Partial<Record<NoiseType, AudioBuffer>>>({});
+  const bufferCacheRef   = useRef<Partial<Record<NoiseType, AudioBuffer>>>({});
+  const bufferPendingRef = useRef<Partial<Record<NoiseType, Promise<AudioBuffer>>>>({});
+  const videoRef         = useRef<HTMLVideoElement | null>(null);
 
   const noiseIsPlaying = activeSound !== null && isNoise(activeSound);
 
@@ -215,29 +262,44 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     return out;
   }
 
-  // Each noise -> a decoded, seamlessly-loopable AudioBuffer (cached). Generated
-  // noises come from cruxNoise's crossfaded WAVs; Heavy Rain is fetched, decoded
-  // and wrap-crossfaded. Looping any of them via Web Audio is sample-accurate, so
-  // the loop is gapless AND click-free.
+  // Decode one noise into a seamlessly-loopable AudioBuffer. Generated noises come
+  // from cruxNoise's crossfaded WAVs; Heavy Rain is fetched, decoded and wrap-
+  // crossfaded; Running Water is fetched and decoded at its native 24 kHz (which
+  // halves the in-memory buffer vs the 48 kHz graph rate, with no quality loss — the
+  // source has nothing above 12 kHz), with its loop seam handled by loopStart/loopEnd
+  // at playback. Looping any of them via Web Audio is sample-accurate → gapless.
+  async function decodeBuffer(type: NoiseType): Promise<AudioBuffer> {
+    const vid = VIDEO_SOUND[type];
+    if (vid) {
+      const data = await (await fetch(vid.audio)).arrayBuffer();
+      const OAC = window.OfflineAudioContext
+        || (window as unknown as { webkitOfflineAudioContext: typeof OfflineAudioContext }).webkitOfflineAudioContext;
+      return new OAC(2, 1, vid.decodeRate).decodeAudioData(data);
+    }
+    const ctx = ensureGraph();
+    if (type === "heavyrain") {
+      const data = await (await fetch(RAIN_URL)).arrayBuffer();
+      return seamlessLoopBuffer(ctx, await ctx.decodeAudioData(data));
+    }
+    const made = type === "white" ? makeWhiteNoise()
+               : type === "pink"  ? makePinkNoise()
+               : type === "green" ? makeGreenNoise()
+               :                     makeBrownNoise();
+    const arr = await made.blob.arrayBuffer();
+    try { URL.revokeObjectURL(made.url); } catch { /* noop */ }
+    return ctx.decodeAudioData(arr);
+  }
+
+  // Cache + de-dupe, so a preload (on select) and a later play() never both fetch.
   async function getBuffer(type: NoiseType): Promise<AudioBuffer> {
     const cached = bufferCacheRef.current[type];
     if (cached) return cached;
-    const ctx = ensureGraph();
-    let buf: AudioBuffer;
-    if (type === "heavyrain") {
-      const resp = await fetch(RAIN_URL);
-      buf = seamlessLoopBuffer(ctx, await ctx.decodeAudioData(await resp.arrayBuffer()));
-    } else {
-      const made = type === "white" ? makeWhiteNoise()
-                 : type === "pink"  ? makePinkNoise()
-                 : type === "green" ? makeGreenNoise()
-                 :                     makeBrownNoise();
-      const arr = await made.blob.arrayBuffer();
-      try { URL.revokeObjectURL(made.url); } catch { /* noop */ }
-      buf = await ctx.decodeAudioData(arr);
-    }
-    bufferCacheRef.current[type] = buf;
-    return buf;
+    const inflight = bufferPendingRef.current[type];
+    if (inflight) return inflight;
+    const job = decodeBuffer(type).then((buf) => { bufferCacheRef.current[type] = buf; return buf; });
+    bufferPendingRef.current[type] = job;
+    try { return await job; }
+    finally { delete bufferPendingRef.current[type]; }
   }
 
   function stopNoiseSource() {
@@ -278,9 +340,14 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     const src = ctx.createBufferSource();
     src.buffer = buf;
     src.loop = true;
+    if (isVideoSound(type)) {
+      // Trim the MP3's silent encoder padding off each end so the loop is seamless.
+      src.loopStart = VIDEO_AUDIO_LOOP_TRIM;
+      src.loopEnd = Math.max(src.loopStart + 0.1, buf.duration - VIDEO_AUDIO_LOOP_TRIM);
+    }
     src.connect(noiseGainRef.current!);
     noiseSrcRef.current = src;
-    src.start();
+    src.start(0, isVideoSound(type) ? VIDEO_AUDIO_LOOP_TRIM : 0);
 
     const stream = noiseStreamRef.current!.stream;
     if (el.srcObject !== stream) {
@@ -323,7 +390,23 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     else if (isNoise(selected)) startNoise(selected);
   }
 
+  // Video sounds (Running Water, Ocean Waves): ensure selected + playing, then open
+  // the immersive fullscreen video. startNoise's getBuffer lazy-decodes the clip
+  // (de-duped) — never fetched on page load.
+  function openVideoSound(t: NoiseType) {
+    setSelected(t);
+    setVideoFullscreen(t);
+    if (activeRef.current !== t) {
+      if (activeRef.current !== null) { stopActive(120); setTimeout(() => startNoise(t), 150); }
+      else { startNoise(t); }
+    }
+  }
+
   function handleSelectTile(t: SoundType) {
+    // Video sounds are special: tapping the tile (even when already selected) starts
+    // the sound and opens the fullscreen video.
+    if (isVideoSound(t)) { openVideoSound(t); return; }
+
     if (t === selected) return;
     const wasNoisePlaying = activeRef.current !== null && isNoise(activeRef.current);
     const wasToneActive   = activeRef.current === "puretone";
@@ -416,9 +499,23 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // When the fullscreen video opens: enforce muted (React's muted attr is unreliable;
+  // the sound comes from the Web Audio MP3) and let Esc close it.
+  useEffect(() => {
+    if (videoRef.current) videoRef.current.muted = true;
+    if (!videoFullscreen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setVideoFullscreen(null); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [videoFullscreen]);
+
+  // The video media to show fullscreen (Running Water / Ocean Waves), or none.
+  const fsVideo = videoFullscreen ? VIDEO_SOUND[videoFullscreen] : undefined;
+
   // ── Render ────────────────────────────────────────────────────────────────────
 
   return (
+    <>
     <section id="noise" className="my-16 scroll-mt-24">
       <div
         className="rounded-3xl p-10 border border-[var(--border-color)] bg-[var(--background-card)]"
@@ -451,8 +548,8 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
           </Link>
         </div>
 
-        {/* Sound selection — 5 tiles */}
-        <div className="grid grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
+        {/* Sound selection — 8 tiles (2 rows of 4 on desktop) */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {displayTiles.map((type) => {
             const n = NOISE_INFO[type];
             const isSelected = selected === type;
@@ -484,6 +581,12 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
                   >
                     {n.tagline}
                   </div>
+                  {isVideoSound(type) && (
+                    <div className="mt-1.5 flex items-center gap-1 text-[11px] font-semibold" style={{ color: n.color }}>
+                      <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor" aria-hidden><path d="M8 5v14l11-7z" /></svg>
+                      Tap to watch video
+                    </div>
+                  )}
                 </button>
 
                 {/* Favourite heart */}
@@ -595,9 +698,43 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
                 </span>
               </label>
             </div>
+
           </div>
         )}
       </div>
     </section>
+
+    {/* Immersive fullscreen video (Running Water / Ocean Waves) — fills the viewport on
+        every device via a CSS overlay (reliable on iOS, where the native fullscreen API
+        is limited). Tap anywhere or press Esc to close; the sound keeps playing. */}
+    {fsVideo && (
+      <div
+        onClick={() => setVideoFullscreen(null)}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Fullscreen video — tap to close"
+        className="fixed inset-0 z-[100] bg-black flex items-center justify-center cursor-pointer"
+      >
+        <video
+          ref={videoRef}
+          src={fsVideo.video}
+          poster={fsVideo.poster}
+          muted
+          loop
+          playsInline
+          autoPlay
+          preload="none"
+          className="w-full h-full object-cover"
+        />
+        <span
+          aria-hidden
+          className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/50 text-white text-2xl leading-none backdrop-blur-sm"
+        >×</span>
+        <span className="absolute bottom-5 inset-x-0 text-center text-white/80 text-sm pointer-events-none">
+          Tap anywhere to close
+        </span>
+      </div>
+    )}
+    </>
   );
 }

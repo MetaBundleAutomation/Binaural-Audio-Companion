@@ -222,6 +222,17 @@ export default function Instructions() {
                   grounding sound. Particularly effective for sleep and deep focus.
                 </li>
                 <li>
+                  <strong className="text-[var(--text-primary)]">Gentle Rainforest Waterfall</strong> — a
+                  recording of water tumbling over mossy rocks in a rainforest. Soft, flowing and
+                  continuous — soothing for focus, relaxation or drifting off — and it comes with a
+                  matching full-screen video.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Gentle Ocean Waves</strong> — the steady
+                  wash of waves rolling onto the shore. A slow, rhythmic coastal sound that calms the mind
+                  for unwinding and sleep, also paired with a full-screen video.
+                </li>
+                <li>
                   <strong className="text-[var(--text-primary)]">Pure Tone</strong> — a single, clean
                   tone you can tune to your own pitch and keep just below your tinnitus. Played gently,
                   it blends with the ringing so your brain notices it less, easing the distraction and
@@ -230,6 +241,27 @@ export default function Instructions() {
                 <li>
                   Enable <strong className="text-[var(--text-primary)]">Auto-sync</strong> to have
                   noise start and stop automatically with your binaural audio.
+                </li>
+              </ul>
+
+              {/* Gentle Rainforest Waterfall / Gentle Ocean Waves — full-screen video how-to */}
+              <h3 className="text-lg font-bold text-[var(--text-primary)] mt-6 mb-3">Full-screen nature videos</h3>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
+                Gentle Rainforest Waterfall and Gentle Ocean Waves each pair their sound with a matching
+                looping video for a more immersive experience.
+              </p>
+              <ul className="space-y-3 text-[var(--text-secondary)] leading-relaxed">
+                <li>
+                  <strong className="text-[var(--text-primary)]">Tap the tile</strong> to start the sound
+                  and open the video full-screen — it fills the screen on any device.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Tap the video</strong> (or press Esc) to
+                  close it. The sound keeps playing, so you can adjust the volume or stop it from the card.
+                </li>
+                <li>
+                  The video is silent and loops smoothly — the sound comes from the audio, and the video
+                  only downloads when you first open it.
                 </li>
               </ul>
 
