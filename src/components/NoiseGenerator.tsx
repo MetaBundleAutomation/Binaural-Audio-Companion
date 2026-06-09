@@ -48,8 +48,8 @@ const RUNNING_WATER_URL    = "/audio/running-water.mp3";                 // ~8.6
 const RUNNING_WATER_VIDEO  = "/video/running-water-loop.mp4";            // ~40 MB seamless loop — fetched only when the fullscreen video opens
 const RUNNING_WATER_POSTER = "/video/running-water-loop-poster.jpg";
 const OCEAN_WAVES_URL      = "/audio/gentle-ocean-waves.mp3";            // ~2.7 MB
-const OCEAN_WAVES_VIDEO    = "/video/gentle-ocean-waves-loop.mp4";       // ~50 MB seamless loop — fetched only when the fullscreen video opens
-const OCEAN_WAVES_POSTER   = "/video/gentle-ocean-waves-loop-poster.jpg";
+const OCEAN_WAVES_VIDEO    = "/video/gentle-waves-on-tropical-beach-loop.mp4";  // ~16 MB seamless loop — fetched only when the fullscreen video opens
+const OCEAN_WAVES_POSTER   = "/video/gentle-waves-on-tropical-beach-loop-poster.jpg";
 
 const VIDEO_SOUND: Partial<Record<NoiseType, { audio: string; video: string; poster: string; decodeRate: number }>> = {
   runningwater: { audio: RUNNING_WATER_URL, video: RUNNING_WATER_VIDEO, poster: RUNNING_WATER_POSTER, decodeRate: 24000 },
@@ -60,21 +60,21 @@ const isVideoSound = (t: SoundType): t is "runningwater" | "oceanwaves" => t ===
 // end via the loop node's loopStart/loopEnd so the loop point doesn't click/gap.
 const VIDEO_AUDIO_LOOP_TRIM = 0.05; // seconds — tweak if a tick is ever audible
 
-// element.volume cap at full slider, per noise. Matches the previous engine's
-// balance — every noise levelled to RMS ~0.028, measured against cruxNoise's
-// peak-normalised output (white 0.214, pink/brown ~0.102 RMS) and Heavy Rain's
-// raw recording (~0.039 RMS, so its cap stays the proven 0.72, no clipping).
+// Per-sound gain cap at full slider, calibrated so every sound sits at the SAME
+// PERCEIVED loudness — ITU-R BS.1770 integrated loudness ≈ -29 LUFS, measured with
+// ffmpeg on each rendered/decoded buffer — so switching between sounds has no volume
+// jump. Plain RMS-matching wasn't enough: bright sounds (white, the water recordings)
+// measured equal on a meter but sounded clearly louder than dark brown noise. These
+// caps equalise the *heard* level (cap = 10^((-29 - bufferLUFS)/20)); peaks all stay
+// well under clipping.
 const NOISE_VOL_CAP: Record<NoiseType, number> = {
-  white:     0.131,
-  pink:      0.274,
-  brown:     0.276,
-  green:     0.222,
-  heavyrain: 0.72,
-  // Running Water is a quiet recording (RMS ~0.0088, peak ~0.10), so its cap is >1
-  // to reach the same balanced loudness (RMS ~0.028) — peak stays well under clipping.
-  runningwater: 3.18,
-  // Gentle Ocean Waves: RMS ~0.0143, peak ~0.31 -> cap reaches RMS ~0.028, no clipping.
-  oceanwaves: 1.96,
+  white:        0.121,
+  pink:         0.302,
+  brown:        0.396,
+  green:        0.267,
+  heavyrain:    0.661,
+  runningwater: 2.506,
+  oceanwaves:   1.565,
 };
 
 const MEDIA_TITLE: Record<NoiseType, string> = {

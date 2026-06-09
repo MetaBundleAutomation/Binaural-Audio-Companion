@@ -184,6 +184,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Shared keyboard focus indicator — one consistent, theme-aware ring across every
+   interactive element (noise tiles, favourite hearts, play, footer + carousel
+   buttons, links). :focus-visible shows it for keyboard / assistive-tech users but
+   never on mouse click. The outline follows each element's own border-radius. */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 /* Custom range slider styling */
 input[type="range"] {
   -webkit-appearance: none;
@@ -243,6 +255,11 @@ input[type="range"]::-webkit-slider-thumb:hover {
   box-shadow: 0 0 0 4px rgba(43, 107, 127, 0.2);
 }
 
+/* Keyboard focus ring on the thumb (the track has outline:none) — theme-aware. */
+input[type="range"]:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px var(--background-card), 0 0 0 5px var(--primary);
+}
+
 input[type="range"]::-moz-range-thumb {
   width: 18px;
   height: 18px;
@@ -256,6 +273,11 @@ input[type="range"]::-moz-range-thumb {
 input[type="range"]::-moz-range-thumb:hover {
   transform: scale(1.15);
   box-shadow: 0 0 0 4px rgba(43, 107, 127, 0.2);
+}
+
+/* Keyboard focus ring on the thumb (the track has outline:none) — theme-aware. */
+input[type="range"]:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 3px var(--background-card), 0 0 0 5px var(--primary);
 }
 
 /* Equalizer bar animation for the AudioCarousel playing indicator */

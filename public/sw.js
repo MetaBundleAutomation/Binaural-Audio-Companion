@@ -12,7 +12,7 @@
 // For audio specifically, ALSO version the filename when its content changes
 // (e.g. heavy-rain.mp3 → heavy-rain-v2.mp3, or append ?v=N): a brand-new URL can
 // never be served from an old cache.
-const CACHE = "crux-v7";
+const CACHE = "crux-v8";
 const PRECACHE = ["/", "/about"];
 
 // ── Install: pre-cache the app shell ──────────────────────────────────────────

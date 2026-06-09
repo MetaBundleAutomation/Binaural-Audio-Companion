@@ -45,3 +45,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Large unprocessed source video — the committed seamless ~16 MB
+# gentle-waves-on-tropical-beach-loop.mp4 is generated from this; keep the heavy
+# 2.56 GB original locally but never commit it (exceeds GitHub's 100 MB limit).
+/public/video/gentle-waves-on-tropical-beach.mp4
