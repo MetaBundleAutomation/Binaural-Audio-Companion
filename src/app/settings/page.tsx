@@ -9,10 +9,13 @@ import type { Preferences } from "@/hooks/usePreferences";
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const NOISE_OPTIONS: { id: string; label: string }[] = [
-  { id: "white",     label: "White Noise" },
-  { id: "pink",      label: "Pink Noise"  },
-  { id: "brown",     label: "Brown Noise" },
-  { id: "heavyrain", label: "Heavy Rain"  },
+  { id: "white",        label: "White Noise"                },
+  { id: "pink",         label: "Pink Noise"                 },
+  { id: "brown",        label: "Brown Noise"                },
+  { id: "green",        label: "Green Noise"                },
+  { id: "heavyrain",    label: "Heavy Rain"                 },
+  { id: "runningwater", label: "Gentle Rainforest Waterfall"},
+  { id: "oceanwaves",   label: "Gentle Ocean Waves"         },
 ];
 
 // ─── Theme metadata ───────────────────────────────────────────────────────────
@@ -72,14 +75,16 @@ function SegmentedControl<T extends string>({
   value,
   onChange,
   formatLabel,
+  className,
 }: {
   options: readonly T[];
   value: T;
   onChange: (v: T) => void;
   formatLabel?: (v: T) => string;
+  className?: string;
 }) {
   return (
-    <div className="flex gap-2">
+    <div className={className ?? "flex gap-2"}>
       {options.map(option => (
         <button
           key={option}
@@ -127,6 +132,7 @@ export default function SettingsPage() {
 
   function handleReset() {
     if (
+      typeof window !== "undefined" &&
       window.confirm(
         "Reset all My Defaults to app defaults?\n\nYour auto-saved history (last beat, last volume) won't be affected.",
       )
@@ -248,13 +254,19 @@ export default function SettingsPage() {
               <Card>
                 <ControlLabel
                   label="Launch screen"
-                  description="Home stays at the top. Player scrolls straight to the audio controls."
+                  description="Choose which section CRUX scrolls to when you open the app."
                 />
                 <SegmentedControl
-                  options={["home", "player"] as const}
+                  options={["home", "player", "noise", "box-breathing"] as const}
                   value={prefs.launchScreen}
                   onChange={v => set("launchScreen", v)}
-                  formatLabel={v => v.charAt(0).toUpperCase() + v.slice(1)}
+                  className="grid grid-cols-2 gap-2"
+                  formatLabel={v =>
+                    v === "player"        ? "Binaural Beats" :
+                    v === "noise"         ? "Noise Therapy"  :
+                    v === "box-breathing" ? "Box Breathing"  :
+                    "Home"
+                  }
                 />
               </Card>
 

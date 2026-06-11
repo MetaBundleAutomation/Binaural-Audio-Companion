@@ -21,6 +21,7 @@ function validatePref<K extends keyof Preferences>(
 ): Preferences[K] | undefined {
   switch (key) {
     case "lastVolume":
+    case "lastNoiseVolume":
     case "defaultVolume": {
       const n = Number(value);
       return (Number.isFinite(n) && n >= 0 && n <= 100)
@@ -36,7 +37,7 @@ function validatePref<K extends keyof Preferences>(
         : undefined;
 
     case "launchScreen":
-      return (["home", "player"] as const).includes(value as never)
+      return (["home", "player", "noise", "box-breathing"] as const).includes(value as never)
         ? value as Preferences[K]
         : undefined;
 

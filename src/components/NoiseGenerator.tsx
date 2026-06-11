@@ -175,17 +175,21 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
 
   const [selected, setSelected]       = useState<SoundType>("pink");
   const [activeSound, setActiveSound] = useState<SoundType | null>(null); // what's actually sounding
-  const [volume, setVolumeState]      = useState(3);
+  const [volume, setVolumeState]      = useState(30);
   const [autoSync, setAutoSync]       = useState(false);
   const [isLoading, setIsLoading]     = useState(false);
   const [videoFullscreen, setVideoFullscreen] = useState<NoiseType | null>(null); // which video sound is showing fullscreen
+  const [controlsVisible, setControlsVisible] = useState(true);
+  const controlsTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ONE shared <audio> element for every sound — including Pure Tone. Playing
   // through a real media element (not Web Audio) is what survives a locked
   // screen and shows lock-screen controls on iOS/Android.
   const audioElRef    = useRef<HTMLAudioElement | null>(null);
   const pauseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const volumeRef     = useRef(3);
+  const volumeRef       = useRef(30);
+  const volDebounceRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const startTimerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
   const activeRef     = useRef<SoundType | null>(null);
 
   // Web Audio graph for ALL noises (white/pink/brown/green + Heavy Rain). Each
@@ -211,6 +215,12 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
 
   function clearPauseTimer() {
     if (pauseTimerRef.current) { clearTimeout(pauseTimerRef.current); pauseTimerRef.current = null; }
+  }
+
+  function showControls() {
+    setControlsVisible(true);
+    if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current);
+    controlsTimerRef.current = setTimeout(() => setControlsVisible(false), 3000);
   }
 
   // ── Web Audio graph (generated noises) ───────────────────────────────────────
@@ -397,7 +407,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     setSelected(t);
     setVideoFullscreen(t);
     if (activeRef.current !== t) {
-      if (activeRef.current !== null) { stopActive(120); setTimeout(() => startNoise(t), 150); }
+      if (activeRef.current !== null) { stopActive(120); if (startTimerRef.current) clearTimeout(startTimerRef.current); startTimerRef.current = setTimeout(() => startNoise(t), 150); }
       else { startNoise(t); }
     }
   }
@@ -419,10 +429,12 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
 
     setSelected(t);
 
-    // noise → noise while playing: switch straight to the new noise (as before)
     if (isNoise(t) && wasNoisePlaying) {
       stopActive(120);
-      setTimeout(() => startNoise(t), 150);
+      if (startTimerRef.current) clearTimeout(startTimerRef.current);
+      startTimerRef.current = setTimeout(() => startNoise(t), 150);
+    } else if (isNoise(t)) {
+      startNoise(t);
     }
   }
 
@@ -430,7 +442,9 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     volumeRef.current = value;
     setVolumeState(value);
     const t = activeRef.current;
-    if (t && isNoise(t)) rampGain(noiseTargetVol(t), 60); // every noise uses the Web Audio gain
+    if (t && isNoise(t)) rampGain(noiseTargetVol(t), 60);
+    if (volDebounceRef.current) clearTimeout(volDebounceRef.current);
+    volDebounceRef.current = setTimeout(() => set("lastNoiseVolume", value), 300);
   }
 
   // Pure Tone took over the shared element
@@ -457,7 +471,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
       stopActive();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAudioPlaying, autoSync]);
+  }, [isAudioPlaying, autoSync, selected]);
 
   // ── MediaSession play/pause handlers — registered ONCE ─────────────────────────
 
@@ -483,16 +497,20 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     if (!isHydrated) return;
     const target = (prefs.defaultNoiseId ?? prefs.lastNoiseId) as SoundType | null;
     if (target && TILE_TYPES.includes(target)) setSelected(target);
+    const vol = prefs.lastNoiseVolume ?? prefs.defaultVolume ?? 30;
+    volumeRef.current = vol;
+    setVolumeState(vol);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHydrated]);
 
   // ── Cleanup ───────────────────────────────────────────────────────────────────
 
   useEffect(() => {
-    const el = audioElRef.current;
     return () => {
       clearPauseTimer();
-      try { el?.pause(); } catch { /* noop */ }
+      if (startTimerRef.current) clearTimeout(startTimerRef.current);
+      if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current);
+      try { audioElRef.current?.pause(); } catch { /* noop */ }
       try { noiseSrcRef.current?.stop(); } catch { /* noop */ }
       try { audioCtxRef.current?.close(); } catch { /* noop */ }
     };
@@ -503,10 +521,17 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
   // the sound comes from the Web Audio MP3) and let Esc close it.
   useEffect(() => {
     if (videoRef.current) videoRef.current.muted = true;
-    if (!videoFullscreen) return;
+    if (!videoFullscreen) {
+      if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current);
+      return;
+    }
+    showControls();
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setVideoFullscreen(null); };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current);
+    };
   }, [videoFullscreen]);
 
   // The video media to show fullscreen (Running Water / Ocean Waves), or none.
@@ -710,6 +735,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     {fsVideo && (
       <div
         onClick={() => setVideoFullscreen(null)}
+        onMouseMove={showControls}
         role="dialog"
         aria-modal="true"
         aria-label="Fullscreen video — tap to close"
@@ -728,9 +754,9 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
         />
         <span
           aria-hidden
-          className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/50 text-white text-2xl leading-none backdrop-blur-sm"
+          className={`absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/50 text-white text-2xl leading-none backdrop-blur-sm transition-opacity duration-500 ${controlsVisible ? "opacity-100" : "opacity-0"}`}
         >×</span>
-        <span className="absolute bottom-5 inset-x-0 text-center text-white/80 text-sm pointer-events-none">
+        <span className={`absolute bottom-5 inset-x-0 text-center text-white/80 text-sm pointer-events-none transition-opacity duration-500 ${controlsVisible ? "opacity-100" : "opacity-0"}`}>
           Tap anywhere to close
         </span>
       </div>

@@ -18,10 +18,16 @@ export default function LaunchScrollHandler() {
     if (!isHydrated || hasScrolledRef.current) return;
     hasScrolledRef.current = true;
 
-    if (prefs.launchScreen === "player") {
-      setTimeout(() => {
-        document.getElementById("player")?.scrollIntoView({ behavior: "smooth" });
+    const sectionId =
+      prefs.launchScreen === "player"       ? "player"       :
+      prefs.launchScreen === "noise"        ? "noise"        :
+      prefs.launchScreen === "box-breathing"? "box-breathing":
+      null;
+    if (sectionId) {
+      const timer = setTimeout(() => {
+        document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
       }, 150);
+      return () => clearTimeout(timer);
     }
     // "home" → no scroll, stay at top
     // eslint-disable-next-line react-hooks/exhaustive-deps

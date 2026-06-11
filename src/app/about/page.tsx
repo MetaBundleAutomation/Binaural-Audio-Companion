@@ -115,6 +115,24 @@ export default function About() {
               </p>
             </div>
 
+            {/* What is Tinnitus */}
+            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What is Tinnitus?</h2>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
+                Tinnitus is the perception of sound — most often a ringing, buzzing, hissing, or
+                humming — with no external source. It originates in the auditory system itself rather
+                than in the surrounding environment, and can range from a barely noticeable background
+                presence to something that regularly interrupts sleep, concentration, or daily life.
+              </p>
+              <p className="text-[var(--text-secondary)] leading-relaxed">
+                For most people it is linked to noise exposure, age-related hearing changes, or periods
+                of heightened stress. While there is no single cure, many find relief through sound: a
+                steady background noise that fills the silence, or a single tone pitched close to the
+                ringing, can reduce how much attention the brain gives to it. CRUX&apos;s noise therapy
+                and Pure Tone tool are both designed with that in mind.
+              </p>
+            </div>
+
             {/* What is Box Breathing */}
             <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What is Box Breathing?</h2>

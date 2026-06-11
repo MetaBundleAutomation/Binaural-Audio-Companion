@@ -8,10 +8,11 @@ export interface Preferences {
   lastBeatId:       string | null;   // track name e.g. "Focus"
   lastNoiseId:      string | null;   // "white" | "pink" | "brown"
   lastVolume:       number;          // 0–100
+  lastNoiseVolume:  number;          // 0–100, auto-saved noise therapy slider
   defaultBeatId:    string | null;
   defaultNoiseId:   string | null;
   defaultVolume:    number;          // 0–100, default 30
-  launchScreen:     "home" | "player";
+  launchScreen:     "home" | "player" | "noise" | "box-breathing";
   favouriteBeats:   string[];        // track names
   favouriteNoises:  string[];        // noise type strings
   brightness:         "dim" | "default" | "bright";
@@ -25,6 +26,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   lastBeatId:       null,
   lastNoiseId:      null,
   lastVolume:       30,
+  lastNoiseVolume:  30,
   defaultBeatId:    null,
   defaultNoiseId:   null,
   defaultVolume:    30,
@@ -42,6 +44,7 @@ export const PREF_KEYS: Record<keyof Preferences, string> = {
   lastBeatId:       "crux:lastBeatId",
   lastNoiseId:      "crux:lastNoiseId",
   lastVolume:       "crux:lastVolume",
+  lastNoiseVolume:  "crux:lastNoiseVolume",
   defaultBeatId:    "crux:defaultBeatId",
   defaultNoiseId:   "crux:defaultNoiseId",
   defaultVolume:    "crux:defaultVolume",
