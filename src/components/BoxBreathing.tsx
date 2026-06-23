@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePreferences } from "@/hooks/usePreferences";
 
 declare global {
   interface Window { webkitAudioContext?: typeof AudioContext; }
@@ -33,15 +34,13 @@ const S            = 600;
 const C            = S / 2;
 const SEG_GAP      = 0.04;
 
-const VOICE_KEY = "crux_voice_guidance_enabled";
-
-/**
- * Combined narration file.  Contains:
- *   0 – INTRO_END_S  : intro speech + countdown ("…three, two, one")
- *   INTRO_END_S – end: one full breathing cycle cued at 4-second intervals,
- *                      starting on "Inhale"
- */
-const NARRATION_SRC = "/audio/Box Breathing.mp3?v=10";
+/** Audio sources keyed by voice preference. */
+const VOICE_SRCS: Record<"default" | "sarah" | "john" | "julie", string> = {
+  default: "/audio/Box Breathing.mp3?v=10",
+  sarah:   "/audio/box-breathing-sarah.mp3?v=1",
+  john:    "/audio/box-breathing-john.mp3?v=1",
+  julie:   "/audio/box-breathing-julie.mp3?v=1",
+};
 
 /**
  * Timestamp (seconds) inside NARRATION_SRC where the word "Inhale" is spoken.
@@ -158,10 +157,11 @@ export default function BoxBreathing() {
    */
   const voiceEnabledRef = useRef(true);
 
-  // ── React state ──────────────────────────────────────────────────────────
+  // ── Preferences ──────────────────────────────────────────────────────────
+  const { prefs, isHydrated, set } = usePreferences();
 
-  const [status,          setStatus]          = useState<Status>("idle");
-  const [voiceEnabled, setVoiceEnabled] = useState(true); // default ON
+  // ── React state ──────────────────────────────────────────────────────────
+  const [status, setStatus] = useState<Status>("idle");
 
   // ── Reduce Motion preference ──────────────────────────────────────────────
   // Tracked live so draw() can drop decorative motion the moment the OS setting
@@ -181,22 +181,14 @@ export default function BoxBreathing() {
 
   // ── Audio bootstrap ──────────────────────────────────────────────────────
 
+  // Create the AudioContext once on mount (suspended on iOS — resumed inside
+  // the Start handler). decodeAudioData works on a suspended context, so the
+  // buffer can be ready before the first user gesture.
   useEffect(() => {
-    // AudioContext intentionally starts suspended on iOS — it will be resumed
-    // inside the Start tap handler.  decodeAudioData works on a suspended
-    // context, so the buffer is ready the moment the user presses Start.
     const Ctor = window.AudioContext ?? window.webkitAudioContext;
     if (!Ctor) return;
-
     const ctx = new Ctor();
     audioCtxRef.current = ctx;
-
-    fetch(NARRATION_SRC)
-      .then((r) => r.arrayBuffer())
-      .then((ab) => ctx.decodeAudioData(ab))
-      .then((decoded) => { audioBufferRef.current = padBufferForLoop(ctx, decoded); })
-      .catch((e) => console.warn("[BoxBreathing] audio preload failed:", e));
-
     return () => {
       if (ctx.state !== "closed") ctx.close().catch(() => {});
       audioCtxRef.current   = null;
@@ -205,19 +197,27 @@ export default function BoxBreathing() {
     };
   }, []);
 
-  // ── Voice preference hydration ────────────────────────────────────────────
-
-  // Hydrate voice preference from localStorage after mount.
+  // Fetch and decode the narration buffer for the selected voice.
+  // Re-runs after preferences hydrate and whenever the voice selection changes.
   useEffect(() => {
-    try {
-      const sv = localStorage.getItem(VOICE_KEY);
-      if (sv !== null) {
-        const v = sv === "true";
-        setVoiceEnabled(v);
-        voiceEnabledRef.current = v;
-      }
-    } catch { /* localStorage unavailable — use defaults */ }
-  }, []);
+    if (!isHydrated) return;
+    const ctx = audioCtxRef.current;
+    if (!ctx || ctx.state === "closed") return;
+    const src = VOICE_SRCS[prefs.boxBreathingVoice];
+    audioBufferRef.current = null; // invalidate while new buffer loads
+    fetch(src)
+      .then(r => r.arrayBuffer())
+      .then(ab => ctx.decodeAudioData(ab))
+      .then(decoded => { audioBufferRef.current = padBufferForLoop(ctx, decoded); })
+      .catch(e => console.warn("[BoxBreathing] audio preload failed:", e));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isHydrated, prefs.boxBreathingVoice]);
+
+  // Keep voiceEnabledRef in sync with the persisted preference so audio
+  // helpers always read the latest value without waiting for a re-render.
+  useEffect(() => {
+    voiceEnabledRef.current = prefs.boxBreathingVoiceEnabled;
+  }, [prefs.boxBreathingVoiceEnabled]);
 
   // ── iOS audio-session recovery ────────────────────────────────────────────
   // iOS suspends the AudioContext when the screen locks, a call comes in, or
@@ -555,21 +555,13 @@ export default function BoxBreathing() {
   }
 
   function handleToggleVoice() {
-    const next = !voiceEnabled;
-    voiceEnabledRef.current = next; // Update ref immediately for animation loop
-    setVoiceEnabled(next);
-    try { localStorage.setItem(VOICE_KEY, String(next)); } catch { /* noop */ }
-
+    const next = !prefs.boxBreathingVoiceEnabled;
+    voiceEnabledRef.current = next; // update ref immediately for audio helpers
+    set("boxBreathingVoiceEnabled", next);
     if (!next) {
-      // Turning voice OFF — stop any playing audio.
       stopAllAudio();
-      // If we were waiting in the intro, jump to animation so the visual
-      // continues uninterrupted.
-      if (status === "intro") {
-        startAnimation();
-      }
+      if (status === "intro") startAnimation();
     }
-    // Turning ON: takes effect at next Start press — no retroactive action.
   }
 
   // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -645,20 +637,20 @@ export default function BoxBreathing() {
         >
           <div
             role="switch"
-            aria-checked={voiceEnabled}
+            aria-checked={prefs.boxBreathingVoiceEnabled}
             aria-label="Toggle voice guidance"
             tabIndex={0}
             onKeyDown={(e) => (e.key === " " || e.key === "Enter") && handleToggleVoice()}
             className={`relative w-11 h-6 rounded-full cursor-pointer transition-colors overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] ${
-              voiceEnabled ? "bg-[var(--primary)]" : "bg-[var(--border-color)]"
+              prefs.boxBreathingVoiceEnabled ? "bg-[var(--primary)]" : "bg-[var(--border-color)]"
             }`}
           >
             <span className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${
-              voiceEnabled ? "translate-x-5" : "translate-x-0"
+              prefs.boxBreathingVoiceEnabled ? "translate-x-5" : "translate-x-0"
             }`} />
           </div>
           <span className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)]">
-            {voiceEnabled ? (
+            {prefs.boxBreathingVoiceEnabled ? (
               <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
                 <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
@@ -674,6 +666,34 @@ export default function BoxBreathing() {
             Voice guidance
           </span>
         </div>
+
+        {/* ── Voice selector — visible only when voice guidance is on ── */}
+        {prefs.boxBreathingVoiceEnabled && (
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-[var(--text-secondary)] shrink-0">Voice</span>
+            <div className="flex gap-2">
+              {(["john", "sarah", "default", "julie"] as const).map(v => (
+                <button
+                  key={v}
+                  onClick={() => set("boxBreathingVoice", v)}
+                  aria-pressed={prefs.boxBreathingVoice === v}
+                  className="py-1.5 px-4 rounded-xl text-[13px] font-semibold transition-all cursor-pointer"
+                  style={prefs.boxBreathingVoice === v ? {
+                    background: "var(--primary)",
+                    color: "white",
+                    boxShadow: "0 4px 12px rgba(43,107,127,0.35)",
+                  } : {
+                    background: "var(--background-light)",
+                    color: "var(--text-secondary)",
+                    border: "1px solid var(--border-color)",
+                  }}
+                >
+                  {v === "default" ? "Les" : v === "sarah" ? "Sarah" : v === "john" ? "John" : "Julie"}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* ── Description block ───────────────────────────────────────── */}
         <div className="flex flex-col items-center gap-2 text-center" style={{ maxWidth: 420 }}>

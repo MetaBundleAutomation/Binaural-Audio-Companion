@@ -18,7 +18,7 @@
 // the SW delete all older caches on activate, so returning users get fresh files.
 // Also version a file's URL when its bytes change (e.g. heavy-rain.mp3 →
 // heavy-rain-v2.mp3, or ?v=N): a brand-new URL can never be served from an old cache.
-const CACHE = "crux-v9";
+const CACHE = "crux-v10";
 
 // Small, critical assets — the app shell, the file-based sounds, and the posters.
 // Cached on install so every sound works offline immediately.
@@ -35,6 +35,9 @@ const CORE_PRECACHE = [
   "/audio/running-water.mp3",
   "/audio/gentle-ocean-waves.mp3",
   "/audio/Box%20Breathing.mp3?v=10",
+  "/audio/box-breathing-sarah.mp3?v=1",
+  "/audio/box-breathing-john.mp3?v=1",
+  "/audio/box-breathing-julie.mp3?v=1",
   // Video poster frames (shown before the loop plays / while it buffers).
   "/video/running-water-loop-poster.jpg",
   "/video/gentle-waves-on-tropical-beach-loop-poster.jpg",

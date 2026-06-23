@@ -270,6 +270,26 @@ export default function SettingsPage() {
                 />
               </Card>
 
+              {/* Box Breathing voice */}
+              <Card>
+                <ControlLabel
+                  label="Box Breathing voice"
+                  description="Choose which voice guides your box breathing session."
+                />
+                <SegmentedControl
+                  options={["john", "sarah", "default", "julie"] as const}
+                  value={prefs.boxBreathingVoice}
+                  onChange={v => set("boxBreathingVoice", v)}
+                  className="grid grid-cols-2 gap-2"
+                  formatLabel={v =>
+                    v === "sarah" ? "Sarah" :
+                    v === "john"  ? "John"  :
+                    v === "julie" ? "Julie" :
+                    "Les"
+                  }
+                />
+              </Card>
+
             </div>
 
             {/* Reset */}
