@@ -41,6 +41,14 @@ function validatePref<K extends keyof Preferences>(
         ? value as Preferences[K]
         : undefined;
 
+    case "boxBreathingVoice":
+      return (["default", "sarah", "john", "julie"] as const).includes(value as never)
+        ? value as Preferences[K]
+        : undefined;
+
+    case "boxBreathingVoiceEnabled":
+      return typeof value === "boolean" ? value as Preferences[K] : undefined;
+
     case "favouriteBeats":
     case "favouriteNoises":
       return (Array.isArray(value) && value.every(v => typeof v === "string"))

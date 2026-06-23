@@ -12,7 +12,9 @@ export interface Preferences {
   defaultBeatId:    string | null;
   defaultNoiseId:   string | null;
   defaultVolume:    number;          // 0–100, default 30
-  launchScreen:     "home" | "player" | "noise" | "box-breathing";
+  launchScreen:         "home" | "player" | "noise" | "box-breathing";
+  boxBreathingVoice:    "default" | "sarah" | "john" | "julie";
+  boxBreathingVoiceEnabled: boolean;
   favouriteBeats:   string[];        // track names
   favouriteNoises:  string[];        // noise type strings
   brightness:         "dim" | "default" | "bright";
@@ -30,7 +32,9 @@ export const DEFAULT_PREFERENCES: Preferences = {
   defaultBeatId:    null,
   defaultNoiseId:   null,
   defaultVolume:    30,
-  launchScreen:     "home" as const,
+  launchScreen:         "home" as const,
+  boxBreathingVoice:    "sarah" as const,
+  boxBreathingVoiceEnabled: true,
   favouriteBeats:   [],
   favouriteNoises:  [],
   brightness:         "default",
@@ -48,7 +52,9 @@ export const PREF_KEYS: Record<keyof Preferences, string> = {
   defaultBeatId:    "crux:defaultBeatId",
   defaultNoiseId:   "crux:defaultNoiseId",
   defaultVolume:    "crux:defaultVolume",
-  launchScreen:     "crux:launchScreen",
+  launchScreen:         "crux:launchScreen",
+  boxBreathingVoice:    "crux:boxBreathingVoice",
+  boxBreathingVoiceEnabled: "crux:boxBreathingVoiceEnabled",
   favouriteBeats:   "crux:favouriteBeats",
   favouriteNoises:  "crux:favouriteNoises",
   brightness:         "crux:brightness",
@@ -62,6 +68,8 @@ export const RESETTABLE_KEYS: (keyof Preferences)[] = [
   "defaultNoiseId",
   "defaultVolume",
   "launchScreen",
+  "boxBreathingVoice",
+  "boxBreathingVoiceEnabled",
   "brightness",
   "theme",
   "showAromatherapy",
