@@ -18,10 +18,10 @@ const PHASES = [
   { name: "Hold",   subtitle: "hold still",  color: "#9ba8ff" },
 ];
 const PHASE_LABELS = ["Inhale", "Hold", "Exhale", "Hold"];
-// Each phase is 4 000 ms. Animation starts at INTRO_END_S when "Inhale" is
-// spoken; the audio buffer is padded so its gapless loop spans exactly this
-// 16 000 ms cycle (see LOOP_END_S / padBufferForLoop), keeping audio and
-// visuals in sync indefinitely.
+// Each phase is 4 000 ms. Animation starts when "Inhale" is spoken (see
+// VOICE_CONFIG[voice].introEndS); the audio buffer is padded so its gapless
+// loop spans exactly this 16 000 ms cycle (see padBufferForLoop), keeping
+// audio and visuals in sync indefinitely.
 const PHASE_DURATIONS = [4000, 4000, 4000, 4000]; // ms [Inhale, Hold, Exhale, Hold]
 const MIN_R        = 28;
 const MAX_R        = 108;
@@ -34,45 +34,29 @@ const S            = 600;
 const C            = S / 2;
 const SEG_GAP      = 0.04;
 
-/** Audio sources keyed by voice preference. */
-const VOICE_SRCS: Record<"default" | "sarah" | "john" | "julie", string> = {
-  default: "/audio/Box Breathing.mp3?v=10",
-  sarah:   "/audio/box-breathing-sarah.mp3?v=1",
-  john:    "/audio/box-breathing-john.mp3?v=1",
-  julie:   "/audio/box-breathing-julie.mp3?v=1",
+/** Per-voice config: audio source URL and the timestamp where "Inhale" is spoken (measured with ffmpeg). */
+const VOICE_CONFIG: Record<"default" | "sarah" | "john" | "julie", { src: string; introEndS: number }> = {
+  default: { src: "/audio/box-breathing-les.mp3?v=2",   introEndS: 12.579 },
+  sarah:   { src: "/audio/box-breathing-sarah.mp3?v=2", introEndS: 12.579 },
+  john:    { src: "/audio/box-breathing-john.mp3?v=2",  introEndS: 12.579 },
+  julie:   { src: "/audio/box-breathing-julie.mp3?v=2", introEndS: 12.580 },
 };
 
-/**
- * Timestamp (seconds) inside NARRATION_SRC where the word "Inhale" is spoken.
- * Measured with ffmpeg silencedetect (first silence_end before a ≥3 s gap).
- * The animation starts at this exact offset so audio and visuals stay in sync.
- */
-const INTRO_END_S = 12.780;
-
-/**
- * Index into PHASES where the animation opens.
- * The narration says "Inhale" at INTRO_END_S, so the first animated phase
- * must be Inhale (index 0).
- */
+// Animation always opens on Inhale (index 0) — "Inhale" is spoken at
+// VOICE_CONFIG[voice].introEndS, which triggers the phase immediately.
 const PHASE_START_IDX = 0;
 
-/**
- * End of the gapless loop section, in seconds. The looped breathing cues must
- * span exactly one animation cycle (the sum of PHASE_DURATIONS) so the audio
- * never drifts from the visuals. The narration file ends ~200 ms before this,
- * so its buffer is padded with trailing silence on load (see padBufferForLoop).
- */
-const CYCLE_MS   = PHASE_DURATIONS.reduce((a, b) => a + b, 0); // 16 000 ms
-const LOOP_END_S = INTRO_END_S + CYCLE_MS / 1000;             // 28.780 s
+const CYCLE_MS = PHASE_DURATIONS.reduce((a, b) => a + b, 0); // 16 000 ms
+const CYCLE_S  = CYCLE_MS / 1000;                             // 16 s
 
 /**
  * Pad the decoded narration with trailing silence so the loop section
- * (INTRO_END_S → LOOP_END_S) spans exactly one animation cycle. Without this,
- * a sample-accurate gapless loop would be ~200 ms shorter than the 16 s visual
- * cycle and drift out of sync. No-op if the buffer is already long enough.
+ * (introEndS → introEndS + CYCLE_S) spans exactly one animation cycle. Without
+ * this, a sample-accurate gapless loop would be ~200 ms shorter than the 16 s
+ * visual cycle and drift out of sync. No-op if the buffer is already long enough.
  */
-function padBufferForLoop(ctx: AudioContext, src: AudioBuffer): AudioBuffer {
-  const minLength = Math.ceil((LOOP_END_S + 0.05) * src.sampleRate);
+function padBufferForLoop(ctx: AudioContext, src: AudioBuffer, loopEndS: number): AudioBuffer {
+  const minLength = Math.ceil((loopEndS + 0.05) * src.sampleRate); // 50 ms safety margin
   if (src.length >= minLength) return src;
   const padded = ctx.createBuffer(src.numberOfChannels, minLength, src.sampleRate);
   for (let ch = 0; ch < src.numberOfChannels; ch++) {
@@ -143,7 +127,7 @@ export default function BoxBreathing() {
   const audioSourceRef = useRef<AudioBufferSourceNode | null>(null);
 
   /**
-   * setTimeout handle that fires at INTRO_END_S to start the animation.
+   * setTimeout handle that fires at introEndS to start the animation.
    * Cancelled on stop/reset so the timer never fires after a session ends.
    */
   const introTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -203,12 +187,20 @@ export default function BoxBreathing() {
     if (!isHydrated) return;
     const ctx = audioCtxRef.current;
     if (!ctx || ctx.state === "closed") return;
-    const src = VOICE_SRCS[prefs.boxBreathingVoice];
+    const { src, introEndS } = VOICE_CONFIG[prefs.boxBreathingVoice];
     audioBufferRef.current = null; // invalidate while new buffer loads
     fetch(src)
       .then(r => r.arrayBuffer())
       .then(ab => ctx.decodeAudioData(ab))
-      .then(decoded => { audioBufferRef.current = padBufferForLoop(ctx, decoded); })
+      .then(decoded => {
+        audioBufferRef.current = padBufferForLoop(ctx, decoded, introEndS + CYCLE_S);
+        // If the animation is already running but audio stalled (e.g. voice was
+        // switched while paused and the new buffer finished loading after resume),
+        // start narration now so the session isn't silently missing audio.
+        if (isRunningRef.current && voiceEnabledRef.current && !audioSourceRef.current) {
+          playNarration(introEndS);
+        }
+      })
       .catch(e => console.warn("[BoxBreathing] audio preload failed:", e));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHydrated, prefs.boxBreathingVoice]);
@@ -425,7 +417,7 @@ export default function BoxBreathing() {
    * Any previously playing source is stopped first.
    *
    * Uses the Web Audio engine's native gapless looping of the breathing-cue
-   * section (loopStart = INTRO_END_S), so every repeat skips the intro speech.
+   * section (loopStart = introEndS), so every repeat skips the intro speech.
    * This replaces an onended→restart loop, which clicked audibly: stopping and
    * re-starting the buffer at the loud "Inhale" onset each cycle produced a pop
    * at the end of the second Hold. Native looping is sample-accurate and
@@ -446,10 +438,11 @@ export default function BoxBreathing() {
     const source = ctx.createBufferSource();
     source.buffer    = buffer;
     // Native gapless loop over the breathing-cue section only — the intro
-    // (0 → INTRO_END_S) plays once, then 12.780s → end repeats seamlessly.
+    // plays once, then loops from the "Inhale" cue to the end of one full cycle.
+    const { introEndS } = VOICE_CONFIG[prefs.boxBreathingVoice];
     source.loop      = true;
-    source.loopStart = INTRO_END_S;
-    source.loopEnd   = LOOP_END_S;
+    source.loopStart = introEndS;
+    source.loopEnd   = introEndS + CYCLE_S;
     source.connect(ctx.destination);
 
     // Keep a reference so callers can verify it hasn't been superseded.
@@ -488,11 +481,13 @@ export default function BoxBreathing() {
       try { await ctx.resume(); } catch { /* continue; playback won't work but animation will */ }
     }
 
+    const { introEndS } = VOICE_CONFIG[prefs.boxBreathingVoice];
+
     if (status === "paused") {
-      // Re-enter the breathing cycle audio from INTRO_END_S so cues stay
-      // aligned with whatever phase the animation is currently on.
+      // Re-enter the breathing cycle audio so cues stay aligned with
+      // whatever phase the animation is currently on.
       if (voiceEnabledRef.current && ctx && audioBufferRef.current) {
-        playNarration(INTRO_END_S);
+        playNarration(introEndS);
       }
       isRunningRef.current = true;
       setStatus("running");
@@ -521,7 +516,7 @@ export default function BoxBreathing() {
       //
       // HTMLAudioElement.timeupdate fires every ~250 ms, introducing up to
       // 250 ms of animation-start lag.  A single setTimeout keyed to
-      // INTRO_END_S is both simpler and far more accurate; ctx.currentTime
+      // introEndS is both simpler and far more accurate; ctx.currentTime
       // advances at audio-clock precision so the overshoot correction below
       // is typically < 10 ms.
       introTimerRef.current = setTimeout(() => {
@@ -529,12 +524,12 @@ export default function BoxBreathing() {
         introModeRef.current  = false;
 
         // Correct for any overshoot: seed elapsed with however many ms past
-        // INTRO_END_S the audio clock has already advanced.
+        // the intro the audio clock has already advanced.
         const audioPos = ctx.currentTime - startCtxTime;
-        elapsedRef.current = Math.max(0, (audioPos - INTRO_END_S) * 1000);
+        elapsedRef.current = Math.max(0, (audioPos - introEndS) * 1000);
 
         startAnimation();
-      }, INTRO_END_S * 1000);
+      }, introEndS * 1000);
 
     } else {
       // Voice off — jump straight into animation.

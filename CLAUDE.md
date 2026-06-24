@@ -23,6 +23,6 @@ To avoid serving stale assets in production:
   activate, so returning users get fresh files.
 - **Version audio filenames when their content changes** — e.g.
   `heavy-rain.mp3` → `heavy-rain-v2.mp3`, or append `?v=N` (as
-  `Box Breathing.mp3?v=9` does). A brand-new URL can never be served from an old
+  `box-breathing-les.mp3?v=2` does). A brand-new URL can never be served from an old
   cache. (Code/CSS get this automatically via Next's content-hashed
   `/_next/static/` filenames.)

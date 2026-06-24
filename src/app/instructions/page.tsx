@@ -216,8 +216,7 @@ export default function Instructions() {
                   popular choice for reducing hypervigilance at night.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">Heavy Rain</strong> — Queensland rain
-                  on a COLORBOND roof — a dense, enveloping downpour that blends well with any binaural
+                  <strong className="text-[var(--text-primary)]">Heavy Rain</strong> — Rain on a tin roof — a dense, enveloping downpour that blends well with any binaural
                   beat and masks even persistent background noise, wrapping the room in steady,
                   grounding sound. Particularly effective for sleep and deep focus.
                 </li>
