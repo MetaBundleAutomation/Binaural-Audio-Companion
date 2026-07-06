@@ -8,6 +8,7 @@ import { usePreferences } from "@/hooks/usePreferences";
 import AudioCarousel from "./AudioCarousel";
 import AromatherapyCard from "./AromatherapyCard";
 import BoxBreathing from "./BoxBreathing";
+import CoherenceBreathing from "./CoherenceBreathing";
 import NoiseGenerator from "./NoiseGenerator";
 import VolumeWarningModal from "./VolumeWarningModal";
 
@@ -20,6 +21,17 @@ export default function Player() {
   const engine         = useAudioEngine();
   const track          = tracks[engine.currentTrackIndex];
   const { prefs } = usePreferences();
+  const [breathingMode, setBreathingMode] = useState<"box" | "coherence">("box");
+
+  // Switch to Coherence tab when navigating via the #coherence-breathing hash
+  useEffect(() => {
+    const activate = () => {
+      if (window.location.hash === "#coherence-breathing") setBreathingMode("coherence");
+    };
+    activate();
+    window.addEventListener("hashchange", activate);
+    return () => window.removeEventListener("hashchange", activate);
+  }, []);
 
   // Session progress for the player's time/progress display
   const totalSeconds = parseDuration(track.duration);
@@ -152,8 +164,35 @@ export default function Player() {
       {/* Noise Therapy */}
       <NoiseGenerator isAudioPlaying={engine.isPlaying} />
 
-      {/* Box Breathing */}
-      <BoxBreathing />
+      {/* Breathing section — id is the scroll target for /#coherence-breathing deep-links */}
+      <div id="coherence-breathing" className="scroll-mt-24">
+        {/* Mode selector pill */}
+        <div className="flex justify-center mb-4">
+          <div
+            role="group"
+            aria-label="Breathing mode"
+            className="flex p-1 rounded-full bg-[var(--background-light)] border border-[var(--border-color)]"
+          >
+            {(["box", "coherence"] as const).map((m) => (
+              <button
+                key={m}
+                onClick={() => setBreathingMode(m)}
+                aria-pressed={breathingMode === m}
+                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all cursor-pointer ${
+                  breathingMode === m
+                    ? "bg-[var(--primary)] text-white"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                }`}
+              >
+                {m === "box" ? "Box Breathing" : "Coherence"}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="breathing-card-host">
+          {breathingMode === "box" ? <BoxBreathing /> : <CoherenceBreathing />}
+        </div>
+      </div>
     </>
   );
 }

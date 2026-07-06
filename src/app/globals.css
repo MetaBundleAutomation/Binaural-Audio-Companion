@@ -305,3 +305,6 @@ input[type="range"]:focus-visible::-moz-range-thumb {
   );
   transition: background-color 600ms ease;
 }
+
+/* Strip breathing-component section margins inside the mode toggle wrapper */
+.breathing-card-host > section { margin-top: 0; margin-bottom: 0; }

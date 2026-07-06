@@ -388,6 +388,106 @@ export default function Instructions() {
 
             <hr className="border-[var(--border-color)]" />
 
+            {/* Coherence Breathing */}
+            <div id="coherence-breathing" className="scroll-mt-24 bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">💙 Heart–Brain Coherence</h2>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
+                Slow, paced breathing with a longer out-breath, combined with a genuine feeling of gratitude,
+                guides your heart into a smooth, ordered rhythm of around one cycle every ten seconds — roughly
+                0.1 Hz. Research links this coherent state to greater emotional stability, better stress
+                regulation, and a quieter nervous system.
+              </p>
+
+              <h3 className="font-semibold text-[var(--text-primary)] mb-4">Three steps</h3>
+              <div className="flex flex-col gap-4 mb-6">
+                {[
+                  {
+                    n: "1",
+                    head: "Drop into your heart.",
+                    body: "Rest a hand over your heart. Your attention naturally follows touch — wherever you feel contact, awareness follows. This gently moves your focus out of your head and into your heart.",
+                  },
+                  {
+                    n: "2",
+                    head: "Breathe slow, exhale long.",
+                    body: "Breathe so your out-breath is longer than your in-breath. Start wherever feels easy — it should never feel forced. A longer exhale activates your parasympathetic nervous system, telling your body it is safe. Imagine each breath flowing in and out through your heart.",
+                  },
+                  {
+                    n: "3",
+                    head: "Feel genuine gratitude.",
+                    body: "Choose something real — your kids, your family, being alive, a good moment today. Most of the time we feel something only because of what is happening around us; here you are choosing the feeling on purpose. Sustained gratitude settles your heart into a coherent rhythm and brings your heart and brain into sync.",
+                  },
+                ].map(({ n, head, body }) => (
+                  <div key={n} className="flex gap-4 items-start">
+                    <span
+                      className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                      style={{ background: "var(--primary)" }}
+                      aria-hidden="true"
+                    >
+                      {n}
+                    </span>
+                    <div>
+                      <p className="font-semibold text-[var(--text-primary)] text-sm mb-0.5">{head}</p>
+                      <p className="text-[var(--text-secondary)] text-sm leading-relaxed">{body}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <h3 className="font-semibold text-[var(--text-primary)] mb-3">Presets</h3>
+              <div className="grid grid-cols-3 gap-3 mb-6">
+                {[
+                  { label: "Gentle",   detail: "3 s in · 5 s out", note: "Easy starting point" },
+                  { label: "Balanced", detail: "4 s in · 6 s out", note: "The 0.1 Hz sweet spot" },
+                  { label: "Deeper",   detail: "5 s in · 7 s out", note: "For experienced breathers" },
+                ].map(({ label, detail, note }) => (
+                  <div key={label} className="rounded-xl p-4 border border-[var(--border-color)] bg-[var(--background-light)]">
+                    <p className="font-semibold text-[var(--text-primary)] text-sm mb-1">{label}</p>
+                    <p className="text-[var(--primary)] text-xs font-mono mb-1">{detail}</p>
+                    <p className="text-[var(--text-secondary)] text-xs">{note}</p>
+                  </div>
+                ))}
+              </div>
+
+              <Link
+                href="/#coherence-breathing"
+                className="mt-2 mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+              >
+                <svg
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                  className="w-4 h-4"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <circle cx="12" cy="12" r="3.5" />
+                </svg>
+                Tap to try Coherence Breathing
+              </Link>
+
+              <div className="mt-6 pt-5 border-t border-[var(--border-color)]">
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                  <strong className="text-[var(--text-primary)]">The science.</strong>{" "}
+                  The research underpinning this technique comes from{" "}
+                  <a
+                    href="https://www.heartmath.org/research/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[var(--primary)] underline hover:opacity-75"
+                  >
+                    HeartMath Institute
+                  </a>
+                  , who identified and measured heart rate variability (HRV) coherence, and from
+                  peer-reviewed work linking slow paced breathing at around five to six breaths per minute
+                  (the 0.1 Hz resonance frequency) to increased HRV, parasympathetic activation, and
+                  improved stress regulation. The positive emotional engagement step builds on work by
+                  McCraty et al. showing that sustained feelings of appreciation reliably shift the nervous
+                  system toward a coherent state.
+                </p>
+              </div>
+            </div>
+
+            <hr className="border-[var(--border-color)]" />
+
             {/* Aromatherapy */}
             <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🌿 Aromatherapy Pairing</h2>

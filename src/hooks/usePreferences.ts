@@ -15,6 +15,10 @@ export interface Preferences {
   launchScreen:         "home" | "player" | "noise" | "box-breathing";
   boxBreathingVoice:    "default" | "sarah" | "john" | "julie";
   boxBreathingVoiceEnabled: boolean;
+  coherencePreset:      "gentle" | "balanced" | "deeper";
+  coherenceBreaths:     6 | 10 | 15;
+  coherenceChimeEnabled: boolean;
+  coherenceToneType:    "chime" | "bowl";
   favouriteBeats:   string[];        // track names
   favouriteNoises:  string[];        // noise type strings
   brightness:         "dim" | "default" | "bright";
@@ -35,6 +39,10 @@ export const DEFAULT_PREFERENCES: Preferences = {
   launchScreen:         "home" as const,
   boxBreathingVoice:    "sarah" as const,
   boxBreathingVoiceEnabled: true,
+  coherencePreset:      "gentle" as const,
+  coherenceBreaths:     6,
+  coherenceChimeEnabled: true,
+  coherenceToneType:    "chime" as const,
   favouriteBeats:   [],
   favouriteNoises:  [],
   brightness:         "default",
@@ -55,6 +63,10 @@ export const PREF_KEYS: Record<keyof Preferences, string> = {
   launchScreen:         "crux:launchScreen",
   boxBreathingVoice:    "crux:boxBreathingVoice",
   boxBreathingVoiceEnabled: "crux:boxBreathingVoiceEnabled",
+  coherencePreset:      "crux:coherencePreset",
+  coherenceBreaths:     "crux:coherenceBreaths",
+  coherenceChimeEnabled: "crux:coherenceChimeEnabled",
+  coherenceToneType:    "crux:coherenceToneType",
   favouriteBeats:   "crux:favouriteBeats",
   favouriteNoises:  "crux:favouriteNoises",
   brightness:         "crux:brightness",
@@ -70,6 +82,10 @@ export const RESETTABLE_KEYS: (keyof Preferences)[] = [
   "launchScreen",
   "boxBreathingVoice",
   "boxBreathingVoiceEnabled",
+  "coherencePreset",
+  "coherenceBreaths",
+  "coherenceChimeEnabled",
+  "coherenceToneType",
   "brightness",
   "theme",
   "showAromatherapy",
