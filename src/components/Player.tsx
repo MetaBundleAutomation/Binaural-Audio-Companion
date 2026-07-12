@@ -9,6 +9,7 @@ import AudioCarousel from "./AudioCarousel";
 import AromatherapyCard from "./AromatherapyCard";
 import BoxBreathing from "./BoxBreathing";
 import CoherenceBreathing from "./CoherenceBreathing";
+import BodyScan from "./BodyScan";
 import NoiseGenerator from "./NoiseGenerator";
 import VolumeWarningModal from "./VolumeWarningModal";
 
@@ -21,12 +22,21 @@ export default function Player() {
   const engine         = useAudioEngine();
   const track          = tracks[engine.currentTrackIndex];
   const { prefs } = usePreferences();
-  const [breathingMode, setBreathingMode] = useState<"box" | "coherence">("box");
+  const [breathingMode, setBreathingMode] = useState<"box" | "coherence" | "body-scan">("box");
 
-  // Switch to Coherence tab when navigating via the #coherence-breathing hash
+  // Switch tabs and scroll when navigating via hash deep-links
   useEffect(() => {
     const activate = () => {
-      if (window.location.hash === "#coherence-breathing") setBreathingMode("coherence");
+      const hash = window.location.hash;
+      if (hash === "#coherence-breathing") {
+        setBreathingMode("coherence");
+      } else if (hash === "#body-scan") {
+        setBreathingMode("body-scan");
+        // Scroll after React re-renders and mounts the BodyScan section
+        setTimeout(() => {
+          document.getElementById("body-scan")?.scrollIntoView({ behavior: "smooth" });
+        }, 200);
+      }
     };
     activate();
     window.addEventListener("hashchange", activate);
@@ -51,7 +61,9 @@ export default function Player() {
 
       {/* ── Aromatherapy pairing card ────────────────────────────────────────── */}
       {prefs.showAromatherapy && (
-        <AromatherapyCard trackName={browseTrackName} />
+        <div id="aromatherapy-pairing" className="scroll-mt-24">
+          <AromatherapyCard trackName={browseTrackName} />
+        </div>
       )}
 
       {/* ── Player ──────────────────────────────────────────────────────────── */}
@@ -173,7 +185,7 @@ export default function Player() {
             aria-label="Breathing mode"
             className="flex p-1 rounded-full bg-[var(--background-light)] border border-[var(--border-color)]"
           >
-            {(["box", "coherence"] as const).map((m) => (
+            {(["box", "coherence", "body-scan"] as const).map((m) => (
               <button
                 key={m}
                 onClick={() => setBreathingMode(m)}
@@ -184,13 +196,13 @@ export default function Player() {
                     : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 }`}
               >
-                {m === "box" ? "Box Breathing" : "Coherence"}
+                {m === "box" ? "Box Breathing" : m === "coherence" ? "Coherence" : "Body Scan"}
               </button>
             ))}
           </div>
         </div>
         <div className="breathing-card-host">
-          {breathingMode === "box" ? <BoxBreathing /> : <CoherenceBreathing />}
+          {breathingMode === "box" ? <BoxBreathing /> : breathingMode === "coherence" ? <CoherenceBreathing /> : <BodyScan />}
         </div>
       </div>
     </>

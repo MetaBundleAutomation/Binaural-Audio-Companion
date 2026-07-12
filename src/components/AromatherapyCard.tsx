@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { getPairing } from "@/data/aromatherapy";
 import type { AromaPairing } from "@/data/aromatherapy";
 
@@ -64,6 +65,23 @@ export default function AromatherapyCard({ trackName }: AromatherapyCardProps) {
           {displayed.hint}
         </p>
       </div>
+
+      <Link
+        href="/instructions#aromatherapy"
+        className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+      >
+        <svg
+          viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+          className="w-4 h-4"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 16v-4" />
+          <path d="M12 8h.01" />
+        </svg>
+        Tap to learn about Aromatherapy
+      </Link>
 
     </div>
   );

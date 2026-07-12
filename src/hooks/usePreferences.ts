@@ -19,6 +19,7 @@ export interface Preferences {
   coherenceBreaths:     6 | 10 | 15;
   coherenceChimeEnabled: boolean;
   coherenceToneType:    "chime" | "bowl";
+  bodyScanNarrator:     "john" | "emily";
   favouriteBeats:   string[];        // track names
   favouriteNoises:  string[];        // noise type strings
   brightness:         "dim" | "default" | "bright";
@@ -43,6 +44,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   coherenceBreaths:     6,
   coherenceChimeEnabled: true,
   coherenceToneType:    "chime" as const,
+  bodyScanNarrator:     "john" as const,
   favouriteBeats:   [],
   favouriteNoises:  [],
   brightness:         "default",
@@ -67,6 +69,7 @@ export const PREF_KEYS: Record<keyof Preferences, string> = {
   coherenceBreaths:     "crux:coherenceBreaths",
   coherenceChimeEnabled: "crux:coherenceChimeEnabled",
   coherenceToneType:    "crux:coherenceToneType",
+  bodyScanNarrator:     "crux:bodyScanNarrator",
   favouriteBeats:   "crux:favouriteBeats",
   favouriteNoises:  "crux:favouriteNoises",
   brightness:         "crux:brightness",
@@ -86,6 +89,7 @@ export const RESETTABLE_KEYS: (keyof Preferences)[] = [
   "coherenceBreaths",
   "coherenceChimeEnabled",
   "coherenceToneType",
+  "bodyScanNarrator",
   "brightness",
   "theme",
   "showAromatherapy",

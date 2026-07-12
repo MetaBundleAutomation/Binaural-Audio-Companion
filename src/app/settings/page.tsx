@@ -70,7 +70,7 @@ function ControlLabel({ htmlFor, label, description }: { htmlFor?: string; label
   );
 }
 
-function SegmentedControl<T extends string>({
+function SegmentedControl<T extends string | number>({
   options,
   value,
   onChange,
@@ -101,7 +101,7 @@ function SegmentedControl<T extends string>({
             border: "1px solid var(--border-color)",
           }}
         >
-          {formatLabel ? formatLabel(option) : option.charAt(0).toUpperCase() + option.slice(1)}
+          {formatLabel ? formatLabel(option) : String(option).charAt(0).toUpperCase() + String(option).slice(1)}
         </button>
       ))}
     </div>
@@ -287,6 +287,88 @@ export default function SettingsPage() {
                     v === "julie" ? "Julie" :
                     "Les"
                   }
+                />
+              </Card>
+
+              {/* Coherence preset */}
+              <Card>
+                <ControlLabel
+                  label="Coherence breathing preset"
+                  description="Your default breath ratio when you open Heart–Brain Coherence."
+                />
+                <SegmentedControl
+                  options={["gentle", "balanced", "deeper"] as const}
+                  value={prefs.coherencePreset}
+                  onChange={v => set("coherencePreset", v)}
+                  className="grid grid-cols-3 gap-2"
+                  formatLabel={v =>
+                    v === "gentle"   ? "Gentle (3:5)"   :
+                    v === "balanced" ? "Balanced (4:6)" :
+                    "Deeper (5:7)"
+                  }
+                />
+              </Card>
+
+              {/* Coherence breath cycles */}
+              <Card>
+                <ControlLabel
+                  label="Coherence breath cycles"
+                  description="Number of breath cycles per session."
+                />
+                <SegmentedControl
+                  options={[6, 10, 15] as const}
+                  value={prefs.coherenceBreaths}
+                  onChange={v => set("coherenceBreaths", v)}
+                  formatLabel={v => `${v} breaths`}
+                />
+              </Card>
+
+              {/* Coherence chime */}
+              <Card>
+                <div className="flex items-center justify-between gap-6 mb-3">
+                  <div>
+                    <p className="font-semibold text-[var(--text-primary)] mb-1">Coherence chime</p>
+                    <p className="text-sm text-[var(--text-secondary)]">
+                      Play a soft tone at the start of each inhale and exhale.
+                    </p>
+                  </div>
+                  <button
+                    role="switch"
+                    aria-checked={prefs.coherenceChimeEnabled}
+                    aria-label="Enable coherence chime"
+                    onClick={() => set("coherenceChimeEnabled", !prefs.coherenceChimeEnabled)}
+                    className={`relative shrink-0 w-12 h-6 rounded-full border-0 cursor-pointer transition-colors ${
+                      prefs.coherenceChimeEnabled ? "bg-[var(--primary)]" : "bg-[var(--border-color)]"
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${
+                        prefs.coherenceChimeEnabled ? "translate-x-6" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
+                </div>
+                {prefs.coherenceChimeEnabled && (
+                  <SegmentedControl
+                    options={["chime", "bowl"] as const}
+                    value={prefs.coherenceToneType}
+                    onChange={v => set("coherenceToneType", v)}
+                    formatLabel={v => v === "chime" ? "Chime" : "Singing Bowl"}
+                  />
+                )}
+              </Card>
+
+              {/* Body Scan narrator */}
+              <Card>
+                <ControlLabel
+                  label="Body Scan narrator"
+                  description="Choose which voice guides your body scan session."
+                />
+                <SegmentedControl
+                  options={["john", "emily"] as const}
+                  value={prefs.bodyScanNarrator}
+                  onChange={v => set("bodyScanNarrator", v)}
+                  formatLabel={v => v === "john" ? "John" : "Emily"}
                 />
               </Card>
 

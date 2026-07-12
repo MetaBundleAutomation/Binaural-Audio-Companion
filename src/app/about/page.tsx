@@ -146,11 +146,52 @@ export default function About() {
               </p>
             </div>
 
+            {/* What is Heart-Brain Coherence */}
+            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What is Heart–Brain Coherence?</h2>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
+                Heart-brain coherence is a physiological state in which your heart, nervous system, and
+                brain work in sync — reflected in a smooth, ordered heart rate variability (HRV) pattern
+                at around 0.1 Hz, roughly one full breath cycle every ten seconds. In everyday life, our
+                heart rhythm is irregular and reactive; in coherence, it becomes rhythmic and calm, and
+                that ordered signal travels back to the brain via the vagus nerve, promoting emotional
+                stability and a quieter stress response.
+              </p>
+              <p className="text-[var(--text-secondary)] leading-relaxed">
+                The state is reached through two steps working together: slow, paced breathing with a
+                longer out-breath — which directly activates the parasympathetic nervous system — and a
+                genuine feeling of gratitude or appreciation, which amplifies and sustains the coherent
+                rhythm. Research from the HeartMath Institute links regular coherence practice to greater
+                emotional resilience, reduced cortisol, and improved cognitive clarity. CRUX guides you
+                through all three preset breath ratios so you can find the pace that feels most natural.
+              </p>
+            </div>
+
+            {/* What is a Body Scan */}
+            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What is a Body Scan?</h2>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
+                A body scan is a guided mindfulness practice in which you move your attention slowly and
+                deliberately through each part of your body — from the crown of your head to the tips of
+                your toes — noticing physical sensations without trying to change them. It is a
+                cornerstone of Mindfulness-Based Stress Reduction (MBSR) and one of the most widely
+                studied mindfulness techniques in clinical research.
+              </p>
+              <p className="text-[var(--text-secondary)] leading-relaxed">
+                Most of us carry tension we are not consciously aware of — a braced jaw, raised shoulders,
+                a breath that never quite fully releases. By resting calm, non-judgmental attention on each
+                area in turn, the body scan gradually signals to the nervous system that it is safe to let
+                go. You are not trying to relax; you are simply noticing — and that noticing is what allows
+                the body to soften on its own. Regular practice reduces stress, improves sleep quality, and
+                builds a more grounded awareness of how emotions show up physically in the body.
+              </p>
+            </div>
+
             {/* Benefits */}
             <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-3 text-center">Benefits</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed text-center max-w-2xl mx-auto mb-8">
-                Delivered across CRUX&apos;s three tools — binaural beats, noise therapy, and box breathing.
+                Delivered across CRUX&apos;s tools — binaural beats, noise therapy, box breathing, heart-brain coherence, and body scan.
               </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {BENEFITS.map(({ icon, title, description }) => (

@@ -151,6 +151,36 @@ export default function Instructions() {
                 </svg>
                 Tap to open Binaural Beats
               </Link>
+
+              <div className="mt-6 pt-5 border-t border-[var(--border-color)]">
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                  <strong className="text-[var(--text-primary)]">The science.</strong>{" "}
+                  The binaural beat phenomenon was first documented by Heinrich Wilhelm Dove in 1839
+                  and described in neurological detail by Gerald Oster in{" "}
+                  <em>Scientific American</em> (1973): when two tones of slightly different
+                  frequencies are delivered separately to each ear, the brain perceives a single
+                  pulsing beat at the difference between them. A review by Chaieb et al. (2015),
+                  published in{" "}
+                  <em>Frontiers in Psychiatry</em>, examined controlled research and found consistent
+                  evidence that the perceived beat influences cortical activity, alertness, mood, and
+                  cognitive performance in ways aligned with the target brainwave frequency range. A
+                  subsequent meta-analysis by Garcia-Argibay et al. (2019), covering twenty-two
+                  randomised controlled trials, found significant effects on anxiety, pain perception,
+                  and mood. Bilateral tracks use a different mechanism — a single tone alternating
+                  between ears at a steady rhythm — and draw on a separate literature linking
+                  predictable rhythmic auditory stimulation to nervous system regulation and reduced
+                  arousal. The Chaieb et al. review is freely available via{" "}
+                  <a
+                    href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4428073/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[var(--primary)] underline hover:opacity-75"
+                  >
+                    NIH PubMed Central
+                  </a>
+                  .
+                </p>
+              </div>
             </div>
 
             <hr className="border-[var(--border-color)]" />
@@ -323,6 +353,31 @@ export default function Instructions() {
                 </svg>
                 Tap to open Noise Therapy
               </Link>
+
+              <div className="mt-6 pt-5 border-t border-[var(--border-color)]">
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                  <strong className="text-[var(--text-primary)]">The science.</strong>{" "}
+                  Steady background noise reduces sleep onset latency and masks the unpredictable
+                  environmental sounds that trigger a stress response in the nervous system. A
+                  randomised controlled trial by Messineo et al. (2017), published in{" "}
+                  <em>Frontiers in Neurology</em>, found that broadband noise — the category that
+                  includes white, pink, and brown noise — significantly reduced the time it takes to
+                  fall asleep in healthy adults exposed to ambient noise. Separately, a body of
+                  research on acoustic masking shows that steady, spectrally rich sounds reduce
+                  the brain&apos;s sensitivity to intrusive background noise by raising the ambient
+                  threshold, making sudden sounds less disruptive. The Messineo et al. trial is
+                  freely available via{" "}
+                  <a
+                    href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5699003/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[var(--primary)] underline hover:opacity-75"
+                  >
+                    NIH PubMed Central
+                  </a>
+                  .
+                </p>
+              </div>
             </div>
 
             <hr className="border-[var(--border-color)]" />
@@ -384,6 +439,29 @@ export default function Instructions() {
                 </svg>
                 Tap to open Box Breathing
               </Link>
+
+              <div className="mt-6 pt-5 border-t border-[var(--border-color)]">
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                  <strong className="text-[var(--text-primary)]">The science.</strong>{" "}
+                  Box breathing's effects are grounded in a well-established body of research on slow,
+                  paced breathing. A systematic review by Zaccaro et al. (2018), published in{" "}
+                  <em>Frontiers in Human Neuroscience</em>, examined fifteen controlled studies and
+                  found that slow breathing — roughly six breaths per minute or fewer — consistently
+                  increases heart rate variability, activates the parasympathetic nervous system, and
+                  reduces self-reported anxiety and stress. At approximately four breaths per minute,
+                  the pace of a standard box breathing cycle, these effects are particularly pronounced.
+                  The full review is freely available via{" "}
+                  <a
+                    href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6137615/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[var(--primary)] underline hover:opacity-75"
+                  >
+                    NIH PubMed Central
+                  </a>
+                  .
+                </p>
+              </div>
             </div>
 
             <hr className="border-[var(--border-color)]" />
@@ -464,6 +542,15 @@ export default function Instructions() {
                 Tap to try Coherence Breathing
               </Link>
 
+              <blockquote className="mt-2 mb-6 pl-4 border-l-2 border-[var(--border-color)] text-[var(--text-secondary)] text-[14px] leading-relaxed">
+                <strong className="text-[var(--text-primary)]">Tip:</strong>{" "}
+                Many users enjoy layering a gentle binaural beat or soft noise quietly in the background
+                during coherence sessions — try the Calm or Meditation beat, or pink or brown noise,
+                kept low enough that the breath guide and chime stay clearly in front. Both volume
+                controls remain accessible at the top of the page, so you can adjust or turn either
+                off at any point without breaking the session.
+              </blockquote>
+
               <div className="mt-6 pt-5 border-t border-[var(--border-color)]">
                 <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
                   <strong className="text-[var(--text-primary)]">The science.</strong>{" "}
@@ -488,8 +575,133 @@ export default function Instructions() {
 
             <hr className="border-[var(--border-color)]" />
 
+            {/* Body Scan */}
+            <div id="body-scan" className="scroll-mt-24 bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🧘 Body Scan</h2>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
+                A body scan is a guided mindfulness practice where you move your attention slowly and
+                deliberately through each part of your body — from the crown of your head to the tips
+                of your toes — noticing sensations as you go without trying to change them. It is one
+                of the most widely studied mindfulness techniques and a core component of
+                Mindfulness-Based Stress Reduction (MBSR), developed at the University of Massachusetts
+                Medical School.
+              </p>
+
+              <h3 className="font-semibold text-[var(--text-primary)] mb-3">How it works</h3>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
+                Most of us carry tension we are not aware of — a braced jaw, raised shoulders, a breath
+                that never quite fully releases. By resting calm, curious attention on each area of the
+                body in turn, the body scan gradually signals to your nervous system that it is safe to
+                let go. You are not trying to relax; you are simply noticing. That noticing — done
+                without judgment — is what allows the body to soften on its own.
+              </p>
+
+              <h3 className="font-semibold text-[var(--text-primary)] mb-4">How to use it</h3>
+              <div className="flex flex-col gap-4 mb-6">
+                {[
+                  {
+                    n: "1",
+                    head: "Find a comfortable position.",
+                    body: "Lying down is ideal — on your bed or a mat with your arms resting at your sides. Sitting in a chair works just as well. Loosen anything tight, close your eyes, and settle in before pressing play.",
+                  },
+                  {
+                    n: "2",
+                    head: "Put on headphones and press play.",
+                    body: "The narrator will guide you through each part of your body at a slow, steady pace. There is nothing to do except listen and notice — you do not need to prepare or follow along in advance.",
+                  },
+                  {
+                    n: "3",
+                    head: "Simply notice what is there.",
+                    body: "Warmth, tingling, heaviness, tightness, or nothing at all — all of these are valid. You are not trying to feel something specific. Rest your attention wherever the narrator directs, and observe without judgment.",
+                  },
+                  {
+                    n: "4",
+                    head: "When your mind wanders, gently return.",
+                    body: "Your attention will drift — that is completely normal and not a sign you are doing it wrong. Each time you notice and return your focus to the body, you are practising. There is no failing here.",
+                  },
+                  {
+                    n: "5",
+                    head: "Stay with it until the end.",
+                    body: "The full session is around 15 minutes. You may feel drowsy as your body settles — that is a good sign. If you fall asleep, that is fine too. With regular practice, most people notice they carry less tension through the day.",
+                  },
+                ].map(({ n, head, body }) => (
+                  <div key={n} className="flex gap-4 items-start">
+                    <span
+                      className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                      style={{ background: "var(--primary)" }}
+                      aria-hidden="true"
+                    >
+                      {n}
+                    </span>
+                    <div>
+                      <p className="font-semibold text-[var(--text-primary)] text-sm mb-0.5">{head}</p>
+                      <p className="text-[var(--text-secondary)] text-sm leading-relaxed">{body}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <Link
+                href="/#body-scan"
+                className="mt-2 mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+              >
+                <svg
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                  className="w-4 h-4"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <circle cx="12" cy="12" r="3.5" />
+                </svg>
+                Tap to open Body Scan
+              </Link>
+
+              <blockquote className="mt-2 mb-6 pl-4 border-l-2 border-[var(--border-color)] text-[var(--text-secondary)] text-[14px] leading-relaxed">
+                <strong className="text-[var(--text-primary)]">Tip:</strong>{" "}
+                Many users enjoy playing soft noise or a gentle binaural beat quietly underneath
+                the narration — pink noise, brown noise, or a delta or theta beat can deepen
+                relaxation and mask environmental distractions. Keep the background volume low so
+                the narrator&apos;s voice stays clearly in front. Both controls remain accessible
+                at the top of the page and can be adjusted or turned off at any point.
+              </blockquote>
+
+              <div className="mt-6 pt-5 border-t border-[var(--border-color)]">
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                  <strong className="text-[var(--text-primary)]">The science.</strong>{" "}
+                  The evidence base for body scan and mindfulness meditation is substantial. A landmark
+                  meta-analysis by Goyal et al. (2014), published in{" "}
+                  <em>JAMA Internal Medicine</em>, reviewed 47 randomised controlled trials and found
+                  that mindfulness meditation programmes — of which the body scan is a core element —
+                  produce moderate improvements in anxiety, depression, and pain. The MBSR programme,
+                  developed by Jon Kabat-Zinn at the{" "}
+                  <a
+                    href="https://www.umassmed.edu/cfm/mindfulness-based-programs/mbsr-courses/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[var(--primary)] underline hover:opacity-75"
+                  >
+                    UMass Center for Mindfulness
+                  </a>
+                  , has been widely replicated in clinical settings worldwide. The full Goyal et al.
+                  meta-analysis is freely available via{" "}
+                  <a
+                    href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4142584/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[var(--primary)] underline hover:opacity-75"
+                  >
+                    NIH PubMed Central
+                  </a>
+                  .
+                </p>
+              </div>
+            </div>
+
+            <hr className="border-[var(--border-color)]" />
+
             {/* Aromatherapy */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+            <div id="aromatherapy" className="scroll-mt-24 bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🌿 Aromatherapy Pairing</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 Above the player you&apos;ll see an <strong className="text-[var(--text-primary)]">Aromatherapy Pairing</strong> card
@@ -525,6 +737,52 @@ export default function Instructions() {
                 The pairing card can be turned off at any time in{" "}
                 <strong className="text-[var(--text-primary)]">Settings → Personalisation → Aromatherapy suggestions</strong>.
               </p>
+
+              <Link
+                href="/#aromatherapy-pairing"
+                className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+              >
+                <svg
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                  className="w-4 h-4"
+                  aria-hidden="true"
+                >
+                  <path d="M11 5 6 9H2v6h4l5 4V5z" />
+                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                </svg>
+                Tap to try Aromatherapy with Binaural Beats
+              </Link>
+
+              <div className="mt-6 pt-5 border-t border-[var(--border-color)]">
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                  <strong className="text-[var(--text-primary)]">The science.</strong>{" "}
+                  Aromatherapy works through olfaction — inhaled scent molecules activate receptors
+                  in the nasal epithelium that send signals directly to the limbic system, the
+                  brain&apos;s emotional and memory centre, and the hypothalamus, which regulates
+                  heart rate, blood pressure, and stress hormones. Unlike most other sensory inputs,
+                  smell has a direct anatomical pathway to these structures, which is why scent can
+                  produce fast, involuntary mood and physiological responses. Lavender is the most
+                  extensively studied essential oil: a review by Koulivand et al. (2013), published
+                  in <em>Evidence-Based Complementary and Alternative Medicine</em>, found robust
+                  evidence that lavender reduces anxiety, improves sleep quality, and exerts a
+                  calming effect on the central nervous system without significant side effects.
+                  Effects vary between oils — peppermint and rosemary tend to be alertness-enhancing,
+                  while chamomile and bergamot lean calming — which is why each audio session is
+                  paired with an oil matched to its intended effect. The Koulivand et al. review is
+                  freely available via{" "}
+                  <a
+                    href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3612440/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[var(--primary)] underline hover:opacity-75"
+                  >
+                    NIH PubMed Central
+                  </a>
+                  .
+                </p>
+              </div>
             </div>
 
             <hr className="border-[var(--border-color)]" />
