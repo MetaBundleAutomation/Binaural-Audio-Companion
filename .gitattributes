@@ -1,1 +1,1 @@
-*.mp4 filter=lfs diff=lfs merge=lfs -text
+# All video files tracked as regular git objects (all under 100 MB after compression)
