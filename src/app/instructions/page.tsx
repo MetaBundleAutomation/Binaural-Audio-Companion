@@ -443,7 +443,7 @@ export default function Instructions() {
               <div className="mt-6 pt-5 border-t border-[var(--border-color)]">
                 <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
                   <strong className="text-[var(--text-primary)]">The science.</strong>{" "}
-                  Box breathing's effects are grounded in a well-established body of research on slow,
+                  Box breathing&apos;s effects are grounded in a well-established body of research on slow,
                   paced breathing. A systematic review by Zaccaro et al. (2018), published in{" "}
                   <em>Frontiers in Human Neuroscience</em>, examined fifteen controlled studies and
                   found that slow breathing — roughly six breaths per minute or fewer — consistently
