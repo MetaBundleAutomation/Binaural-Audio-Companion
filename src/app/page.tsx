@@ -12,7 +12,7 @@ export default function Home() {
           Always remember to be kind to yourself.
         </h1>
         <p className="mt-5 text-sm md:text-base text-[var(--text-secondary)] max-w-[600px] mx-auto font-medium leading-relaxed text-balance">
-          Simple audio sessions to help you feel calmer, focus more clearly, or ease into sleep.
+          Audio sessions and guided meditations to help you feel calmer, focus more clearly throughout your day, or ease into sleep.
         </p>
 
         {/* Feature chips — tap to jump straight to a section */}

@@ -197,51 +197,129 @@ export default function BodyScan() {
       {/* Narration audio — hidden, controlled via ref */}
       <audio ref={audioRef} src={NARRATORS[narrator].src} preload="none" />
 
-      <div
-        className="relative overflow-hidden rounded-3xl border border-[var(--border-color)]"
-        style={{ boxShadow: "var(--shadow-lg)" }}
-        onPointerMove={status === "playing" ? wakeControls : undefined}
-        onClick={status === "playing" ? wakeControls : undefined}
-      >
+      {/* ── Fullscreen video overlay — always in DOM (so videoRef stays valid),
+             visible only when session is active. Same pattern as NoiseGenerator. ── */}
+      {canPlayVideo && (
+        <div
+          className={`fixed inset-0 z-[100] bg-black transition-opacity duration-700 ${
+            isActive ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
+          onPointerMove={isActive ? wakeControls : undefined}
+          onClick={isActive ? wakeControls : undefined}
+        >
+          {/* Beach sunrise fills the viewport */}
+          <video
+            ref={videoRef}
+            src="/video/beach-sunrise.mp4"
+            muted
+            loop
+            playsInline
+            preload="none"
+            className="w-full h-full object-cover"
+            aria-hidden="true"
+          />
 
-        {/* ── Layer 1: solid card background (always present) ─────────────── */}
+          {/* Readability overlay */}
+          <div className="absolute inset-0 bg-black/45" />
+
+          {/* Controls — centred, auto-hide during playback */}
+          <div
+            className={`absolute inset-0 flex flex-col items-center justify-center gap-6 px-8 transition-opacity duration-[1200ms] ${
+              showControls ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
+          >
+            <h2 className="text-[32px] font-bold tracking-tight text-white text-center">Body Scan</h2>
+
+            <Link
+              href="/instructions#body-scan"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-white/10 border border-white/20 hover:border-white/40 transition-all"
+            >
+              <svg
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                className="w-4 h-4"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4" />
+                <path d="M12 8h.01" />
+              </svg>
+              Tap to learn how to use Body Scan
+            </Link>
+
+            <div className="flex flex-col gap-4 w-full" style={{ maxWidth: 360 }}>
+              {/* Play / Pause */}
+              <div className="flex justify-center">
+                <button
+                  onClick={status === "playing" ? pause : play}
+                  className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-white"
+                  style={{ background: "var(--primary)", boxShadow: "0 8px 24px rgba(43,107,127,0.4)" }}
+                  aria-label={status === "playing" ? "Pause" : "Play"}
+                >
+                  {status === "playing" ? (
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8" aria-hidden="true">
+                      <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8" aria-hidden="true">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+
+              {/* Scrub bar + time */}
+              <div className="flex items-center gap-3 px-1 text-[11px] tabular-nums text-white/70">
+                <span>{formatTime(elapsed)}</span>
+                <input
+                  type="range"
+                  min={0}
+                  max={Math.max(totalS, 1)}
+                  step={1}
+                  value={Math.floor(elapsed)}
+                  onChange={(e) => seek(Number(e.target.value))}
+                  className="flex-1"
+                  style={{ "--fill": `${progressPct}%` } as React.CSSProperties}
+                  aria-label="Session progress"
+                />
+                <span>{formatTime(totalS)}</span>
+              </div>
+
+              {/* End session */}
+              <div className="flex justify-center">
+                <button
+                  onClick={stop}
+                  className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium border border-white/25 text-white/60 hover:border-white/50 hover:text-white/90 transition-all cursor-pointer"
+                  aria-label="End session and return to start"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-4 h-4" aria-hidden="true">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                  </svg>
+                  End session
+                </button>
+              </div>
+            </div>
+
+            <p className="text-white/40 text-xs">Tap anywhere to show controls</p>
+          </div>
+        </div>
+      )}
+
+      {/* ── Card — idle and complete states (fades out when session is active) ── */}
+      <div
+        className={`relative overflow-hidden rounded-3xl border border-[var(--border-color)] transition-opacity duration-500 ${
+          isActive ? "opacity-0 pointer-events-none" : "opacity-100"
+        }`}
+        style={{ boxShadow: "var(--shadow-lg)" }}
+      >
         <div className="absolute inset-0 bg-[var(--background-card)]" />
 
-        {/* ── Layer 2: beach video + overlay (fades in on session start) ──── */}
-        {canPlayVideo && (
-          <div
-            className={`absolute inset-0 transition-opacity duration-700 ${
-              isActive ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
-          >
-            <video
-              ref={videoRef}
-              src="/video/beach-sunrise.mp4"
-              loop
-              playsInline
-              preload="none"
-              className="absolute inset-0 w-full h-full object-cover"
-              aria-hidden="true"
-            />
-            {/* Readability overlay */}
-            <div className="absolute inset-0 bg-black/50" />
-          </div>
-        )}
+        <div className="relative z-10 flex flex-col items-center gap-6 p-10">
 
-        {/* ── Layer 3: content (always above video) ───────────────────────── */}
-        <div
-          className={`relative z-10 flex flex-col items-center gap-6 p-10 transition-opacity duration-[1200ms] ${showControls ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-        >
-
-          <h2
-            className={`text-[32px] font-bold tracking-tight text-center transition-colors duration-500 ${
-              isActive ? "text-white" : "text-[var(--text-primary)]"
-            }`}
-          >
+          <h2 className="text-[32px] font-bold tracking-tight text-[var(--text-primary)] text-center">
             Body Scan
           </h2>
 
-          {/* ── Info pill — always visible (fades with controls during playback) ── */}
           <Link
             href="/instructions#body-scan"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
@@ -286,18 +364,13 @@ export default function BodyScan() {
             </div>
           )}
 
-          {/* ── Player controls ─────────────────────────────────────────── */}
+          {/* ── Play button (idle) / audio-only controls (no video support) ── */}
           <div className="flex flex-col gap-4 w-full" style={{ maxWidth: 360 }}>
-
-            {/* Play / Pause */}
             <div className="flex justify-center">
               <button
                 onClick={status === "playing" ? pause : play}
                 className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-white"
-                style={{
-                  background: "var(--primary)",
-                  boxShadow: "0 8px 24px rgba(43, 107, 127, 0.4)",
-                }}
+                style={{ background: "var(--primary)", boxShadow: "0 8px 24px rgba(43,107,127,0.4)" }}
                 aria-label={status === "playing" ? "Pause" : "Play"}
               >
                 {status === "playing" ? (
@@ -312,46 +385,41 @@ export default function BodyScan() {
               </button>
             </div>
 
-            {/* Scrub bar + time — matches existing range-slider CSS */}
-            <div
-              className={`flex items-center gap-3 px-1 text-[11px] tabular-nums transition-colors duration-500 ${
-                isActive ? "text-white/70" : "text-[var(--text-secondary)]"
-              }`}
-            >
-              <span>{formatTime(elapsed)}</span>
-              <input
-                type="range"
-                min={0}
-                max={Math.max(totalS, 1)}
-                step={1}
-                value={Math.floor(elapsed)}
-                onChange={(e) => seek(Number(e.target.value))}
-                className="flex-1"
-                style={{ "--fill": `${progressPct}%` } as React.CSSProperties}
-                aria-label="Session progress"
-              />
-              <span>{formatTime(totalS)}</span>
-            </div>
-
-            {/* End session — visible while session is active */}
-            {isActive && (
-              <div className="flex justify-center">
-                <button
-                  onClick={stop}
-                  className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium border border-white/25 text-white/60 hover:border-white/50 hover:text-white/90 transition-all cursor-pointer"
-                  aria-label="End session and return to start"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-4 h-4" aria-hidden="true">
-                    <path d="M18 6L6 18M6 6l12 12" />
-                  </svg>
-                  End session
-                </button>
-              </div>
+            {/* Scrub + end session shown in card only for audio-only fallback */}
+            {!canPlayVideo && isActive && (
+              <>
+                <div className="flex items-center gap-3 px-1 text-[11px] tabular-nums text-[var(--text-secondary)]">
+                  <span>{formatTime(elapsed)}</span>
+                  <input
+                    type="range"
+                    min={0}
+                    max={Math.max(totalS, 1)}
+                    step={1}
+                    value={Math.floor(elapsed)}
+                    onChange={(e) => seek(Number(e.target.value))}
+                    className="flex-1"
+                    style={{ "--fill": `${progressPct}%` } as React.CSSProperties}
+                    aria-label="Session progress"
+                  />
+                  <span>{formatTime(totalS)}</span>
+                </div>
+                <div className="flex justify-center">
+                  <button
+                    onClick={stop}
+                    className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium border border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
+                    aria-label="End session and return to start"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-4 h-4" aria-hidden="true">
+                      <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
+                    End session
+                  </button>
+                </div>
+              </>
             )}
-
           </div>
 
-          {/* ── Description block — idle only ───────────────────────────── */}
+          {/* ── Description — idle only ──────────────────────────────────── */}
           {status === "idle" && (
             <div className="flex flex-col items-center gap-2 text-center" style={{ maxWidth: 420 }}>
               <p className="text-sm font-bold text-[var(--text-primary)] tracking-wide">

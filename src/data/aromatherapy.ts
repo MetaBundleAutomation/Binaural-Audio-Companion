@@ -8,7 +8,7 @@ export interface AromaPairing {
  * Covers all 11 tracks; falls back to DEFAULT_AROMA for unrecognised names.
  */
 export const AROMA_PAIRINGS: Record<string, AromaPairing> = {
-  "Focus":      { oil: "Rosemary or Peppermint",        hint: "Enhance mental clarity and alertness" },
+  "Focus":      { oil: "Lemongrass or Peppermint",       hint: "Uplift and sharpen mental alertness" },
   "Calm":       { oil: "Lavender or Chamomile",          hint: "Soften the mind and ease tension" },
   "Sleep":      { oil: "Lavender or Vetiver",            hint: "Diffuse 10 min before you settle in" },
   "Creativity": { oil: "Sweet Orange or Bergamot",       hint: "Open the mind and invite new ideas" },

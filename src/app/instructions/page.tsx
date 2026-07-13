@@ -768,7 +768,7 @@ export default function Instructions() {
                   in <em>Evidence-Based Complementary and Alternative Medicine</em>, found robust
                   evidence that lavender reduces anxiety, improves sleep quality, and exerts a
                   calming effect on the central nervous system without significant side effects.
-                  Effects vary between oils — peppermint and rosemary tend to be alertness-enhancing,
+                  Effects vary between oils — peppermint and lemongrass tend to be alertness-enhancing,
                   while chamomile and bergamot lean calming — which is why each audio session is
                   paired with an oil matched to its intended effect. The Koulivand et al. review is
                   freely available via{" "}
