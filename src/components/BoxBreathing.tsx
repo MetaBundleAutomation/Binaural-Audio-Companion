@@ -160,7 +160,6 @@ export default function BoxBreathing() {
     };
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── Audio bootstrap ──────────────────────────────────────────────────────

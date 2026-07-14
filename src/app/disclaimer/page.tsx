@@ -42,40 +42,32 @@ export default function DisclaimerPage() {
           Safety
         </h2>
         <ul className="space-y-3 text-[15px] text-[var(--text-secondary)] leading-relaxed list-none">
-          <li className="flex gap-3">
-            <span className="mt-1 text-[var(--primary)] shrink-0">—</span>
-            <span>
-              <strong className="text-[var(--text-primary)]">Do not use while driving or operating machinery.</strong>{" "}
-              Binaural beats and guided breathing exercises promote deep
-              relaxation and may cause drowsiness or reduced alertness.
-              Always use CRUX in a safe, stationary environment.
-            </span>
+          <li>
+            <span className="text-[var(--primary)]">—</span>{" "}
+            <strong className="text-[var(--text-primary)]">Do not use while driving or operating machinery.</strong>{" "}
+            Binaural beats and guided breathing exercises promote deep
+            relaxation and may cause drowsiness or reduced alertness.
+            Always use CRUX in a safe, stationary environment.
           </li>
-          <li className="flex gap-3">
-            <span className="mt-1 text-[var(--primary)] shrink-0">—</span>
-            <span>
-              <strong className="text-[var(--text-primary)]">Use at a comfortable volume.</strong>{" "}
-              Prolonged exposure to high-volume audio can cause permanent
-              hearing damage. CRUX works best at low to moderate volumes,
-              especially with headphones.
-            </span>
+          <li>
+            <span className="text-[var(--primary)]">—</span>{" "}
+            <strong className="text-[var(--text-primary)]">Use at a comfortable volume.</strong>{" "}
+            Prolonged exposure to high-volume audio can cause permanent
+            hearing damage. CRUX works best at low to moderate volumes,
+            especially with headphones.
           </li>
-          <li className="flex gap-3">
-            <span className="mt-1 text-[var(--primary)] shrink-0">—</span>
-            <span>
-              <strong className="text-[var(--text-primary)]">Epilepsy and neurological conditions.</strong>{" "}
-              If you have epilepsy, a history of seizures, or any neurological
-              condition, please consult your doctor before using binaural audio
-              or guided breathing tools.
-            </span>
+          <li>
+            <span className="text-[var(--primary)]">—</span>{" "}
+            <strong className="text-[var(--text-primary)]">Epilepsy and neurological conditions.</strong>{" "}
+            If you have epilepsy, a history of seizures, or any neurological
+            condition, please consult your doctor before using binaural audio
+            or guided breathing tools.
           </li>
-          <li className="flex gap-3">
-            <span className="mt-1 text-[var(--primary)] shrink-0">—</span>
-            <span>
-              <strong className="text-[var(--text-primary)]">Headphones recommended.</strong>{" "}
-              Binaural beats require separate audio in each ear to work as
-              intended. Use stereo headphones or earphones, not speakers.
-            </span>
+          <li>
+            <span className="text-[var(--primary)]">—</span>{" "}
+            <strong className="text-[var(--text-primary)]">Headphones recommended.</strong>{" "}
+            Binaural beats require separate audio in each ear to work as
+            intended. Use stereo headphones or earphones, not speakers.
           </li>
         </ul>
       </section>
@@ -114,6 +106,12 @@ export default function DisclaimerPage() {
             <span className="font-bold text-[var(--text-primary)]">Open Arms Veterans &amp; Families Counselling</span>
             <a href="tel:1800011046" className="text-[var(--primary)] hover:underline font-semibold whitespace-nowrap">
               1800 011 046
+            </a>
+          </li>
+          <li className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <span className="font-bold text-[var(--text-primary)]">Beyond Blue</span>
+            <a href="tel:1300224636" className="text-[var(--primary)] hover:underline font-semibold whitespace-nowrap">
+              1300 22 4636
             </a>
           </li>
           <li className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">

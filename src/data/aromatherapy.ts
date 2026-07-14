@@ -13,6 +13,7 @@ export const AROMA_PAIRINGS: Record<string, AromaPairing> = {
   "Sleep":      { oil: "Lavender or Vetiver",            hint: "Diffuse 10 min before you settle in" },
   "Creativity": { oil: "Sweet Orange or Bergamot",       hint: "Open the mind and invite new ideas" },
   "Energy":     { oil: "Peppermint or Eucalyptus",       hint: "Invigorate and sharpen alertness" },
+  "Reasoning":  { oil: "Rosemary or Peppermint",         hint: "Support mental clarity and clear thinking" },
   "Meditation": { oil: "Sandalwood or Frankincense",     hint: "Ground and deepen your practice" },
   "Pain Management": { oil: "Peppermint or Lavender",     hint: "Ease tension and soothe discomfort" },
   "Anxiety":    { oil: "Lavender or Bergamot",           hint: "Soothe and ground the nervous system" },

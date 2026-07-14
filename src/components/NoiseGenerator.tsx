@@ -506,15 +506,15 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
   // ── Cleanup ───────────────────────────────────────────────────────────────────
 
   useEffect(() => {
+    const audioEl = audioElRef.current;
     return () => {
       clearPauseTimer();
       if (startTimerRef.current) clearTimeout(startTimerRef.current);
       if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current);
-      try { audioElRef.current?.pause(); } catch { /* noop */ }
+      try { if (audioEl) audioEl.pause(); } catch { /* noop */ }
       try { noiseSrcRef.current?.stop(); } catch { /* noop */ }
       try { audioCtxRef.current?.close(); } catch { /* noop */ }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // When the fullscreen video opens: enforce muted (React's muted attr is unreliable;
@@ -607,9 +607,8 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
                     {n.tagline}
                   </div>
                   {isVideoSound(type) && (
-                    <div className="mt-1.5 flex items-center gap-1 text-[11px] font-semibold" style={{ color: n.color }}>
-                      <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor" aria-hidden><path d="M8 5v14l11-7z" /></svg>
-                      Tap to watch video
+                    <div className="mt-1.5 text-[11px] font-semibold" style={{ color: n.color }}>
+                      🎬 Includes full-screen nature video
                     </div>
                   )}
                 </button>

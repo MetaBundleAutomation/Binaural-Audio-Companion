@@ -64,6 +64,16 @@ export const tracks: Track[] = [
     fadeOutDuration: 300,
   },
   {
+    name: "Reasoning",
+    description:
+      "15 Minutes of 64 Hz Gamma waves for higher-order thinking and mental clarity — fades gently over the final 5 minutes",
+    duration: "15:00",
+    binauralFreq: 64,
+    icon: "reasoning",
+    color: "#7A6B3D",
+    fadeOutDuration: 300,
+  },
+  {
     name: "Meditation",
     description:
       "15 Minutes of 6 Hz Theta waves for staying in the present with daily mindfulness — fades gently over the final 5 minutes",

@@ -97,11 +97,12 @@ export default function BodyScan() {
 
   // ── Cleanup on unmount ─────────────────────────────────────────────────────
   useEffect(() => {
+    const audio = audioRef.current;
+    const video = videoRef.current;
     return () => {
       cancelAnimationFrame(rafRef.current);
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-      audioRef.current?.pause();
-      const video = videoRef.current;
+      if (audio) audio.pause();
       if (video) { video.pause(); }
     };
   }, []);

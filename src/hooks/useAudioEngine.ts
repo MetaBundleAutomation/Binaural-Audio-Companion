@@ -341,7 +341,7 @@ export function useAudioEngine(): AudioEngine {
       });
       navigator.mediaSession.playbackState = "playing";
     }
-  }, [getOrCreateContext, stopEMDRScheduler, stopOscillators, startEMDRScheduler, updateProgress]);
+  }, [getOrCreateContext, stopEMDRScheduler, stopOscillators, startEMDRScheduler, updateProgress, set]);
 
   const pauseAudio = useCallback(() => {
     if (!isPlayingRef.current) return;
@@ -493,7 +493,7 @@ export function useAudioEngine(): AudioEngine {
       gainNodeRef.current.right.gain.setValueAtTime(gainNodeRef.current.right.gain.value, now);
       gainNodeRef.current.right.gain.linearRampToValueAtTime(gain, rampEnd);
     }
-  }, []);
+  }, [set]);
 
   // ── One-shot preference initialisation ───────────────────────────────────
   // Runs once after localStorage has been read. Sets the initial track and

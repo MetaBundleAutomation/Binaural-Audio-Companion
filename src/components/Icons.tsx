@@ -82,6 +82,12 @@ const icons: Record<string, React.ReactNode> = {
       fill="currentColor"
     />
   ),
+  reasoning: (
+    <path
+      d="M12 2l1.5 8.5L22 12l-8.5 1.5L12 22l-1.5-8.5L2 12l8.5-1.5z"
+      fill="currentColor"
+    />
+  ),
 };
 
 export default function Icon({ name, size = 24, className = "" }: IconProps) {

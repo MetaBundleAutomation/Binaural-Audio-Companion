@@ -409,7 +409,6 @@ export default function CoherenceBreathing() {
       isRunningRef.current = false;
       cancelAnimationFrame(rafRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
   // ── Cleanup on unmount ────────────────────────────────────────────────────────

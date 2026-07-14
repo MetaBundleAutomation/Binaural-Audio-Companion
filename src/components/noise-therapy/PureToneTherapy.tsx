@@ -121,7 +121,6 @@ export default function PureToneTherapy({
         if (stored) { const hz = clampFreq(Number(stored)); setLockedHz(hz); setFreq(hz); }
       } catch (e) { /* artifact preview / SSR */ }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Build the persistent audio graph once: Oscillator -> Gain -> MediaStream.
@@ -162,7 +161,6 @@ export default function PureToneTherapy({
     try {
       if (el && streamRef.current && el.srcObject === streamRef.current.stream) el.srcObject = null;
     } catch (e) { /* noop */ }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [useShared]);
 
   const updateMediaSession = useCallback((f, state) => {
@@ -222,7 +220,6 @@ export default function PureToneTherapy({
       releaseStream();
       setPlaying(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isActive]);
 
   // lock-in / recall / clear
@@ -247,7 +244,6 @@ export default function PureToneTherapy({
     const ctx = ctxRef.current, osc = oscRef.current;
     if (osc && ctx) osc.frequency.setTargetAtTime(freq, ctx.currentTime, 0.03);
     if (playing) updateMediaSession(freq, 'playing');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [freq]);
 
   // Volume change while playing -> short, click-free gain ramp.
@@ -270,7 +266,6 @@ export default function PureToneTherapy({
     if (!useShared) { try { audioRef.current && audioRef.current.pause(); } catch (e) { /* noop */ } }
     try { oscRef.current && oscRef.current.stop(); } catch (e) { /* noop */ }
     try { ctxRef.current && ctxRef.current.close(); } catch (e) { /* noop */ }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // canvas waveform (theme-aware)

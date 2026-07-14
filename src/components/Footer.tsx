@@ -46,6 +46,10 @@ export default function Footer() {
               metabundle.ai
             </a>
           </div>
+          <p className="mt-3 text-[11px] opacity-60 italic leading-snug">
+            Business enquiries only. For support and crisis resources, please visit our{" "}
+            <Link href="/instructions" className="underline hover:opacity-80">Instructions page</Link>.
+          </p>
         </div>
 
         {/* Legal */}

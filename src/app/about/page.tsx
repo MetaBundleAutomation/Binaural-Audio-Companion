@@ -25,7 +25,12 @@ const BENEFITS = [
   {
     icon:        "energy",
     title:       "Energy",
-    description: "Lifts mental alertness and physical readiness without caffeine. A useful way to begin a demanding day or push through an afternoon slump with the higher-frequency beta and gamma sessions.",
+    description: "Lifts mental alertness and physical readiness without caffeine. A useful way to begin a demanding day or push through an afternoon slump with the higher-frequency beta sessions.",
+  },
+  {
+    icon:        "reasoning",
+    title:       "Reasoning",
+    description: "Supports higher-order thinking and complex problem solving at the peak end of the frequency range. Reach for the Reasoning (64 Hz Gamma) session when you want thoughts to connect quickly and ideas to take shape.",
   },
   {
     icon:        "meditation",
@@ -109,9 +114,11 @@ export default function About() {
                 sudden, unpredictable noises — a door slamming, a dog barking — that can jolt the
                 nervous system. By filling the gaps with a constant, predictable backdrop, those
                 startling sounds blend in instead of standing out, giving your brain less to react to.
-                White, pink, and brown noise differ in their balance of high and low frequencies, while
-                the Pure Tone option produces a single adjustable pitch you can tune just below your
-                tinnitus to make the ringing less noticeable.
+                White, pink, brown, and green noise each differ in their balance of high and low
+                frequencies. Green noise sits in the mid-range, centred around 500 Hz — similar in
+                character to a steady waterfall or open nature — and sits naturally between white and
+                pink noise in feel. The Pure Tone option produces a single adjustable pitch you can
+                tune just below your tinnitus to make the ringing less noticeable.
               </p>
             </div>
 

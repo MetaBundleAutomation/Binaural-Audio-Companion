@@ -14,6 +14,66 @@ export default function Instructions() {
 
           <div className="space-y-6">
 
+            {/* Where would you like to start? */}
+            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-5">🧭 Where would you like to start?</h2>
+              <ul className="space-y-4 text-[var(--text-secondary)] leading-relaxed">
+                <li>
+                  <strong className="text-[var(--text-primary)]">I want to feel calmer right now</strong>
+                  {" → "}Box Breathing or Heart–Brain Coherence (Balanced preset) for a few minutes is a good place to begin.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">I want a quieter mind</strong>
+                  {" → "}Try the Calm or Meditation beat, layered softly with Pink or Brown Noise.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">I want deeper, more restful sleep</strong>
+                  {" → "}Try the Wind Down routine below — Sleep beat, Brown Noise, and the Body Scan together.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">I want to think more clearly</strong>
+                  {" → "}For sustained attention, the Focus beat with White Noise works well. For complex problem solving or higher-order thinking, try the Reasoning beat (64 Hz Gamma).
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">I want some quiet from the noise around me</strong>
+                  {" → "}Noise Therapy is a good starting point — try Brown Noise, Heavy Rain, or the Pure Tone if you want to find your own pitch.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">I want to ease into stillness</strong>
+                  {" → "}The Body Scan is a gentle place to start — just lie down, press play, and let the narrator guide you.
+                </li>
+              </ul>
+            </div>
+
+            <hr className="border-[var(--border-color)]" />
+
+            {/* Wind Down — pre-sleep routine */}
+            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">🌙 Wind Down — A pre-sleep routine</h2>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-5">
+                A simple sequence that uses all three tools together. Most people are settled well before it ends.
+              </p>
+              <ol className="space-y-4 text-[var(--text-secondary)] leading-relaxed list-decimal list-outside pl-5 mb-5">
+                <li>
+                  Open <strong className="text-[var(--text-primary)]">Noise Therapy</strong> and select Brown Noise or Heavy Rain.
+                  Set the volume low — around 30%.
+                </li>
+                <li>
+                  In the <strong className="text-[var(--text-primary)]">Binaural Beats</strong> player, select Sleep (1 Hz Delta).
+                  Set it just above the noise so you can feel it beneath.
+                </li>
+                <li>
+                  When you&apos;re comfortable, open the <strong className="text-[var(--text-primary)]">Body Scan</strong> and press play.
+                  Let the narrator guide you the rest of the way.
+                </li>
+              </ol>
+              <blockquote className="pl-4 border-l-2 border-[var(--border-color)] text-[var(--text-secondary)] text-[14px] leading-relaxed">
+                If you wake during the night, skip straight to Brown Noise or the Body Scan — no need to start from the beginning.
+              </blockquote>
+            </div>
+
+            <hr className="border-[var(--border-color)]" />
+
             {/* Before You Begin */}
             <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🎧 Before You Begin</h2>
@@ -59,7 +119,7 @@ export default function Instructions() {
                 <li>
                   Pick a track matched to your goal — lower frequency ranges (delta/theta) are
                   commonly used for sleep, deep relaxation, or meditation, while higher ranges
-                  (alpha/beta) are used for calm focus and alertness.
+                  (alpha/beta/gamma) suit calm focus, alertness, and higher-order thinking.
                 </li>
                 <li>Listen for around 10–15 minutes, ideally with your eyes closed or while doing a calm activity.</li>
               </ol>
@@ -71,8 +131,8 @@ export default function Instructions() {
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 <strong className="text-[var(--text-primary)]">Binaural beats</strong> — two tones,
                 one in each ear; the perceived beat gently encourages a matching mental state.
-                Slower beats (delta/theta) suit rest and relaxation, while faster beats (alpha/beta)
-                suit calm focus and alertness.
+                Slower beats (delta/theta) suit rest and relaxation, while faster beats (alpha/beta/gamma)
+                suit calm focus, alertness, and higher-order thinking.
               </p>
               <ul className="space-y-3 text-[var(--text-secondary)] leading-relaxed">
                 <li>
@@ -94,6 +154,10 @@ export default function Instructions() {
                 <li>
                   <strong className="text-[var(--text-primary)]">Energy (25 Hz Beta)</strong> —
                   Physical exercise or building mental alertness before a demanding task.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Reasoning (64 Hz Gamma)</strong> —
+                  Higher-order thinking, complex problem solving, or moments when you want your mind at its clearest.
                 </li>
                 <li>
                   <strong className="text-[var(--text-primary)]">Meditation (6 Hz Theta)</strong> —
@@ -201,15 +265,16 @@ export default function Instructions() {
                   Each session is <strong className="text-[var(--text-primary)]">15 minutes</strong> and fades
                   out gently over the final five minutes — no abrupt ending.
                 </li>
-                <li className="flex items-center flex-wrap gap-2">
-                  The
-                  <span className="inline-flex w-8 h-8 rounded-full items-center justify-center bg-[var(--background-card)] border border-[var(--border-color)]" aria-hidden="true">
+                <li>
+                  The{" "}
+                  <span className="inline-flex w-8 h-8 rounded-full items-center justify-center bg-[var(--background-card)] border border-[var(--border-color)] align-middle mx-0.5" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-[var(--text-secondary)]"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" /></svg>
                   </span>
-                  <span className="inline-flex w-8 h-8 rounded-full items-center justify-center bg-[var(--background-card)] border border-[var(--border-color)]" aria-hidden="true">
+                  {" "}and{" "}
+                  <span className="inline-flex w-8 h-8 rounded-full items-center justify-center bg-[var(--background-card)] border border-[var(--border-color)] align-middle mx-0.5" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-[var(--text-secondary)]"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
                   </span>
-                  buttons jump to the previous or next binaural beat.
+                  {" "}buttons jump to the previous or next binaural beat.
                 </li>
                 <li>
                   <strong className="text-[var(--text-primary)]">Space bar</strong> pauses and resumes;
@@ -979,6 +1044,10 @@ export default function Instructions() {
                 <li className="flex flex-wrap justify-between gap-x-4">
                   <span>Open Arms Veterans &amp; Families Counselling</span>
                   <a href="tel:1800011046" className="text-[var(--primary)] underline underline-offset-2 hover:opacity-80 whitespace-nowrap font-semibold">1800 011 046</a>
+                </li>
+                <li className="flex flex-wrap justify-between gap-x-4">
+                  <span>Beyond Blue</span>
+                  <a href="tel:1300224636" className="text-[var(--primary)] underline underline-offset-2 hover:opacity-80 whitespace-nowrap font-semibold">1300 22 4636</a>
                 </li>
                 <li className="flex flex-wrap justify-between gap-x-4">
                   <span>Emergency services</span>
