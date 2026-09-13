@@ -334,12 +334,7 @@ export default function PureToneTherapy({
     .crux-tone .ct-hz{position:absolute;left:0;right:0;bottom:8px;text-align:center;pointer-events:none}
     .crux-tone .ct-hz b{font-size:30px;font-weight:700;color:var(--text-primary)}
     .crux-tone .ct-hz span{font-size:13px;color:var(--text-secondary);margin-left:4px}
-    .crux-tone .ct-row{display:flex;align-items:center;gap:16px;background:var(--background-light);border:1px solid var(--border-color);border-radius:12px;padding:10px 20px;margin:14px 0}
-    .crux-tone .ct-label{font-size:12px;color:var(--text-secondary);min-width:52px}
     .crux-tone .ct-controls{display:flex;align-items:center;justify-content:center;gap:14px;margin:18px 0 6px}
-    .crux-tone .ct-btn{background:var(--background-light);color:var(--text-secondary);border:1px solid var(--border-color);border-radius:11px;height:40px;min-width:48px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}
-    .crux-tone .ct-btn:hover{border-color:var(--primary);color:var(--text-primary)}
-    .crux-tone .ct-btn:active{transform:scale(.96)}
     .crux-tone .ct-play{width:70px;height:70px;border-radius:50%;border:0;background:var(--primary);color:#fff;box-shadow:0 8px 24px rgba(43,107,127,0.4);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s}
     .crux-tone .ct-play:active{transform:scale(.95)}
     .crux-tone .ct-lock{display:flex;align-items:center;justify-content:center;gap:8px;margin:16px 0 4px;min-height:36px}
@@ -371,25 +366,36 @@ export default function PureToneTherapy({
         <div className="ct-hz"><b>{freq.toLocaleString()}</b><span>Hz</span></div>
       </div>
 
-      <div className="ct-row">
-        <span className="ct-label">Pitch</span>
+      <div className="flex items-center gap-4 bg-[var(--background-light)] rounded-xl px-5 py-3 border border-[var(--border-color)]">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 shrink-0 text-[var(--text-secondary)]" aria-hidden="true">
+          <path d="M2 12 Q7 3 12 12 Q17 21 22 12" />
+        </svg>
         <input type="range" min="0" max="1000" step="1"
           value={Math.round(freqToSlider(freq) * 1000)}
           onChange={(e) => setFreq(sliderToFreq(Number(e.target.value) / 1000))}
+          className="flex-1"
           style={{ '--fill': `${Math.round(freqToSlider(freq) * 100)}%` }}
           aria-label="Tone frequency" />
       </div>
 
       <div className="ct-controls">
-        <button className="ct-btn" onClick={() => setFreq((f) => clampFreq(f / 2))} aria-label="Down one octave">½×</button>
-        <button className="ct-btn" onClick={() => nudge(-10)} aria-label="Down 10 hertz">−10</button>
+        <button
+          className="h-10 min-w-[48px] px-3 rounded-full border border-[var(--border-color)] bg-[var(--background-light)] text-[13px] font-semibold text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--text-primary)] active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+          onClick={() => setFreq((f) => clampFreq(f / 2))} aria-label="Down one octave">½×</button>
+        <button
+          className="h-10 min-w-[48px] px-3 rounded-full border border-[var(--border-color)] bg-[var(--background-light)] text-[13px] font-semibold text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--text-primary)] active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+          onClick={() => nudge(-10)} aria-label="Down 10 hertz">−10</button>
         <button className="ct-play" onClick={toggle} aria-label={playing ? 'Pause' : 'Play'}>
           {playing
             ? <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1.2" /><rect x="14" y="5" width="4" height="14" rx="1.2" /></svg>
             : <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.87l11-6.5a1 1 0 0 0 0-1.74l-11-6.5A1 1 0 0 0 8 5.5z" /></svg>}
         </button>
-        <button className="ct-btn" onClick={() => nudge(10)} aria-label="Up 10 hertz">+10</button>
-        <button className="ct-btn" onClick={() => setFreq((f) => clampFreq(f * 2))} aria-label="Up one octave">2×</button>
+        <button
+          className="h-10 min-w-[48px] px-3 rounded-full border border-[var(--border-color)] bg-[var(--background-light)] text-[13px] font-semibold text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--text-primary)] active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+          onClick={() => nudge(10)} aria-label="Up 10 hertz">+10</button>
+        <button
+          className="h-10 min-w-[48px] px-3 rounded-full border border-[var(--border-color)] bg-[var(--background-light)] text-[13px] font-semibold text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--text-primary)] active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+          onClick={() => setFreq((f) => clampFreq(f * 2))} aria-label="Up one octave">2×</button>
       </div>
 
       <div className="ct-lock">
@@ -406,10 +412,13 @@ export default function PureToneTherapy({
         )}
       </div>
 
-      <div className="ct-row">
-        <span className="ct-label">Volume</span>
+      <div className="flex items-center gap-4 bg-[var(--background-light)] rounded-xl px-5 py-3 border border-[var(--border-color)]">
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 shrink-0 text-[var(--text-secondary)]" aria-hidden="true">
+          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
+        </svg>
         <input type="range" min="0" max="100" step="1" value={vol}
           onChange={(e) => setVol(Number(e.target.value))}
+          className="flex-1"
           style={{ '--fill': `${vol}%` }}
           aria-label="Volume" />
       </div>

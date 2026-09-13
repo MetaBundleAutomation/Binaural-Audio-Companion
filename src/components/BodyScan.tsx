@@ -12,8 +12,8 @@ type SessionStatus = "idle" | "playing" | "paused" | "complete";
 // ─── Narrator registry ────────────────────────────────────────────────────────
 
 const NARRATORS: Record<Narrator, { label: string; src: string; totalS: number }> = {
-  john:  { label: "John",  src: "/audio/John_Body_Scan.mp3",  totalS: 907 }, // ~15:07
-  emily: { label: "Emily", src: "/audio/Emily_Body_Scan.mp3", totalS: 881 }, // ~14:41
+  john:  { label: "Ben",  src: "/audio/ben_body_scan.mp3",  totalS: 907 }, // ~15:07 (placeholder — tell me the real length)
+  emily: { label: "Jane", src: "/audio/jane_body_scan.mp3", totalS: 881 }, // ~14:41 (placeholder — tell me the real length)
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

@@ -497,41 +497,6 @@ export default function CoherenceBreathing() {
               Tap to learn about Heart–Brain Coherence
             </Link>
 
-            {/* Three steps */}
-            <div className="flex flex-col gap-5 w-full max-w-md">
-              {[
-                {
-                  n: "1",
-                  head: "Drop into your heart.",
-                  body: "Rest a hand over your heart. Your attention naturally follows touch — wherever you feel contact, awareness follows. This gently moves your focus out of your head and into your heart.",
-                },
-                {
-                  n: "2",
-                  head: "Breathe slow, exhale long.",
-                  body: "Breathe so your out-breath is longer than your in-breath. Start wherever feels easy — it should never feel forced. A longer exhale activates your parasympathetic nervous system, telling your body it is safe. Imagine each breath flowing in and out through your heart.",
-                },
-                {
-                  n: "3",
-                  head: "Feel genuine gratitude.",
-                  body: "Choose something real — your kids, your family, being alive, a good moment today. Most of the time we feel something only because of what is happening around us; here you are choosing the feeling on purpose. Sustained gratitude settles your heart into a coherent rhythm and brings your heart and brain into sync.",
-                },
-              ].map(({ n, head, body }) => (
-                <div key={n} className="flex gap-4 items-start">
-                  <span
-                    className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                    style={{ background: "var(--primary)" }}
-                    aria-hidden="true"
-                  >
-                    {n}
-                  </span>
-                  <div>
-                    <p className="font-semibold text-[var(--text-primary)] text-sm mb-0.5">{head}</p>
-                    <p className="text-[var(--text-secondary)] text-sm leading-relaxed">{body}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
             {/* Eyes-open safety line */}
             <p className="text-[var(--text-secondary)] text-xs text-center max-w-sm leading-relaxed italic opacity-75">
               Eyes open or closed — whatever feels safe. If anything feels uncomfortable, stop and breathe normally.
@@ -612,6 +577,41 @@ export default function CoherenceBreathing() {
             >
               Begin when you&apos;re ready
             </button>
+
+            {/* Three steps */}
+            <div className="flex flex-col gap-5 w-full max-w-md">
+              {[
+                {
+                  n: "1",
+                  head: "Drop into your heart.",
+                  body: "Rest a hand over your heart. Your attention naturally follows touch — wherever you feel contact, awareness follows. This gently moves your focus out of your head and into your heart.",
+                },
+                {
+                  n: "2",
+                  head: "Breathe slow, exhale long.",
+                  body: "Breathe so your out-breath is longer than your in-breath. Start wherever feels easy — it should never feel forced. A longer exhale activates your parasympathetic nervous system, telling your body it is safe. Imagine each breath flowing in and out through your heart.",
+                },
+                {
+                  n: "3",
+                  head: "Feel genuine gratitude.",
+                  body: "Choose something real — your kids, your family, being alive, a good moment today. Most of the time we feel something only because of what is happening around us; here you are choosing the feeling on purpose. Sustained gratitude settles your heart into a coherent rhythm and brings your heart and brain into sync.",
+                },
+              ].map(({ n, head, body }) => (
+                <div key={n} className="flex gap-4 items-start">
+                  <span
+                    className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                    style={{ background: "var(--primary)" }}
+                    aria-hidden="true"
+                  >
+                    {n}
+                  </span>
+                  <div>
+                    <p className="font-semibold text-[var(--text-primary)] text-sm mb-0.5">{head}</p>
+                    <p className="text-[var(--text-secondary)] text-sm leading-relaxed">{body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </>
         )}
 
