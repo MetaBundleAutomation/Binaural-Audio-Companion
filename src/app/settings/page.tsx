@@ -368,7 +368,7 @@ export default function SettingsPage() {
                   options={["john", "emily"] as const}
                   value={prefs.bodyScanNarrator}
                   onChange={v => set("bodyScanNarrator", v)}
-                  formatLabel={v => v === "john" ? "John" : "Emily"}
+                  formatLabel={v => v === "john" ? "Ben" : "Jane"}
                 />
               </Card>
 

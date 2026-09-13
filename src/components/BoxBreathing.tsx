@@ -12,10 +12,10 @@ declare global {
 
 // Cycle order (clockwise from 12 o'clock): Inhale → Hold → Exhale → Hold
 const PHASES = [
-  { name: "Inhale", subtitle: "breathe in",  color: "#4aa8e8" },
-  { name: "Hold",   subtitle: "hold still",  color: "#9ba8ff" },
-  { name: "Exhale", subtitle: "breathe out", color: "#56c9b5" },
-  { name: "Hold",   subtitle: "hold still",  color: "#9ba8ff" },
+  { name: "Inhale", subtitle: "breathe in",  color: "#5AC2FF" },
+  { name: "Hold",   subtitle: "hold still",  color: "#B4C2FF" },
+  { name: "Exhale", subtitle: "breathe out", color: "#4FE8C7" },
+  { name: "Hold",   subtitle: "hold still",  color: "#B4C2FF" },
 ];
 const PHASE_LABELS = ["Inhale", "Hold", "Exhale", "Hold"];
 // Each phase is 4 000 ms. Animation starts when "Inhale" is spoken (see
@@ -23,11 +23,11 @@ const PHASE_LABELS = ["Inhale", "Hold", "Exhale", "Hold"];
 // loop spans exactly this 16 000 ms cycle (see padBufferForLoop), keeping
 // audio and visuals in sync indefinitely.
 const PHASE_DURATIONS = [4000, 4000, 4000, 4000]; // ms [Inhale, Hold, Exhale, Hold]
-const MIN_R        = 28;
-const MAX_R        = 108;
+const MIN_R        = 34;
+const MAX_R        = 130;
 const MID_R        = (MIN_R + MAX_R) / 2;
 const TRACK_R      = 175;
-const TRACK_W      = 8;
+const TRACK_W      = 13;
 const LABEL_V      = 228;
 const LABEL_H      = 248;
 const S            = 600;
@@ -131,6 +131,20 @@ export default function BoxBreathing() {
    * Cancelled on stop/reset so the timer never fires after a session ends.
    */
   const introTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /**
+   * AudioContext clock time (ctx.currentTime) at the moment the current
+   * narration buffer started playing from position 0. Combined with
+   * introEndSRef, this lets the animation loop compute exactly where the
+   * audio is in the breathing cycle on every frame, rather than trusting its
+   * own requestAnimationFrame timer — which can drift from the audio clock
+   * over a multi-minute session (the drift varies by OS/browser). Null
+   * whenever no narration is actively driving the cycle.
+   */
+  const startCtxTimeRef = useRef<number | null>(null);
+
+  /** introEndS for whichever voice was active when the current narration started. */
+  const introEndSRef = useRef(0);
 
   /** True while the intro speech is playing — canvas shows "breathe with me". */
   const introModeRef = useRef(false);
@@ -280,7 +294,7 @@ export default function BoxBreathing() {
     ctx.beginPath();
     ctx.arc(C, C, r, 0, Math.PI * 2);
     ctx.strokeStyle = idle ? "rgba(43,107,127,0.35)" : pc;
-    ctx.lineWidth   = idle ? 2 : 3;
+    ctx.lineWidth   = idle ? 3 : 5;
     ctx.stroke();
 
     // Track ring – 4 segments
@@ -323,7 +337,7 @@ export default function BoxBreathing() {
       ctx.fill();
 
       ctx.beginPath();
-      ctx.arc(dx, dy, 7, 0, Math.PI * 2);
+      ctx.arc(dx, dy, 9, 0, Math.PI * 2);
       ctx.fillStyle = "#ffffff";
       ctx.fill();
     }
@@ -337,7 +351,7 @@ export default function BoxBreathing() {
     ];
     ctx.textAlign    = "center";
     ctx.textBaseline = "middle";
-    ctx.font = "bold 26px Arial, sans-serif";
+    ctx.font = "bold 33px Arial, sans-serif";
     for (let i = 0; i < 4; i++) {
       const isActive = !idle && i === phase;
       ctx.fillStyle = alpha(PHASES[i].color, idle ? 0.25 : isActive ? 1 : 0.28);
@@ -348,10 +362,10 @@ export default function BoxBreathing() {
     ctx.textAlign    = "center";
     ctx.textBaseline = "middle";
     if (idle) {
-      ctx.font      = "200 64px Arial, sans-serif";
+      ctx.font      = "200 78px Arial, sans-serif";
       ctx.fillStyle = "rgba(43,107,127,0.5)";
       ctx.fillText("—", C, C - 12);
-      ctx.font      = "15px Arial, sans-serif";
+      ctx.font      = "17px Arial, sans-serif";
       ctx.fillStyle = "rgba(90,107,122,0.7)";
       // introModeRef is read here (not passed as arg) so both draw(true) call
       // sites automatically show the right text without extra parameters.
@@ -361,7 +375,7 @@ export default function BoxBreathing() {
         ctx.shadowColor = pc;
         ctx.shadowBlur  = 28;
       }
-      ctx.font        = "200 72px Arial, sans-serif";
+      ctx.font        = "200 88px Arial, sans-serif";
       ctx.fillStyle   = alpha(pc, 0.95);
       ctx.fillText(countdown, C, C);
       ctx.shadowBlur  = 0;
@@ -374,14 +388,43 @@ export default function BoxBreathing() {
   function startLoop() {
     function frame(ts: number) {
       if (!isRunningRef.current) return;
-      const delta = lastTsRef.current ? ts - lastTsRef.current : 0;
-      lastTsRef.current   = ts;
-      elapsedRef.current += delta;
 
-      while (elapsedRef.current >= PHASE_DURATIONS[phaseRef.current]) {
-        elapsedRef.current -= PHASE_DURATIONS[phaseRef.current];
-        phaseRef.current    = (phaseRef.current + 1) % 4;
+      const ctx = audioCtxRef.current;
+      if (
+        voiceEnabledRef.current &&
+        audioSourceRef.current &&
+        ctx && ctx.state === "running" &&
+        startCtxTimeRef.current !== null
+      ) {
+        // ── Audio-clock-driven sync ─────────────────────────────────────────
+        // The AudioContext clock is sample-accurate and tied to the audio
+        // hardware — it's the source of truth for where we are in the cycle.
+        // Re-deriving phase/elapsed from it every frame (rather than
+        // accumulating our own requestAnimationFrame timer) keeps the visual
+        // permanently locked to the narration, regardless of any per-platform
+        // differences in frame timing.
+        const audioPosS   = ctx.currentTime - startCtxTimeRef.current;
+        const rawS        = audioPosS - introEndSRef.current;
+        const cyclePosMs  = (((rawS % CYCLE_S) + CYCLE_S) % CYCLE_S) * 1000;
+        let remaining     = cyclePosMs;
+        let phase         = 0;
+        while (remaining >= PHASE_DURATIONS[phase]) {
+          remaining -= PHASE_DURATIONS[phase];
+          phase        = (phase + 1) % 4;
+        }
+        phaseRef.current   = phase;
+        elapsedRef.current = remaining;
+      } else {
+        // No audio to sync to (voice off, or audio unavailable) — self-timed.
+        const delta = lastTsRef.current ? ts - lastTsRef.current : 0;
+        elapsedRef.current += delta;
+
+        while (elapsedRef.current >= PHASE_DURATIONS[phaseRef.current]) {
+          elapsedRef.current -= PHASE_DURATIONS[phaseRef.current];
+          phaseRef.current    = (phaseRef.current + 1) % 4;
+        }
       }
+      lastTsRef.current = ts;
 
       draw(false);
       rafRef.current = requestAnimationFrame(frame);
@@ -408,6 +451,7 @@ export default function BoxBreathing() {
       try { audioSourceRef.current.stop(); } catch { /* already stopped */ }
       audioSourceRef.current = null;
     }
+    startCtxTimeRef.current = null;
     introModeRef.current = false;
   }
 
@@ -505,10 +549,12 @@ export default function BoxBreathing() {
       setStatus("intro");
       draw(true);
 
-      // Note the AudioContext clock at the moment playback begins.
-      // Used to seed elapsedRef with sub-millisecond accuracy when the
-      // setTimeout fires, compensating for any JS-engine scheduling delay.
+      // Note the AudioContext clock at the moment playback begins, and which
+      // voice's introEndS applies — read every frame by the animation loop
+      // to keep the visual locked to the audio for the whole session.
       const startCtxTime = ctx.currentTime;
+      startCtxTimeRef.current = startCtxTime;
+      introEndSRef.current    = introEndS;
       playNarration(0);
 
       // ── setTimeout replaces timeupdate polling ──────────────────────────────
@@ -607,7 +653,7 @@ export default function BoxBreathing() {
           ref={canvasRef}
           width={S}
           height={S}
-          style={{ width: 380, height: 380, borderRadius: 20, background: "var(--background-card)" }}
+          style={{ width: "100%", maxWidth: 480, aspectRatio: "1 / 1", borderRadius: 20, background: "var(--background-card)" }}
           aria-label="Box breathing animation"
         />
 

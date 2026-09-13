@@ -18,9 +18,11 @@ export default function Home() {
         {/* Feature chips — tap to jump straight to a section */}
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           {([
-            { label: "Binaural Beats", href: "#player"        },
-            { label: "Noise Therapy",  href: "#noise"         },
-            { label: "Box Breathing",  href: "#box-breathing" },
+            { label: "Binaural Beats", href: "#player"             },
+            { label: "Noise Therapy",  href: "#noise"              },
+            { label: "Box Breathing",  href: "#box-breathing"      },
+            { label: "Coherence",      href: "#coherence-breathing" },
+            { label: "Body Scan",      href: "#body-scan"          },
           ] as const).map(({ label, href }) => (
             <a
               key={href}
