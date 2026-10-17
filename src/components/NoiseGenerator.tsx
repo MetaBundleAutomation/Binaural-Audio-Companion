@@ -573,6 +573,10 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
           </Link>
         </div>
 
+        <p className="text-center text-base font-semibold text-[var(--text-primary)] -mt-4 mb-8">
+          Sound keeps playing when your device&apos;s screen is off
+        </p>
+
         {/* Sound selection — 8 tiles (2 rows of 4 on desktop) */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {displayTiles.map((type) => {

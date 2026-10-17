@@ -336,6 +336,12 @@ export default function Instructions() {
                   Enable <strong className="text-[var(--text-primary)]">Auto-sync</strong> to have
                   noise start and stop automatically with your binaural audio.
                 </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">Screen off? No problem.</strong>{" "}
+                  Once a sound is playing, you can turn your screen off or lock your phone and it
+                  will keep playing. This saves battery and is ideal at bedtime. Leave CRUX open and your sound keeps playing when the screen turns off, either on its own or when you press the power button.
+                  You can adjust the volume before and while the sound is playing, so it stays comfortable for you.
+                </li>
               </ul>
 
               {/* Gentle Rainforest Waterfall / Gentle Ocean Waves — full-screen video how-to */}
