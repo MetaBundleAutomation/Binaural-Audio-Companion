@@ -1,5 +1,6 @@
 import Player from "@/components/Player";
 import LaunchScrollHandler from "@/components/LaunchScrollHandler";
+import BrainScience from "@/components/BrainScience";
 
 export default function Home() {
   return (
@@ -22,7 +23,8 @@ export default function Home() {
             { label: "Noise Therapy",  href: "#noise"              },
             { label: "Box Breathing",  href: "#box-breathing"      },
             { label: "Coherence",      href: "#coherence-breathing" },
-            { label: "Body Scan",      href: "#body-scan"          },
+              { label: "Body Scan",      href: "#body-scan"          },
+            { label: "Your Brain",     href: "#brain-science"      }, 
           ] as const).map(({ label, href }) => (
             <a
               key={href}
@@ -54,6 +56,7 @@ export default function Home() {
 
       <div className="max-w-[1400px] mx-auto px-5">
         <Player />
+        <BrainScience />
       </div>
 
       {/* Closing affirmation — a quiet bookend to the greeting at the top */}
