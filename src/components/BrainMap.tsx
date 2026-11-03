@@ -83,7 +83,6 @@ export default function BrainMap() {
             >
               <span
                 className="absolute inset-0 rounded-full"
-   
                 style={{ backgroundColor: part.color, opacity: 0.45 }}
               />
               <span
@@ -104,10 +103,10 @@ export default function BrainMap() {
       </div>
 
       <p className="text-center text-[13px] text-[var(--text-secondary)] mt-2 mb-1">
-        Tap a part below — it'll light up on the picture too
+        Tap a part below — it’ll light up on the picture too
       </p>
       <p className="text-center text-[10px] text-[var(--text-secondary)] opacity-70 mb-4">
-        Illustration: "Blausen 0614 - Limbic system" by Blausen.com staff (2014), CC BY, via Medical gallery of Blausen Medical 2014
+        Illustration: “Blausen 0614 - Limbic system” by Blausen.com staff (2014), CC BY, via Medical gallery of Blausen Medical 2014
       </p>
 
       {/* Legend — the tap targets. One column on a phone. */}
