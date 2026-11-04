@@ -327,27 +327,26 @@ export default function PureToneTherapy({
   const styles = `
     .crux-tone *{box-sizing:border-box}
     .crux-tone{font-family:inherit;color:var(--text-primary);width:100%}
-    .crux-tone .ct-sub{color:var(--text-secondary);font-size:13px;line-height:1.5;text-align:center;margin:0 auto 16px;max-width:420px}
-    .crux-tone .ct-canvas-wrap{position:relative;height:124px;border-radius:14px;overflow:hidden;
+    .crux-tone .ct-sub{color:var(--text-secondary);font-size:15px;line-height:1.55;text-align:center;margin:0 auto 16px;max-width:420px}
+    .crux-tone .ct-canvas-wrap{position:relative;height:124px;border-radius:1rem;overflow:hidden;
       background:var(--background-light);border:1px solid var(--border-color);margin-bottom:18px}
     .crux-tone canvas{width:100%;height:100%;display:block}
     .crux-tone .ct-hz{position:absolute;left:0;right:0;bottom:8px;text-align:center;pointer-events:none}
-    .crux-tone .ct-hz b{font-size:30px;font-weight:700;color:var(--text-primary)}
+    .crux-tone .ct-hz b{font-size:30px;font-weight:600;letter-spacing:-0.02em;color:var(--text-primary)}
     .crux-tone .ct-hz span{font-size:13px;color:var(--text-secondary);margin-left:4px}
     .crux-tone .ct-controls{display:flex;align-items:center;justify-content:center;gap:14px;margin:18px 0 6px}
-    .crux-tone .ct-play{width:70px;height:70px;border-radius:50%;border:0;background:var(--primary);color:#fff;box-shadow:0 8px 24px rgba(43,107,127,0.4);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s}
+    .crux-tone .ct-play{width:70px;height:70px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 12px 40px -12px var(--glow);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s}
+    .crux-tone .ct-play:hover{transform:translateY(-2px)}
     .crux-tone .ct-play:active{transform:scale(.95)}
     .crux-tone .ct-lock{display:flex;align-items:center;justify-content:center;gap:8px;margin:16px 0 4px;min-height:36px}
-    .crux-tone .ct-lockbtn{background:transparent;border:1px dashed var(--primary);color:var(--primary);border-radius:11px;padding:9px 18px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:.15s}
-    .crux-tone .ct-lockbtn:hover{background:color-mix(in srgb,var(--primary) 12%,transparent)}
-    .crux-tone .ct-lockpill{display:flex;align-items:center;gap:6px;background:color-mix(in srgb,var(--primary) 14%,transparent);border:1px solid var(--primary);color:var(--text-primary);border-radius:11px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer}
+    .crux-tone .ct-lockpill{display:flex;align-items:center;gap:6px;background:color-mix(in srgb,var(--primary) 16%,transparent);border:1px solid var(--primary);color:var(--text-primary);border-radius:9999px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer}
     .crux-tone .ct-lockpill svg{color:var(--primary)}
-    .crux-tone .ct-lockx{background:var(--background-light);border:1px solid var(--border-color);color:var(--text-secondary);width:32px;height:32px;border-radius:9px;cursor:pointer;font-size:16px;line-height:1}
+    .crux-tone .ct-lockx{background:var(--background-light);border:1px solid var(--border-color);color:var(--text-secondary);width:32px;height:32px;border-radius:9999px;cursor:pointer;font-size:16px;line-height:1}
     .crux-tone .ct-lockx:hover{border-color:var(--primary);color:var(--text-primary)}
     .crux-tone .ct-timer{display:flex;gap:8px;justify-content:center;margin-top:14px}
-    .crux-tone .ct-chip{flex:1;padding:8px 0;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;text-align:center;background:var(--background-light);border:1px solid var(--border-color);color:var(--text-secondary);transition:.15s}
+    .crux-tone .ct-chip{flex:1;padding:8px 0;border-radius:9999px;font-size:12px;font-weight:600;letter-spacing:0.04em;cursor:pointer;text-align:center;background:var(--background-light);border:1px solid var(--border-color);color:var(--text-secondary);transition:.15s}
     .crux-tone .ct-chip:hover{color:var(--text-primary)}
-    .crux-tone .ct-chip.on{background:color-mix(in srgb,var(--primary) 14%,transparent);border-color:var(--primary);color:var(--text-primary)}
+    .crux-tone .ct-chip.on{background:color-mix(in srgb,var(--primary) 16%,transparent);border-color:var(--primary);color:var(--text-primary)}
     .crux-tone .ct-info{margin-top:16px;display:flex;gap:8px;align-items:flex-start;background:color-mix(in srgb,var(--primary) 7%,transparent);border:1px solid color-mix(in srgb,var(--primary) 18%,transparent);border-radius:11px;padding:10px 12px}
     .crux-tone .ct-info svg{flex:0 0 auto;margin-top:1px;color:var(--primary)}
     .crux-tone .ct-info p{margin:0;font-size:12px;line-height:1.5;color:var(--text-secondary)}
@@ -366,7 +365,7 @@ export default function PureToneTherapy({
         <div className="ct-hz"><b>{freq.toLocaleString()}</b><span>Hz</span></div>
       </div>
 
-      <div className="flex items-center gap-4 bg-[var(--background-light)] rounded-xl px-5 py-3 border border-[var(--border-color)]">
+      <div className="flex items-center gap-4 glass rounded-2xl px-5 py-3">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 shrink-0 text-[var(--text-secondary)]" aria-hidden="true">
           <path d="M2 12 Q7 3 12 12 Q17 21 22 12" />
         </svg>
@@ -380,10 +379,10 @@ export default function PureToneTherapy({
 
       <div className="ct-controls">
         <button
-          className="h-10 min-w-[48px] px-3 rounded-full border border-[var(--border-color)] bg-[var(--background-light)] text-[13px] font-semibold text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--text-primary)] active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+          className="h-10 min-w-[48px] px-3 rounded-full glass text-[13px] font-semibold text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--text-primary)] active:scale-95 transition-all cursor-pointer flex items-center justify-center"
           onClick={() => setFreq((f) => clampFreq(f / 2))} aria-label="Down one octave">½×</button>
         <button
-          className="h-10 min-w-[48px] px-3 rounded-full border border-[var(--border-color)] bg-[var(--background-light)] text-[13px] font-semibold text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--text-primary)] active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+          className="h-10 min-w-[48px] px-3 rounded-full glass text-[13px] font-semibold text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--text-primary)] active:scale-95 transition-all cursor-pointer flex items-center justify-center"
           onClick={() => nudge(-10)} aria-label="Down 10 hertz">−10</button>
         <button className="ct-play" onClick={toggle} aria-label={playing ? 'Pause' : 'Play'}>
           {playing
@@ -391,10 +390,10 @@ export default function PureToneTherapy({
             : <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.87l11-6.5a1 1 0 0 0 0-1.74l-11-6.5A1 1 0 0 0 8 5.5z" /></svg>}
         </button>
         <button
-          className="h-10 min-w-[48px] px-3 rounded-full border border-[var(--border-color)] bg-[var(--background-light)] text-[13px] font-semibold text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--text-primary)] active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+          className="h-10 min-w-[48px] px-3 rounded-full glass text-[13px] font-semibold text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--text-primary)] active:scale-95 transition-all cursor-pointer flex items-center justify-center"
           onClick={() => nudge(10)} aria-label="Up 10 hertz">+10</button>
         <button
-          className="h-10 min-w-[48px] px-3 rounded-full border border-[var(--border-color)] bg-[var(--background-light)] text-[13px] font-semibold text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--text-primary)] active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+          className="h-10 min-w-[48px] px-3 rounded-full glass text-[13px] font-semibold text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--text-primary)] active:scale-95 transition-all cursor-pointer flex items-center justify-center"
           onClick={() => setFreq((f) => clampFreq(f * 2))} aria-label="Up one octave">2×</button>
       </div>
 
@@ -408,11 +407,11 @@ export default function PureToneTherapy({
             <button className="ct-lockx" onClick={clearLock} aria-label="Clear locked tone">×</button>
           </>
         ) : (
-          <button className="ct-lockbtn" onClick={lockIn}>Lock in this tone</button>
+          <button className="btn-secondary" onClick={lockIn}>Lock in this tone</button>
         )}
       </div>
 
-      <div className="flex items-center gap-4 bg-[var(--background-light)] rounded-xl px-5 py-3 border border-[var(--border-color)]">
+      <div className="flex items-center gap-4 glass rounded-2xl px-5 py-3">
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 shrink-0 text-[var(--text-secondary)]" aria-hidden="true">
           <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
         </svg>

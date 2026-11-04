@@ -1,165 +1,204 @@
 @import "tailwindcss";
 
+/* ──────────────────────────────────────────────────────────────────────────
+   CRUX design system — the Metabundle look (dark-first, glass surfaces,
+   gradient accents) on top of CRUX's four branch themes and three
+   brightness levels. Every colour below is a CSS variable so the themes
+   in Settings keep working; components reference the variables, never hexes.
+   ────────────────────────────────────────────────────────────────────────── */
+
 @theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--text-primary);
-  --color-primary: #2B6B7F;
-  --color-primary-dark: #1E4F5E;
-  --color-primary-light: #3A8FA3;
-  --color-secondary: #8C9BAA;
-  --color-accent: #4A5568;
 }
 
-/* ── Navy (default — Royal Australian Navy inspired) ─────────────────────── */
+/* ── Navy (default — Royal Australian Navy inspired, Metabundle blue/cyan) ── */
 
 :root {
   color-scheme: only dark;
-  --primary:          #2878A8;
-  --primary-dark:     #1A5C88;
-  --primary-light:    #3A98C8;
-  --secondary:        #7A8B9A;
-  --accent:           #3A5A78;
-  --background:       #0E1822;
-  --background-light: #152030;
-  --background-card:  #1C2B3E;
-  --text-primary:     #E8ECF0;
-  --text-secondary:   #A2B0BE;
-  --border-color:     #243555;
+  --primary:          #4F8FF7;
+  --primary-dark:     #2563EB;
+  --primary-light:    #7CB3FF;
+  --secondary:        #93A0B8;
+  --accent:           #2563EB;   /* gradient start (buttons, glows) */
+  --accent-2:         #22D3EE;   /* gradient end */
+  --accent-3:         #8B5CF6;   /* third ambient blob */
+  --glow:             rgba(37, 99, 235, 0.55);
+  --background:       #05070F;
+  --background-light: rgba(255, 255, 255, 0.03);
+  --background-card:  rgba(255, 255, 255, 0.045);
+  --surface-solid:    #0C1120;   /* for things that must be opaque (menus, banners) */
+  --text-primary:     #E6EBF5;
+  --text-secondary:   #93A0B8;
+  --border-color:     rgba(255, 255, 255, 0.08);
   --shadow:    0 10px 30px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 24px 60px -28px rgba(0, 0, 0, 0.7);
 }
 html.brightness-dim {
-  --background:       #060C14;
-  --background-light: #0A1220;
-  --background-card:  #101A2C;
-  --text-secondary:   #94A2B0;
-  --border-color:     #182840;
+  --background:       #020309;
+  --background-light: rgba(255, 255, 255, 0.02);
+  --background-card:  rgba(255, 255, 255, 0.03);
+  --surface-solid:    #070B14;
+  --text-secondary:   #8794AB;
+  --border-color:     rgba(255, 255, 255, 0.06);
 }
 html.brightness-bright {
-  --background:       #1C2E42;
-  --background-light: #263A52;
-  --background-card:  #304862;
-  --text-secondary:   #AABACB;
-  --border-color:     #3A5478;
+  --background:       #0D1424;
+  --background-light: rgba(255, 255, 255, 0.045);
+  --background-card:  rgba(255, 255, 255, 0.07);
+  --surface-solid:    #182238;
+  --text-secondary:   #A6B2C8;
+  --border-color:     rgba(255, 255, 255, 0.12);
 }
 
 /* ── Army (Australian Army inspired — olive / earth) ─────────────────────── */
 
 html.theme-army {
-  --primary:          #7A8C38;
-  --primary-dark:     #5C6A28;
-  --primary-light:    #9AAE50;
-  --secondary:        #8A8E7A;
-  --accent:           #4A5030;
-  --background:       #131610;
-  --background-light: #1A1E14;
-  --background-card:  #22261C;
+  --primary:          #9AAE50;
+  --primary-dark:     #6B7A2E;
+  --primary-light:    #B9CC6E;
+  --secondary:        #9AA08A;
+  --accent:           #6B7A2E;
+  --accent-2:         #C5D86D;
+  --accent-3:         #4F8F6A;
+  --glow:             rgba(122, 140, 56, 0.55);
+  --background:       #070906;
+  --surface-solid:    #141810;
   --text-primary:     #E8ECE0;
-  --text-secondary:   #AAAE90;
-  --border-color:     #30351E;
-  --shadow:    0 10px 30px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+  --text-secondary:   #A4AA8E;
 }
 html.theme-army.brightness-dim {
-  --background:       #080B06;
-  --background-light: #0C1008;
-  --background-card:  #141810;
-  --text-secondary:   #9CA084;
-  --border-color:     #1E2214;
+  --background:       #030402;
+  --surface-solid:    #0B0E08;
+  --text-secondary:   #969C80;
 }
 html.theme-army.brightness-bright {
-  --background:       #252A1A;
-  --background-light: #2E3422;
-  --background-card:  #383E2C;
-  --text-secondary:   #B2B698;
-  --border-color:     #484E30;
+  --background:       #151A10;
+  --surface-solid:    #262C1C;
+  --text-secondary:   #B4BA9C;
 }
 
-/* ── Air Force (RAAF inspired — bright cobalt / slate) ───────────────────── */
+/* ── Air Force (RAAF inspired — bright cobalt / sky) ─────────────────────── */
 
 html.theme-airforce {
-  --primary:          #5592E8;
+  --primary:          #6AA4FF;
   --primary-dark:     #3570C8;
-  --primary-light:    #75ACFC;
-  --secondary:        #7888B0;
-  --accent:           #2A4480;
-  --background:       #0D1830;
-  --background-light: #162438;
-  --background-card:  #1E2E50;
+  --primary-light:    #8FC0FF;
+  --secondary:        #8895BD;
+  --accent:           #3570C8;
+  --accent-2:         #75ACFC;
+  --accent-3:         #22D3EE;
+  --glow:             rgba(53, 112, 200, 0.6);
+  --background:       #05081A;
+  --surface-solid:    #121C38;
   --text-primary:     #ECF2FF;
   --text-secondary:   #A0AED8;
-  --border-color:     #2C4888;
-  --shadow:    0 10px 30px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 html.theme-airforce.brightness-dim {
-  --background:       #070C18;
-  --background-light: #0E1624;
-  --background-card:  #141E34;
+  --background:       #02040E;
+  --surface-solid:    #0B1226;
   --text-secondary:   #92A0CC;
-  --border-color:     #1C306A;
 }
 html.theme-airforce.brightness-bright {
-  --background:       #182846;
-  --background-light: #223454;
-  --background-card:  #2C4268;
-  --text-secondary:   #A0B2D4;
-  --border-color:     #3C5898;
+  --background:       #101A36;
+  --surface-solid:    #1E2C50;
+  --text-secondary:   #AEBCE0;
 }
 
-/* ── Midnight (ultra dark — branch-neutral) ──────────────────────────────── */
+/* ── Midnight (ultra dark — branch-neutral, teal / cyan) ─────────────────── */
 
 html.theme-midnight {
-  --primary:          #3A7080;
-  --primary-dark:     #285060;
-  --primary-light:    #508898;
-  --secondary:        #6A7A88;
-  --accent:           #283540;
-  --background:       #08090C;
-  --background-light: #0D1318;
-  --background-card:  #12181E;
+  --primary:          #5FA8BC;
+  --primary-dark:     #3A7080;
+  --primary-light:    #8CCADB;
+  --secondary:        #7A8A98;
+  --accent:           #3A7080;
+  --accent-2:         #67E8F9;
+  --accent-3:         #4F8F8C;
+  --glow:             rgba(58, 112, 128, 0.6);
+  --background:       #030407;
+  --surface-solid:    #0C1218;
   --text-primary:     #D8DCE0;
   --text-secondary:   #8E9EAC;
-  --border-color:     #1A2530;
   --shadow:    0 10px 30px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 24px 60px -28px rgba(0, 0, 0, 0.85);
 }
 html.theme-midnight.brightness-dim {
-  --background:       #040508;
-  --background-light: #07090E;
-  --background-card:  #0B0F14;
+  --background:       #010203;
+  --surface-solid:    #06090C;
   --text-secondary:   #808F9D;
-  --border-color:     #0E1820;
 }
 html.theme-midnight.brightness-bright {
-  --background:       #151C24;
-  --background-light: #1E2830;
-  --background-card:  #263240;
-  --text-secondary:   #8A9CAA;
-  --border-color:     #2A3C4C;
+  --background:       #0D1218;
+  --surface-solid:    #1A232C;
+  --text-secondary:   #9CACBA;
 }
 
-/*
-  Tailwind v4 compat: override default border color.
-*/
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+
 @layer base {
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
+    border-color: var(--border-color);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    overscroll-behavior: none;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--background);
+    color: var(--text-primary);
+    line-height: 1.65;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--accent) 55%, transparent);
+    color: #fff;
+  }
+
+  /* Custom scrollbar (desktop) */
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--background);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--text-secondary) 28%, var(--background));
+    border-radius: 99px;
+    border: 3px solid var(--background);
   }
 }
 
-html {
-  scroll-behavior: smooth;
-  overscroll-behavior: none;
+/* Shared keyboard focus indicator — keyboard / assistive-tech only. */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
 }
 
-/* Respect the OS "Reduce Motion" setting — disable CSS animations, transitions,
-   and smooth scrolling for users who find motion uncomfortable. The Box
-   Breathing canvas additionally simplifies its visuals in JS (see BoxBreathing). */
+/* Respect the OS "Reduce Motion" setting. */
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,
@@ -171,32 +210,186 @@ html {
   }
 }
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  background: var(--background);
-  color: var(--text-primary);
-  line-height: 1.7;
-  min-height: 100vh;
-  overflow-x: hidden;
-  /* Prevent iOS Safari rubber-band bounce scrolling the whole page */
-  overscroll-behavior: none;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* ── Utilities (Metabundle) ────────────────────────────────────────────────── */
+
+/* backdrop-filter is written unprefixed only; Lightning CSS adds the -webkit-
+   prefix. A hand-written prefixed line after it drops the unprefixed one. */
+@utility glass {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(14px);
 }
 
-/* Shared keyboard focus indicator — one consistent, theme-aware ring across every
-   interactive element (noise tiles, favourite hearts, play, footer + carousel
-   buttons, links). :focus-visible shows it for keyboard / assistive-tech users but
-   never on mouse click. The outline follows each element's own border-radius. */
-button:focus-visible,
-a:focus-visible,
-[role="button"]:focus-visible,
-summary:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
+@utility glass-strong {
+  background: color-mix(in srgb, var(--surface-solid) 78%, transparent);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(18px) saturate(140%);
 }
 
-/* Custom range slider styling */
+@utility card-hover {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease, box-shadow 0.35s ease;
+  &:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--primary) 45%, transparent);
+    box-shadow: 0 24px 60px -28px var(--glow);
+  }
+}
+
+@utility glow {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 18%, transparent),
+    0 18px 48px -18px var(--glow);
+}
+
+@utility grid-bg {
+  background-image: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.035) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+@utility text-brand-gradient {
+  background: linear-gradient(100deg, var(--primary-light), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ── Components ───────────────────────────────────────────────────────────── */
+
+@layer components {
+  /* Gradient pill — the one primary action in a view. */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: #fff;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    box-shadow: 0 12px 40px -12px var(--glow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.2s ease;
+    cursor: pointer;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 50px -12px var(--glow);
+  }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Glass pill — secondary actions. */
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    cursor: pointer;
+  }
+  .btn-secondary:hover {
+    border-color: color-mix(in srgb, var(--primary) 55%, transparent);
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-2px);
+  }
+  .btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Quiet text pill — "Tap to learn", "Tell me more". */
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary);
+    background: var(--background-light);
+    border: 1px solid var(--border-color);
+    transition: border-color 0.2s ease, color 0.2s ease;
+    cursor: pointer;
+  }
+  .btn-ghost:hover {
+    border-color: color-mix(in srgb, var(--primary) 55%, transparent);
+    color: var(--text-primary);
+  }
+
+  /* Section eyebrow: a glass pill with a glowing dot. */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 1rem;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--border-color);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+  }
+  .eyebrow::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: var(--accent-2);
+    box-shadow: 0 0 10px var(--accent-2);
+  }
+
+  /* Card surface: the translucent panel used for every section. */
+  .card {
+    position: relative;
+    border-radius: 1.25rem;
+    background: linear-gradient(
+      180deg,
+      var(--background-card),
+      var(--background-light)
+    );
+    border: 1px solid var(--border-color);
+  }
+}
+
+/* ── Phones: no blur, no entrance animation ────────────────────────────────
+   Backdrop blur re-paints on every scroll frame on a weak mobile GPU, so the
+   glass surfaces fall back to a solid tint below 768px. */
+@media (max-width: 768px) {
+  .glass,
+  .glass-strong {
+    backdrop-filter: none !important;
+  }
+  .glass-strong {
+    background: color-mix(in srgb, var(--surface-solid) 94%, transparent) !important;
+  }
+}
+
+/* ── Range slider ─────────────────────────────────────────────────────────── */
+
 input[type="range"] {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -204,12 +397,10 @@ input[type="range"] {
   background: transparent;
   outline: none;
   cursor: pointer;
-  /* Let the slider own its touch handling on iOS — prevents scroll interference
-     and ensures the thumb responds to touch without fighting IOSTouchFix. */
+  /* Let the slider own its touch handling on iOS. */
   touch-action: none;
 }
 
-/* Track – webkit (Chrome, Safari, Edge) */
 input[type="range"]::-webkit-slider-runnable-track {
   height: 16px;
   border-radius: 9999px;
@@ -221,7 +412,6 @@ input[type="range"]::-webkit-slider-runnable-track {
   );
 }
 
-/* Track – Firefox */
 input[type="range"]::-moz-range-track {
   height: 16px;
   border-radius: 9999px;
@@ -235,50 +425,48 @@ input[type="range"]::-moz-range-progress {
   background: var(--primary);
 }
 
-/* Thumb */
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 36px;
   height: 36px;
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
   border-radius: 50%;
-  border: 2.5px solid var(--background-card);
+  border: 2.5px solid var(--surface-solid);
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
   margin-top: -10px;
-  box-shadow: 0 0 0 0 rgba(43, 107, 127, 0);
+  box-shadow: 0 6px 18px -6px var(--glow);
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.15);
-  box-shadow: 0 0 0 4px rgba(43, 107, 127, 0.2);
+  transform: scale(1.12);
 }
 
-/* Keyboard focus ring on the thumb (the track has outline:none) — theme-aware. */
 input[type="range"]:focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 3px var(--background-card), 0 0 0 5px var(--primary);
+  box-shadow: 0 0 0 3px var(--background), 0 0 0 5px var(--accent-2);
 }
 
 input[type="range"]::-moz-range-thumb {
   width: 36px;
   height: 36px;
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
   border-radius: 50%;
-  border: 2.5px solid var(--background-card);
+  border: 2.5px solid var(--surface-solid);
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 6px 18px -6px var(--glow);
 }
 
 input[type="range"]::-moz-range-thumb:hover {
-  transform: scale(1.15);
-  box-shadow: 0 0 0 4px rgba(43, 107, 127, 0.2);
+  transform: scale(1.12);
 }
 
-/* Keyboard focus ring on the thumb (the track has outline:none) — theme-aware. */
 input[type="range"]:focus-visible::-moz-range-thumb {
-  box-shadow: 0 0 0 3px var(--background-card), 0 0 0 5px var(--primary);
+  box-shadow: 0 0 0 3px var(--background), 0 0 0 5px var(--accent-2);
 }
+
+/* ── Odds and ends kept from the previous stylesheet ───────────────────────── */
 
 /* Equalizer bar animation for the AudioCarousel playing indicator */
 @keyframes eq-bar {
@@ -287,20 +475,15 @@ input[type="range"]:focus-visible::-moz-range-thumb {
 }
 
 .visualizer-bg {
-  background: linear-gradient(135deg, #222A32 0%, #151A1E 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
 }
 
-/*
-  Player card background tint — picks up --beat-r/g/b CSS variables set inline
-  by the Player component and blends a hint of the current beat colour into the
-  card surface. color-mix() is used so the transition animates smoothly.
-  Fallback: plain card background for browsers that predate color-mix().
-*/
+/* Player card tint: blends a hint of the current beat colour into the card. */
 .player-bg {
   background-color: var(--background-card);
   background-color: color-mix(
     in srgb,
-    rgb(var(--beat-r, 43) var(--beat-g, 107) var(--beat-b, 127)) 7%,
+    rgb(var(--beat-r, 43) var(--beat-g, 107) var(--beat-b, 127)) 10%,
     var(--background-card)
   );
   transition: background-color 600ms ease;

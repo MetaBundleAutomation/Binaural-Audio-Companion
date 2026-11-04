@@ -545,21 +545,23 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
     <>
     <section id="noise" className="my-16 scroll-mt-24">
       <div
-        className="rounded-3xl p-10 border border-[var(--border-color)] bg-[var(--background-card)]"
+        className="card p-10"
         style={{ boxShadow: "var(--shadow-lg)" }}
       >
         {/* One shared media element for every sound (survives a locked screen) */}
         <audio ref={audioElRef} preload="auto" playsInline loop />
 
-        <h2 className="text-[32px] font-bold mb-4 tracking-tight text-[var(--text-primary)] text-center">
-          Noise Therapy
-        </h2>
+        {/* Section header: eyebrow, heading, guide link */}
+        <div className="flex flex-col items-center text-center mb-4">
+          <span className="eyebrow">Noise Therapy</span>
+          <h2 className="mt-4 text-[26px] md:text-[32px] font-semibold tracking-tight text-[var(--text-primary)]">
+            Steady sound to settle the alarm
+          </h2>
 
-        {/* Link to the Noise Therapy guide in Instructions */}
-        <div className="flex justify-center mb-8">
+          {/* Link to the Noise Therapy guide in Instructions */}
           <Link
             href="/instructions#noise-therapy"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+            className="btn-ghost mt-4"
           >
             <svg
               viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -575,7 +577,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
           </Link>
         </div>
 
-        <p className="text-center text-base font-semibold text-[var(--text-primary)] -mt-4 mb-8">
+        <p className="text-center text-[15px] text-[var(--text-secondary)] mb-8">
           Sound keeps playing when your device&apos;s screen is off
         </p>
 
@@ -586,15 +588,15 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
             const isSelected = selected === type;
             const isFav = prefs.favouriteNoises.includes(type);
             return (
-              <div key={type} className="relative">
+              <div key={type} className="relative rounded-[1.25rem] card-hover">
                 <button
                   onClick={() => handleSelectTile(type)}
                   aria-label={n.label}
                   aria-pressed={isSelected}
-                  className={`w-full h-full rounded-2xl p-5 text-left border-2 transition-all cursor-pointer ${
+                  className={`card w-full h-full p-5 text-left transition-colors cursor-pointer ${
                     isSelected
-                      ? "border-[var(--primary)] bg-[var(--background-light)]"
-                      : "border-[var(--border-color)] bg-[var(--background-light)] hover:border-[var(--primary-light)]"
+                      ? "border-[var(--primary)] glow"
+                      : "hover:border-[color-mix(in_srgb,var(--primary)_45%,transparent)]"
                   }`}
                 >
                   <div
@@ -603,12 +605,12 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
                   >
                     <NoiseIcon type={type} size={36} />
                   </div>
-                  <div className="font-bold text-[17px] mb-1 text-[var(--text-primary)]">
+                  <div className="font-semibold text-[17px] tracking-tight mb-1 text-[var(--text-primary)]">
                     {n.label}
                   </div>
                   <div
-                    className="text-[11px] font-bold uppercase tracking-widest"
-                    style={{ color: n.color }}
+                    className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-secondary)]"
+                    style={{ color: isSelected ? n.color : undefined }}
                   >
                     {n.tagline}
                   </div>
@@ -622,7 +624,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
                 {/* Favourite heart */}
                 <button
                   onClick={() => toggleFavouriteNoise(type)}
-                  className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full bg-[var(--background-card)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all cursor-pointer"
+                  className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full glass hover:border-[var(--primary)] transition-all cursor-pointer"
                   aria-label={isFav ? `Remove ${n.label} from favourites` : `Add ${n.label} to favourites`}
                   aria-pressed={isFav}
                 >
@@ -661,10 +663,10 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
               <button
                 onClick={handleToggleNoisePlay}
                 disabled={isLoading}
-                className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-white disabled:opacity-70 disabled:cursor-wait"
+                className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-white hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-wait disabled:translate-y-0"
                 style={{
-                  background: "var(--primary)",
-                  boxShadow: "0 8px 24px rgba(43, 107, 127, 0.4)",
+                  background: "linear-gradient(135deg, var(--accent), var(--accent-2))",
+                  boxShadow: "0 12px 40px -12px var(--glow)",
                 }}
                 aria-label={isLoading ? "Loading audio…" : noiseIsPlaying ? "Stop noise" : "Play noise"}
               >
@@ -685,7 +687,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
             </div>
 
             {/* Volume */}
-            <div className="flex items-center gap-4 bg-[var(--background-light)] rounded-xl px-5 py-3 border border-[var(--border-color)]">
+            <div className="flex items-center gap-4 glass rounded-2xl px-5 py-3">
               <svg
                 viewBox="0 0 24 24"
                 fill="currentColor"
@@ -713,17 +715,19 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
                   aria-checked={autoSync}
                   aria-label="Auto-sync noise with audio playback"
                   onClick={() => setAutoSync((v) => !v)}
-                  className={`relative w-11 h-6 rounded-full border-0 cursor-pointer transition-colors overflow-hidden ${
-                    autoSync ? "bg-[var(--primary)]" : "bg-[var(--border-color)]"
+                  className={`relative w-11 h-6 rounded-full border cursor-pointer transition-colors overflow-hidden ${
+                    autoSync
+                      ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)]"
+                      : "border-[var(--border-color)] bg-[var(--background-light)]"
                   }`}
                 >
                   <span
-                    className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                      autoSync ? "translate-x-5" : "translate-x-0"
+                    className={`absolute top-[3px] left-[3px] w-4 h-4 rounded-full transition-[transform,background-color] ${
+                      autoSync ? "translate-x-5 bg-[var(--primary)]" : "translate-x-0 bg-[var(--text-secondary)]"
                     }`}
                   />
                 </button>
-                <span className="text-sm text-[var(--text-secondary)]">
+                <span className="text-[14px] text-[var(--text-secondary)]">
                   Start and stop with the audio player
                 </span>
               </label>

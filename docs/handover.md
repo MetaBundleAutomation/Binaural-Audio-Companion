@@ -71,3 +71,20 @@
 - Decide how to moderate the room: for now the Report button just writes to the `reports` table and someone has to look in the Supabase dashboard (query in `supabase/README.md`). A tiny admin page is the obvious follow-up
 - Turn on `pg_cron` in Supabase and schedule the cleanup at the bottom of the migration so old messages are deleted, not just hidden
 - Consider a Settings toggle to hide the room entirely for people who don't want it
+
+## 5 November 2026 (later): the Metabundle look
+
+### Finished
+- New look across the app, ported from Josh's own site source (metabundle.ai): near-black backgrounds with soft colour glows (`src/components/BackgroundFX.tsx`), translucent glass cards with hairline borders, gradient pill buttons, uppercase "eyebrow" pills above headings, and the Inter font. All of it lives in `src/app/globals.css` as CSS variables and shared classes (`card`, `btn-primary`, `btn-secondary`, `btn-ghost`, `eyebrow`, `glass`, `glass-strong`), so the four branch themes and three brightness levels in Settings still work; each theme now also has an accent gradient
+- New navigation: a fixed sidebar on desktop (`src/components/Sidebar.tsx`) and a glass top bar with a hamburger drawer on phones (`src/components/TopBar.tsx`), both reading the same list in `src/lib/nav.ts`. `Header.tsx` is gone; `AppShell.tsx` wraps every page. The crisis numbers sit at the bottom of the sidebar and the drawer, and a "Support CRUX" button appears there once `NEXT_PUBLIC_DONATE_URL` is set
+- Every section, page, button and card restyled to the new classes without touching behaviour or audio code
+
+### In progress
+- Next step is one tool per page (`/binaural`, `/noise`, `/breathe`, `/body-scan`, `/brain`, `/room`) so nobody has to scroll the long home page. Audio has to keep playing while navigating, so the tools will be mounted once in the shared layout and shown per route, with a small "now playing" bar. The nav links in `src/lib/nav.ts` switch from `/#section` to the new routes when that lands
+
+### What didn't work
+- Nothing blocking. The glass blur is switched off below 768 px on purpose (it repaints on every scroll frame on a weak phone GPU); the bar and drawer use a solid tint there instead
+
+### Next
+- Check the four themes on a real phone, especially Army and Midnight, where the glow colours are the least tested
+- `public/sw.js` precache list and `src/app/sitemap.ts` need the new routes once they exist

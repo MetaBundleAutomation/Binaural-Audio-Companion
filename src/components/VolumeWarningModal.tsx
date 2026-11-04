@@ -29,8 +29,8 @@ export default function VolumeWarningModal() {
       aria-labelledby="vol-warning-title"
     >
       <div
-        className="w-full max-w-md rounded-3xl p-8 border border-[var(--border-color)] bg-[var(--background-card)] flex flex-col gap-5"
-        style={{ boxShadow: "0 24px 64px rgba(0,0,0,0.45)" }}
+        className="glass-strong w-full max-w-md rounded-3xl p-8 flex flex-col gap-5"
+        style={{ boxShadow: "var(--shadow-lg)" }}
       >
         {/* Headphones icon */}
         <div className="flex items-center justify-center">
@@ -51,7 +51,7 @@ export default function VolumeWarningModal() {
 
         <h2
           id="vol-warning-title"
-          className="text-xl font-bold text-center text-[var(--text-primary)]"
+          className="text-[22px] font-semibold tracking-tight text-center text-[var(--text-primary)]"
         >
           Before you begin
         </h2>
@@ -71,11 +71,7 @@ export default function VolumeWarningModal() {
 
         <button
           onClick={dismiss}
-          className="mt-2 w-full py-3.5 rounded-xl font-semibold text-white text-[15px] transition-all hover:opacity-90 cursor-pointer"
-          style={{
-            background: "var(--primary)",
-            boxShadow: "0 8px 24px rgba(43, 107, 127, 0.35)",
-          }}
+          className="btn-primary w-full mt-2"
         >
           Got it — I&apos;ll keep it low
         </button>

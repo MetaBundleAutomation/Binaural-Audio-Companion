@@ -52,7 +52,7 @@ function applyBrightness(level: Preferences["brightness"]) {
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-[var(--background-card)] rounded-2xl p-6 border border-[var(--border-color)]">
+    <div className="card p-6">
       {children}
     </div>
   );
@@ -90,16 +90,11 @@ function SegmentedControl<T extends string | number>({
           key={option}
           onClick={() => onChange(option)}
           aria-pressed={value === option}
-          className="flex-1 py-2 px-3 rounded-xl text-[13px] font-semibold transition-all cursor-pointer"
-          style={value === option ? {
-            background: "var(--primary)",
-            color: "white",
-            boxShadow: "0 4px 12px rgba(43,107,127,0.35)",
-          } : {
-            background: "var(--background-light)",
-            color: "var(--text-secondary)",
-            border: "1px solid var(--border-color)",
-          }}
+          className={`flex-1 py-2 px-3 rounded-xl border text-[13px] font-semibold transition-all cursor-pointer ${
+            value === option
+              ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)] text-[var(--text-primary)]"
+              : "border-[var(--border-color)] bg-[var(--background-light)] text-[var(--text-secondary)] hover:border-[var(--primary)]"
+          }`}
         >
           {formatLabel ? formatLabel(option) : String(option).charAt(0).toUpperCase() + String(option).slice(1)}
         </button>
@@ -153,7 +148,7 @@ export default function SettingsPage() {
               {[1, 2, 3, 4, 5, 6, 7].map(i => (
                 <div
                   key={i}
-                  className="h-24 bg-[var(--background-card)] rounded-2xl border border-[var(--border-color)] animate-pulse"
+                  className="card h-24 animate-pulse"
                 />
               ))}
             </div>
@@ -168,16 +163,19 @@ export default function SettingsPage() {
       <section className="py-20 px-4">
         <div className="max-w-2xl mx-auto">
 
-          <h1 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-3 text-center">
-            Settings
-          </h1>
-          <p className="text-lg text-[var(--text-secondary)] mb-12 text-center">
-            Everything saves automatically — no save button needed.
-          </p>
+          <div className="text-center mb-12">
+            <span className="eyebrow">Settings</span>
+            <h1 className="mt-5 text-balance text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-[var(--text-primary)]">
+              Settings
+            </h1>
+            <p className="mt-5 text-lg leading-relaxed text-[var(--text-secondary)]">
+              Everything saves automatically — no save button needed.
+            </p>
+          </div>
 
           {/* ── My Defaults ────────────────────────────────────────────────── */}
           <div className="mb-10">
-            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-1">My Defaults</h2>
+            <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-1">My Defaults</h2>
             <p className="text-sm text-[var(--text-secondary)] mb-6">
               Your defaults are what CRUX automatically picks for you each time you open it.
             </p>
@@ -378,7 +376,7 @@ export default function SettingsPage() {
             <div className="pt-4 text-center">
               <button
                 onClick={handleReset}
-                className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] underline underline-offset-2 cursor-pointer transition-colors"
+                className="btn-secondary"
               >
                 Reset to app defaults
               </button>
@@ -389,7 +387,7 @@ export default function SettingsPage() {
 
           {/* ── Personalisation ────────────────────────────────────────────── */}
           <div className="mb-10">
-            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-1">Personalisation</h2>
+            <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-1">Personalisation</h2>
             <p className="text-sm text-[var(--text-secondary)] mb-6">
               Tailor the CRUX experience to how you like it.
             </p>
@@ -429,7 +427,7 @@ export default function SettingsPage() {
 
           {/* ── Appearance ─────────────────────────────────────────────────── */}
           <div>
-            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-1">Appearance</h2>
+            <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-1">Appearance</h2>
             <p className="text-sm text-[var(--text-secondary)] mb-6">
               Choose a colour theme and adjust brightness to suit your environment.
             </p>
@@ -450,16 +448,11 @@ export default function SettingsPage() {
                         key={t.id}
                         onClick={() => handleTheme(t.id)}
                         aria-pressed={isSelected}
-                        className="flex items-center gap-3 rounded-xl px-4 py-3 text-left transition-all cursor-pointer"
-                        style={isSelected ? {
-                          background:  "var(--primary)",
-                          color:       "white",
-                          boxShadow:   "0 4px 12px rgba(0,0,0,0.3)",
-                        } : {
-                          background:  "var(--background-light)",
-                          color:       "var(--text-secondary)",
-                          border:      "1px solid var(--border-color)",
-                        }}
+                        className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all cursor-pointer ${
+                          isSelected
+                            ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)] text-[var(--text-primary)]"
+                            : "border-[var(--border-color)] bg-[var(--background-light)] text-[var(--text-secondary)] hover:border-[var(--primary)]"
+                        }`}
                       >
                         {/* Swatch — two-tone circle showing bg + accent */}
                         <span
@@ -499,11 +492,7 @@ export default function SettingsPage() {
           </div>
 
           <div className="text-center mt-12">
-            <Link
-              href="/"
-              className="inline-block px-8 py-3 rounded-lg text-base font-semibold text-white transition-all duration-300 hover:-translate-y-0.5"
-              style={{ background: "var(--primary)", boxShadow: "var(--shadow)" }}
-            >
+            <Link href="/" className="btn-primary">
               Start Listening
             </Link>
           </div>

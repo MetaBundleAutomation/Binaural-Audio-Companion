@@ -1,11 +1,13 @@
 import "@/app/globals.css";
 
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
 import SessionTracker from "@/components/SessionTracker";
 import Footer from "@/components/Footer";
-import Header from "@/components/Header";
+import AppShell from "@/components/AppShell";
+import BackgroundFX from "@/components/BackgroundFX";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import PreferencesProvider from "@/components/PreferencesProvider";
 import AppearanceSync from "@/components/AppearanceSync";
@@ -13,6 +15,15 @@ import IOSTouchFix from "@/components/IOSTouchFix";
 import Toast from "@/components/Toast";
 import DisclaimerBanner from "@/components/DisclaimerBanner";
 import { baseURL, description, siteName, title } from "@/config";
+
+// display: "optional" — if Inter is not ready in the first-paint window the
+// metric-matched system fallback is used for the session, so text never
+// restyles late on a slow connection.
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "optional",
+});
 
 export const metadata: Metadata = {
   title,
@@ -71,7 +82,7 @@ export const metadata: Metadata = {
   },
   other: {
     "color-scheme": "dark",
-    "theme-color": "#0F1B2D",
+    "theme-color": "#05070F",
   },
 };
 
@@ -81,17 +92,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={inter.variable}>
       <body>
+        <BackgroundFX />
         <ServiceWorkerRegistration />
         <PreferencesProvider>
           <AppearanceSync />
           <IOSTouchFix />
           <Toast />
           <DisclaimerBanner />
-          <Header />
-          {children}
-          <Footer />
+          <AppShell>
+            {children}
+            <Footer />
+          </AppShell>
           {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID && (
             <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
           )}

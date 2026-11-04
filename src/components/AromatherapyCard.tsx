@@ -27,25 +27,22 @@ export default function AromatherapyCard({ trackName }: AromatherapyCardProps) {
 
   return (
     <div
-      className="mx-auto mb-6 rounded-2xl border border-[var(--border-color)] px-6 py-5 flex flex-col items-center text-center gap-2"
+      className="card mx-auto mb-6 px-6 py-5 flex flex-col items-center text-center gap-3"
       style={{
         maxWidth:        400,
-        background:      "var(--background-card)",
-        boxShadow:       "0 2px 12px rgba(0,0,0,0.18)",
+        boxShadow:       "var(--shadow)",
       }}
     >
       {/* Leaf icon */}
       <span className="text-2xl leading-none shrink-0" aria-hidden="true">🌿</span>
 
       {/* Text content */}
-      <div className="text-center">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--text-secondary)] mb-1">
-          Aromatherapy pairing
-        </p>
+      <div className="flex flex-col items-center text-center">
+        <span className="eyebrow mb-3">Aromatherapy pairing</span>
 
         {/* Oil name — fades between tracks */}
         <p
-          className="text-base font-semibold text-[var(--text-primary)] leading-snug"
+          className="text-[17px] font-semibold tracking-tight text-[var(--text-primary)] leading-snug"
           style={{
             opacity:    fading ? 0 : 1,
             transition: "opacity 0.18s ease",
@@ -56,7 +53,7 @@ export default function AromatherapyCard({ trackName }: AromatherapyCardProps) {
 
         {/* Hint — fades with oil name */}
         <p
-          className="text-xs text-[var(--text-secondary)] mt-0.5 leading-relaxed"
+          className="text-[14px] text-[var(--text-secondary)] mt-1 leading-relaxed"
           style={{
             opacity:    fading ? 0 : 1,
             transition: "opacity 0.18s ease",
@@ -68,7 +65,7 @@ export default function AromatherapyCard({ trackName }: AromatherapyCardProps) {
 
       <Link
         href="/instructions#aromatherapy"
-        className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+        className="btn-ghost"
       >
         <svg
           viewBox="0 0 24 24" fill="none" stroke="currentColor"

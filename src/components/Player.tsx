@@ -71,20 +71,21 @@ export default function Player() {
       {/* ── Player ──────────────────────────────────────────────────────────── */}
       <section id="player" className="my-16 scroll-mt-24">
         <div
-          className="rounded-3xl p-8 border border-[var(--border-color)] player-bg"
+          className="card player-bg p-8"
           style={{ boxShadow: "var(--shadow-lg)", ...hexToRgbVars(track.color) }}
         >
 
-          {/* Section title */}
-          <h2 className="text-[32px] font-bold mb-4 tracking-tight text-[var(--text-primary)] text-center">
-            Binaural Beats
-          </h2>
+          {/* Section header: eyebrow, heading, guide link */}
+          <div className="flex flex-col items-center text-center mb-6">
+            <span className="eyebrow">Binaural Beats</span>
+            <h2 className="mt-4 text-[26px] md:text-[32px] font-semibold tracking-tight text-[var(--text-primary)]">
+              Sessions for focus, calm and sleep
+            </h2>
 
-          {/* Link to the session guide in Instructions */}
-          <div className="flex justify-center mb-6">
+            {/* Link to the session guide in Instructions */}
             <Link
               href="/instructions#choosing-a-binaural-beat"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+              className="btn-ghost mt-4"
             >
               <svg
                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -115,7 +116,7 @@ export default function Player() {
           <div className="flex flex-col gap-5 mt-5">
 
             {/* Volume reminder */}
-            <p className="text-center text-xs text-[var(--text-secondary)]">
+            <p className="text-center text-[13px] text-[var(--text-secondary)]">
               🎧 Lower your volume before pressing play
             </p>
 
@@ -123,10 +124,10 @@ export default function Player() {
             <div className="flex justify-center">
               <button
                 onClick={engine.togglePlay}
-                className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-white"
+                className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-white hover:-translate-y-0.5"
                 style={{
-                  background: "var(--primary)",
-                  boxShadow:  "0 8px 24px rgba(43, 107, 127, 0.4)",
+                  background: "linear-gradient(135deg, var(--accent), var(--accent-2))",
+                  boxShadow:  "0 12px 40px -12px var(--glow)",
                 }}
                 aria-label={engine.isPlaying ? "Pause" : "Play"}
               >
@@ -155,7 +156,7 @@ export default function Player() {
             </div>
 
             {/* Volume slider */}
-            <div className="flex items-center gap-4 bg-[var(--background-light)] rounded-xl px-5 py-3 border border-[var(--border-color)]">
+            <div className="flex items-center gap-4 glass rounded-2xl px-5 py-3">
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 shrink-0 text-[var(--text-secondary)]">
                 <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
               </svg>
@@ -185,17 +186,17 @@ export default function Player() {
           <div
             role="group"
             aria-label="Breathing mode"
-            className="flex p-1 rounded-full bg-[var(--background-light)] border border-[var(--border-color)]"
+            className="flex p-1 rounded-full glass"
           >
             {(["box", "coherence", "body-scan"] as const).map((m) => (
               <button
                 key={m}
                 onClick={() => setBreathingMode(m)}
                 aria-pressed={breathingMode === m}
-                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all cursor-pointer ${
+                className={`px-5 py-2 rounded-full border text-sm font-semibold transition-all cursor-pointer ${
                   breathingMode === m
-                    ? "bg-[var(--primary)] text-white"
-                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                    ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)] text-[var(--text-primary)]"
+                    : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 }`}
               >
                 {m === "box" ? "Box Breathing" : m === "coherence" ? "Coherence" : "Body Scan"}

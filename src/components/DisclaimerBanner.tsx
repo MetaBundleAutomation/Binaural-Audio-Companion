@@ -39,7 +39,7 @@ export default function DisclaimerBanner() {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-between gap-4 px-5 border-t border-[var(--border-color)] bg-[var(--background-card)]"
+      className="fixed bottom-0 left-0 right-0 lg:left-60 z-40 flex items-center justify-between gap-4 px-5 border-t border-[var(--border-color)] bg-[var(--surface-solid)]"
       style={{ height: BANNER_H }}
       role="note"
       aria-label="Wellness disclaimer"

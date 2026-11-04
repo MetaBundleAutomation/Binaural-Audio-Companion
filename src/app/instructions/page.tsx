@@ -5,55 +5,56 @@ export default function Instructions() {
     <main className="min-h-screen">
       <section className="py-20 px-4">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-6 text-center">
-            How to Use CRUX
-          </h1>
-          <p className="text-lg text-[var(--text-secondary)] mb-12 text-center max-w-2xl mx-auto">
-            Simple guidelines to help you get the most from your binaural audio sessions.
-          </p>
+          <div className="text-center">
+            <span className="eyebrow">Instructions</span>
+            <h1 className="mt-5 text-balance text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-[var(--text-primary)]">
+              How to Use CRUX
+            </h1>
+            <p className="mt-5 text-lg leading-relaxed text-[var(--text-secondary)] max-w-2xl mx-auto">
+              Simple guidelines to help you get the most from your binaural audio sessions.
+            </p>
+          </div>
 
-          <div className="space-y-6">
+          <div className="mt-12 space-y-6">
 
             {/* Where would you like to start? */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-5">🧭 Where would you like to start?</h2>
-              <ul className="space-y-4 text-[var(--text-secondary)] leading-relaxed">
-                <li>
-                  <strong className="text-[var(--text-primary)]">I want to feel calmer right now</strong>
-                  {" → "}Box Breathing or Heart–Brain Coherence (Balanced preset) for a few minutes is a good place to begin.
+            <div className="card p-5 sm:p-8">
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-5">🧭 Where would you like to start?</h2>
+              <ul className="grid gap-3 text-[var(--text-secondary)] leading-relaxed">
+                <li className="card card-hover p-4 sm:p-5">
+                  <strong className="block text-[15px] font-semibold text-[var(--text-primary)]">I want to feel calmer right now</strong>
+                  <span className="mt-1 block text-[14px]">Box Breathing or Heart–Brain Coherence (Balanced preset) for a few minutes is a good place to begin.</span>
                 </li>
-                <li>
-                  <strong className="text-[var(--text-primary)]">I want a quieter mind</strong>
-                  {" → "}Try the Calm or Meditation beat, layered softly with Pink or Brown Noise.
+                <li className="card card-hover p-4 sm:p-5">
+                  <strong className="block text-[15px] font-semibold text-[var(--text-primary)]">I want a quieter mind</strong>
+                  <span className="mt-1 block text-[14px]">Try the Calm or Meditation beat, layered softly with Pink or Brown Noise.</span>
                 </li>
-                <li>
-                  <strong className="text-[var(--text-primary)]">I want deeper, more restful sleep</strong>
-                  {" → "}Try the Wind Down routine below — Sleep beat, Brown Noise, and the Body Scan together.
+                <li className="card card-hover p-4 sm:p-5">
+                  <strong className="block text-[15px] font-semibold text-[var(--text-primary)]">I want deeper, more restful sleep</strong>
+                  <span className="mt-1 block text-[14px]">Try the Wind Down routine below — Sleep beat, Brown Noise, and the Body Scan together.</span>
                 </li>
-                <li>
-                  <strong className="text-[var(--text-primary)]">I want to think more clearly</strong>
-                  {" → "}For sustained attention, the Focus beat with White Noise works well. For complex problem solving or higher-order thinking, try the Reasoning beat (64 Hz Gamma).
+                <li className="card card-hover p-4 sm:p-5">
+                  <strong className="block text-[15px] font-semibold text-[var(--text-primary)]">I want to think more clearly</strong>
+                  <span className="mt-1 block text-[14px]">For sustained attention, the Focus beat with White Noise works well. For complex problem solving or higher-order thinking, try the Reasoning beat (64 Hz Gamma).</span>
                 </li>
-                <li>
-                  <strong className="text-[var(--text-primary)]">I want some quiet from the noise around me</strong>
-                  {" → "}Noise Therapy is a good starting point — try Brown Noise, Heavy Rain, or the Pure Tone if you want to find your own pitch.
+                <li className="card card-hover p-4 sm:p-5">
+                  <strong className="block text-[15px] font-semibold text-[var(--text-primary)]">I want some quiet from the noise around me</strong>
+                  <span className="mt-1 block text-[14px]">Noise Therapy is a good starting point — try Brown Noise, Heavy Rain, or the Pure Tone if you want to find your own pitch.</span>
                 </li>
-                <li>
-                  <strong className="text-[var(--text-primary)]">I want to ease into stillness</strong>
-                  {" → "}The Body Scan is a gentle place to start — just lie down, press play, and let the narrator guide you.
+                <li className="card card-hover p-4 sm:p-5">
+                  <strong className="block text-[15px] font-semibold text-[var(--text-primary)]">I want to ease into stillness</strong>
+                  <span className="mt-1 block text-[14px]">The Body Scan is a gentle place to start — just lie down, press play, and let the narrator guide you.</span>
                 </li>
-                <li>
-                  <strong className="text-[var(--text-primary)]">I want to understand why it feels this way</strong>
-                  {" → "}Read <Link href="/#brain-science" className="underline underline-offset-2 text-[var(--primary)] hover:opacity-80">🧠 What&apos;s happening in your brain</Link> — no jargon, no blame, with a short quick check at the end.
+                <li className="card card-hover p-4 sm:p-5">
+                  <strong className="block text-[15px] font-semibold text-[var(--text-primary)]">I want to understand why it feels this way</strong>
+                  <span className="mt-1 block text-[14px]">Read <Link href="/#brain-science" className="underline underline-offset-2 text-[var(--primary)] hover:opacity-80">🧠 What&apos;s happening in your brain</Link> — no jargon, no blame, with a short quick check at the end.</span>
                 </li>
               </ul>
             </div>
 
-            <hr className="border-[var(--border-color)]" />
-
             {/* Wind Down — pre-sleep routine */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">🌙 Wind Down — A pre-sleep routine</h2>
+            <div className="card p-5 sm:p-8">
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-2">🌙 Wind Down — A pre-sleep routine</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-5">
                 A simple sequence that uses all three tools together. Most people are settled well before it ends.
               </p>
@@ -76,11 +77,9 @@ export default function Instructions() {
               </blockquote>
             </div>
 
-            <hr className="border-[var(--border-color)]" />
-
             {/* Before You Begin */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🎧 Before You Begin</h2>
+            <div className="card p-5 sm:p-8">
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">🎧 Before You Begin</h2>
               <ul className="space-y-4 text-[var(--text-secondary)] leading-relaxed">
                 <li>
                   <strong className="text-[var(--text-primary)]">Use stereo headphones.</strong>{" "}
@@ -101,11 +100,9 @@ export default function Instructions() {
               </ul>
             </div>
 
-            <hr className="border-[var(--border-color)]" />
-
             {/* Choosing a Binaural Beat */}
-            <div id="choosing-a-binaural-beat" className="scroll-mt-24 bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🧠 Choosing a Binaural Beat</h2>
+            <div id="choosing-a-binaural-beat" className="scroll-mt-24 card p-5 sm:p-8">
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">🧠 Choosing a Binaural Beat</h2>
 
               {/* How binaural beats work */}
               <p className="text-[var(--text-secondary)] leading-relaxed mb-5">
@@ -117,7 +114,7 @@ export default function Instructions() {
               </p>
 
               {/* How to use them */}
-              <p className="font-bold text-[var(--text-primary)] mb-3">How to use them</p>
+              <p className="font-semibold text-[var(--text-primary)] mb-3">How to use them</p>
               <ol className="list-decimal list-outside pl-5 space-y-2 text-[var(--text-secondary)] leading-relaxed mb-6">
                 <li>Put on stereo headphones (not a single earbud or a speaker).</li>
                 <li>
@@ -129,7 +126,7 @@ export default function Instructions() {
               </ol>
 
               {/* Which beat to choose */}
-              <p className="font-bold text-[var(--text-primary)] mb-3">Which beat to choose</p>
+              <p className="font-semibold text-[var(--text-primary)] mb-3">Which beat to choose</p>
 
               {/* ── Binaural beats group ───────────────────────────────────── */}
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
@@ -206,7 +203,7 @@ export default function Instructions() {
 
               <Link
                 href="/#player"
-                className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+                className="btn-ghost mt-5"
               >
                 <svg
                   viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -251,11 +248,9 @@ export default function Instructions() {
               </div>
             </div>
 
-            <hr className="border-[var(--border-color)]" />
-
             {/* Playing a Session */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">▶️ Playing a Session</h2>
+            <div className="card p-5 sm:p-8">
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">▶️ Playing a Session</h2>
               <ul className="space-y-3 text-[var(--text-secondary)] leading-relaxed">
                 <li>
                   Swipe or use the arrows in the <strong className="text-[var(--text-primary)]">Audio Library</strong> to browse,
@@ -287,11 +282,9 @@ export default function Instructions() {
               </ul>
             </div>
 
-            <hr className="border-[var(--border-color)]" />
-
             {/* Noise Therapy */}
-            <div id="noise-therapy" className="scroll-mt-24 bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🌊 Noise Therapy</h2>
+            <div id="noise-therapy" className="scroll-mt-24 card p-5 sm:p-8">
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">🌊 Noise Therapy</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 White, pink, brown noise, and a heavy rain recording can be played alongside — or instead
                 of — binaural beats. Steady background noise masks sudden environmental sounds that can
@@ -349,7 +342,7 @@ export default function Instructions() {
               </ul>
 
               {/* Gentle Rainforest Waterfall / Gentle Ocean Waves — full-screen video how-to */}
-              <h3 className="text-lg font-bold text-[var(--text-primary)] mt-6 mb-3">Full-screen nature videos</h3>
+              <h3 className="text-lg font-semibold text-[var(--text-primary)] mt-6 mb-3">Full-screen nature videos</h3>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 Gentle Rainforest Waterfall and Gentle Ocean Waves each pair their sound with a matching
                 looping video for a more immersive experience.
@@ -370,7 +363,7 @@ export default function Instructions() {
               </ul>
 
               {/* Pure Tone — how to use it for tinnitus */}
-              <h3 className="text-lg font-bold text-[var(--text-primary)] mt-6 mb-3">Using Pure Tone for tinnitus</h3>
+              <h3 className="text-lg font-semibold text-[var(--text-primary)] mt-6 mb-3">Using Pure Tone for tinnitus</h3>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 Pure Tone is a self-help comfort tool, not a treatment — but used gently it can make
                 tinnitus easier to live with.
@@ -414,7 +407,7 @@ export default function Instructions() {
 
               <Link
                 href="/#noise"
-                className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+                className="btn-ghost mt-5"
               >
                 <svg
                   viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -455,11 +448,9 @@ export default function Instructions() {
               </div>
             </div>
 
-            <hr className="border-[var(--border-color)]" />
-
             {/* Box Breathing */}
-            <div id="box-breathing" className="scroll-mt-24 bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">💨 Box Breathing</h2>
+            <div id="box-breathing" className="scroll-mt-24 card p-5 sm:p-8">
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">💨 Box Breathing</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 Box breathing is a regulated breathing technique used to ease stress and tension. It
                 activates the parasympathetic nervous system, slowing heart rate and calming
@@ -476,7 +467,7 @@ export default function Instructions() {
                     key={id}
                     className="rounded-xl p-4 text-center border border-[var(--border-color)] bg-[var(--background-light)]"
                   >
-                    <p className="font-bold text-[var(--text-primary)] text-[15px]">{step}</p>
+                    <p className="font-semibold text-[var(--text-primary)] text-[15px]">{step}</p>
                     <p className="text-[var(--text-secondary)] text-[13px] mt-1">{seconds}</p>
                   </div>
                 ))}
@@ -501,7 +492,7 @@ export default function Instructions() {
               </p>
               <Link
                 href="/#box-breathing"
-                className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+                className="btn-ghost mt-5"
               >
                 <svg
                   viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -539,11 +530,9 @@ export default function Instructions() {
               </div>
             </div>
 
-            <hr className="border-[var(--border-color)]" />
-
             {/* Coherence Breathing */}
-            <div id="coherence-breathing" className="scroll-mt-24 bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">💙 Heart–Brain Coherence</h2>
+            <div id="coherence-breathing" className="scroll-mt-24 card p-5 sm:p-8">
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">💙 Heart–Brain Coherence</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
                 Slow, paced breathing with a longer out-breath, combined with a genuine feeling of gratitude,
                 guides your heart into a smooth, ordered rhythm of around one cycle every ten seconds — roughly
@@ -572,8 +561,8 @@ export default function Instructions() {
                 ].map(({ n, head, body }) => (
                   <div key={n} className="flex gap-4 items-start">
                     <span
-                      className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                      style={{ background: "var(--primary)" }}
+                      className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold text-white"
+                      style={{ background: "linear-gradient(135deg, var(--accent), var(--accent-2))" }}
                       aria-hidden="true"
                     >
                       {n}
@@ -603,7 +592,7 @@ export default function Instructions() {
 
               <Link
                 href="/#coherence-breathing"
-                className="mt-2 mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+                className="btn-ghost mt-2 mb-6"
               >
                 <svg
                   viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -648,11 +637,9 @@ export default function Instructions() {
               </div>
             </div>
 
-            <hr className="border-[var(--border-color)]" />
-
             {/* Body Scan */}
-            <div id="body-scan" className="scroll-mt-24 bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🧘 Body Scan</h2>
+            <div id="body-scan" className="scroll-mt-24 card p-5 sm:p-8">
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">🧘 Body Scan</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
                 A body scan is a guided mindfulness practice where you move your attention slowly and
                 deliberately through each part of your body — from the crown of your head to the tips
@@ -702,8 +689,8 @@ export default function Instructions() {
                 ].map(({ n, head, body }) => (
                   <div key={n} className="flex gap-4 items-start">
                     <span
-                      className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                      style={{ background: "var(--primary)" }}
+                      className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold text-white"
+                      style={{ background: "linear-gradient(135deg, var(--accent), var(--accent-2))" }}
                       aria-hidden="true"
                     >
                       {n}
@@ -718,7 +705,7 @@ export default function Instructions() {
 
               <Link
                 href="/#body-scan"
-                className="mt-2 mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+                className="btn-ghost mt-2 mb-6"
               >
                 <svg
                   viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -773,11 +760,9 @@ export default function Instructions() {
               </div>
             </div>
 
-            <hr className="border-[var(--border-color)]" />
-
             {/* Aromatherapy */}
-            <div id="aromatherapy" className="scroll-mt-24 bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">🌿 Aromatherapy Pairing</h2>
+            <div id="aromatherapy" className="scroll-mt-24 card p-5 sm:p-8">
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">🌿 Aromatherapy Pairing</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 Above the player you&apos;ll see an <strong className="text-[var(--text-primary)]">Aromatherapy Pairing</strong> card
                 that updates as you browse tracks. Each suggestion pairs a specific essential oil with the session you&apos;re about
@@ -815,7 +800,7 @@ export default function Instructions() {
 
               <Link
                 href="/#aromatherapy-pairing"
-                className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+                className="btn-ghost mt-5"
               >
                 <svg
                   viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -860,11 +845,9 @@ export default function Instructions() {
               </div>
             </div>
 
-            <hr className="border-[var(--border-color)]" />
-
             {/* Combining Sessions */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">✨ Combining Sessions for Deeper Relaxation</h2>
+            <div className="card p-5 sm:p-8">
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">✨ Combining Sessions for Deeper Relaxation</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-5">
                 You can layer all three tools at the same time for a richer experience.
                 Try this sequence:
@@ -898,11 +881,9 @@ export default function Instructions() {
               </blockquote>
             </div>
 
-            <hr className="border-[var(--border-color)]" />
-
             {/* Make CRUX Yours */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">⭐ Make CRUX Yours</h2>
+            <div className="card p-5 sm:p-8">
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">⭐ Make CRUX Yours</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-5">
                 CRUX remembers your preferences so you spend less time setting things up and more time actually using it.
               </p>
@@ -945,11 +926,9 @@ export default function Instructions() {
               </blockquote>
             </div>
 
-            <hr className="border-[var(--border-color)]" />
-
             {/* Save to Your Device */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">📲 Save CRUX to Your Device</h2>
+            <div className="card p-5 sm:p-8">
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-2">📲 Save CRUX to Your Device</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
                 CRUX can be installed like a regular app — no app store required. Once installed,
                 it opens in its own full-screen window, works offline, and your settings are always
@@ -960,7 +939,7 @@ export default function Instructions() {
 
                 {/* iPhone / iPad */}
                 <div className="rounded-xl border border-[var(--border-color)] bg-[var(--background-light)] p-5">
-                  <p className="font-bold text-[var(--text-primary)] mb-3">iPhone &amp; iPad (Safari)</p>
+                  <p className="font-semibold text-[var(--text-primary)] mb-3">iPhone &amp; iPad (Safari)</p>
                   <ol className="space-y-2 text-[var(--text-secondary)] text-[14px] leading-relaxed list-decimal list-outside pl-5">
                     <li>Open CRUX in <strong className="text-[var(--text-primary)]">Safari</strong> — this does not work in Chrome or Firefox on iOS.</li>
                     <li>Tap the <strong className="text-[var(--text-primary)]">Share</strong> button at the bottom of the screen (the box with an arrow pointing up).</li>
@@ -974,7 +953,7 @@ export default function Instructions() {
 
                 {/* Android */}
                 <div className="rounded-xl border border-[var(--border-color)] bg-[var(--background-light)] p-5">
-                  <p className="font-bold text-[var(--text-primary)] mb-3">Android (Chrome)</p>
+                  <p className="font-semibold text-[var(--text-primary)] mb-3">Android (Chrome)</p>
                   <ol className="space-y-2 text-[var(--text-secondary)] text-[14px] leading-relaxed list-decimal list-outside pl-5">
                     <li>Open CRUX in <strong className="text-[var(--text-primary)]">Chrome</strong>.</li>
                     <li>Tap the <strong className="text-[var(--text-primary)]">three-dot menu</strong> (⋮) in the top-right corner of the browser.</li>
@@ -988,7 +967,7 @@ export default function Instructions() {
 
                 {/* Desktop */}
                 <div className="rounded-xl border border-[var(--border-color)] bg-[var(--background-light)] p-5">
-                  <p className="font-bold text-[var(--text-primary)] mb-3">Desktop — Chrome or Edge</p>
+                  <p className="font-semibold text-[var(--text-primary)] mb-3">Desktop — Chrome or Edge</p>
                   <ol className="space-y-2 text-[var(--text-secondary)] text-[14px] leading-relaxed list-decimal list-outside pl-5">
                     <li>Open CRUX in <strong className="text-[var(--text-primary)]">Chrome</strong> or <strong className="text-[var(--text-primary)]">Edge</strong>.</li>
                     <li>Look for the <strong className="text-[var(--text-primary)]">install icon</strong> on the right side of the address bar — it looks like a screen with a download arrow, or a circle with a plus sign (⊕).</li>
@@ -1010,14 +989,12 @@ export default function Instructions() {
               </blockquote>
             </div>
 
-            <hr className="border-[var(--border-color)]" />
-
             {/* Safety */}
             <div
-              className="bg-[var(--background-card)] rounded-2xl p-8 border"
+              className="card p-5 sm:p-8"
               style={{ borderColor: "rgba(220, 38, 38, 0.25)" }}
             >
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">⚠️ Safety Information</h2>
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">⚠️ Safety Information</h2>
               <ul className="space-y-3 text-[var(--text-secondary)] leading-relaxed mb-6">
                 <li>
                   <strong className="text-[var(--text-primary)]">Not medical advice.</strong>{" "}
@@ -1079,11 +1056,7 @@ export default function Instructions() {
           </div>
 
           <div className="text-center mt-12">
-            <Link
-              href="/"
-              className="inline-block px-8 py-3 rounded-lg text-base font-semibold text-white transition-all duration-300 hover:-translate-y-0.5"
-              style={{ background: "var(--primary)", boxShadow: "var(--shadow)" }}
-            >
+            <Link href="/" className="btn-primary">
               Start Listening
             </Link>
           </div>
