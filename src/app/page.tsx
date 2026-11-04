@@ -23,8 +23,8 @@ export default function Home() {
             { label: "Noise Therapy",  href: "#noise"              },
             { label: "Box Breathing",  href: "#box-breathing"      },
             { label: "Coherence",      href: "#coherence-breathing" },
-              { label: "Body Scan",      href: "#body-scan"          },
-            { label: "Your Brain",     href: "#brain-science"      }, 
+            { label: "Body Scan",      href: "#body-scan"          },
+            { label: "Your Brain",     href: "#brain-science"      },
           ] as const).map(({ label, href }) => (
             <a
               key={href}
