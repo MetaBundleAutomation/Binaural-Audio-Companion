@@ -164,6 +164,14 @@ export default function UsageChart({ days, data }: UsageChartProps) {
             className="block"
             style={{ fontSize: 11, fontFamily: "inherit" }}
           >
+            {/* Brand gradient for the bars: accent-2 at the top fading to accent at the foot */}
+            <defs>
+              <linearGradient id="usage-bar-fill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" style={{ stopColor: "var(--accent-2)" }} />
+                <stop offset="1" style={{ stopColor: "var(--accent)" }} />
+              </linearGradient>
+            </defs>
+
             {/* Top gridline at the axis max, and the baseline */}
             <line
               x1={plotLeft}
@@ -223,7 +231,7 @@ export default function UsageChart({ days, data }: UsageChartProps) {
                   {height > 0 && (
                     <path
                       d={barPath(barLeft(i), baseline - height, barWidth, height, radius)}
-                      fill="var(--primary)"
+                      fill="url(#usage-bar-fill)"
                       className="group-hover:fill-[var(--primary-light)] transition-colors"
                     />
                   )}

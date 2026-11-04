@@ -38,13 +38,12 @@ export default function Toast() {
 
   return (
     <div
-      className="fixed left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-full text-white text-[14px] font-semibold pointer-events-none"
+      className="glass-strong fixed left-1/2 -translate-x-1/2 z-50 rounded-full px-5 py-3 text-[14px] font-semibold text-[var(--text-primary)] pointer-events-none"
       style={{
         // Floats above the disclaimer banner when it is present.
         // --disclaimer-banner-h is set by DisclaimerBanner and defaults to 0px.
         bottom: "calc(var(--disclaimer-banner-h, 0px) + 24px)",
-        background: "var(--primary)",
-        boxShadow: "0 8px 24px rgba(43,107,127,0.45)",
+        boxShadow: "0 8px 24px var(--glow)",
       }}
       role="status"
       aria-live="polite"

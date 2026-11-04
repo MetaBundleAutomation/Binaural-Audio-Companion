@@ -628,21 +628,25 @@ export default function BoxBreathing() {
   // Single toggle: Start begins a session, Stop ends it (resets to idle).
   const btnLabel = status === "running" || status === "intro" ? "Stop" : "Start";
   const btnClick = status === "running" || status === "intro" ? reset : start;
+  const btnClass = status === "running" || status === "intro" ? "btn-secondary" : "btn-primary";
 
   return (
     <section id="box-breathing" className="my-16 scroll-mt-24">
       <div
-        className="flex flex-col items-center gap-6 rounded-3xl p-10 border border-[var(--border-color)] bg-[var(--background-card)]"
+        className="card flex flex-col items-center gap-6 p-10"
         style={{ boxShadow: "var(--shadow-lg)" }}
       >
-        <h2 className="text-[32px] font-bold tracking-tight text-[var(--text-primary)]">
-          Box Breathing
-        </h2>
+        <div className="flex flex-col items-center text-center">
+          <span className="eyebrow">Box Breathing</span>
+          <h2 className="mt-4 text-[26px] md:text-[32px] font-semibold tracking-tight text-[var(--text-primary)]">
+            Four counts in, four out
+          </h2>
+        </div>
 
         {/* Link to the full how-to guide in Instructions */}
         <Link
           href="/instructions#box-breathing"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+          className="btn-ghost"
         >
           <svg
             viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -669,7 +673,7 @@ export default function BoxBreathing() {
         <div className="flex gap-4">
           <button
             onClick={btnClick}
-            className="px-6 py-2 rounded-full border border-[var(--primary)] text-[var(--primary)] font-semibold text-sm transition-all hover:bg-[var(--primary)] hover:text-white cursor-pointer"
+            className={btnClass}
           >
             {btnLabel}
           </button>
@@ -725,16 +729,11 @@ export default function BoxBreathing() {
                   key={v}
                   onClick={() => set("boxBreathingVoice", v)}
                   aria-pressed={prefs.boxBreathingVoice === v}
-                  className="py-1.5 px-4 rounded-xl text-[13px] font-semibold transition-all cursor-pointer"
-                  style={prefs.boxBreathingVoice === v ? {
-                    background: "var(--primary)",
-                    color: "white",
-                    boxShadow: "0 4px 12px rgba(43,107,127,0.35)",
-                  } : {
-                    background: "var(--background-light)",
-                    color: "var(--text-secondary)",
-                    border: "1px solid var(--border-color)",
-                  }}
+                  className={`py-1.5 px-4 rounded-full border text-[13px] font-semibold transition-all cursor-pointer ${
+                    prefs.boxBreathingVoice === v
+                      ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)] text-[var(--text-primary)]"
+                      : "border-[var(--border-color)] bg-[var(--background-light)] text-[var(--text-secondary)] hover:border-[var(--primary)]"
+                  }`}
                 >
                   {v === "default" ? "Les" : v === "sarah" ? "Sarah" : v === "john" ? "John" : "Julie"}
                 </button>

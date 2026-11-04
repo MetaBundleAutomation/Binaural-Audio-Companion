@@ -2,11 +2,7 @@ import Link from "next/link";
 import Icon from "@/components/Icons";
 import LiveStats from "@/components/LiveStats";
 
-const CARD =
-  "bg-[var(--background-card)] rounded-2xl p-5 sm:p-8 border border-[var(--border-color)]";
-
-const PRIMARY_BUTTON =
-  "inline-flex items-center justify-center min-h-12 px-6 py-3 rounded-full text-[15px] font-bold text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] transition-all";
+const CARD = "card p-5 sm:p-8";
 
 const BENEFITS = [
   {
@@ -73,19 +69,22 @@ export default function About() {
     <main className="min-h-screen">
       <section className="py-20 px-4">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-6 text-center">
-            About CRUX
-          </h1>
-          <p className="text-lg text-[var(--text-secondary)] mb-12 text-center max-w-2xl mx-auto">
-            Enhance your mental well-being with binaural beats, noise therapy, and box breathing —
-            tools for focus, calm, and sleep.
-          </p>
+          <div className="text-center">
+            <span className="eyebrow">About</span>
+            <h1 className="mt-5 text-balance text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-[var(--text-primary)]">
+              About CRUX
+            </h1>
+            <p className="mt-5 text-lg leading-relaxed text-[var(--text-secondary)] max-w-2xl mx-auto">
+              Enhance your mental well-being with binaural beats, noise therapy, and box breathing —
+              tools for focus, calm, and sleep.
+            </p>
+          </div>
 
-          <div className="space-y-8">
+          <div className="mt-12 space-y-8">
 
             {/* Who's behind it */}
             <div className={CARD}>
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">Who&apos;s behind it</h2>
+              <h2 className="eyebrow mb-5">Who&apos;s behind it</h2>
               {/* EDIT ME: Joshua's own words go here */}
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 I&apos;m Joshua Hoare, founder of Metabundle, a small Australian software company.
@@ -110,13 +109,13 @@ export default function About() {
 
             {/* Right now */}
             <div className={CARD}>
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-5">Right now</h2>
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-5">Right now</h2>
               <LiveStats />
             </div>
 
             {/* Support CRUX */}
             <div className={CARD}>
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">Support CRUX</h2>
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">Support CRUX</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
                 CRUX is free and will stay that way. Support goes towards hosting, audio production
                 and new sessions, and keeps it running with no ads and no accounts.
@@ -126,7 +125,7 @@ export default function About() {
                   href={donateUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={PRIMARY_BUTTON}
+                  className="btn-primary"
                 >
                   Support CRUX
                 </a>
@@ -138,13 +137,13 @@ export default function About() {
               )}
             </div>
 
-            <h2 className="pt-4 text-2xl md:text-3xl font-bold text-[var(--text-primary)] text-center">
+            <h2 className="pt-4 text-2xl md:text-3xl font-semibold tracking-tight text-[var(--text-primary)] text-center">
               The science behind the tools
             </h2>
 
             {/* What are Binaural Beats */}
             <div className={CARD}>
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What are Binaural Beats?</h2>
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">What are Binaural Beats?</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 Binaural beats are an auditory illusion created when two slightly different frequencies
                 are played in each ear. Your brain perceives a third tone — the &quot;beat&quot; — equal to
@@ -164,7 +163,7 @@ export default function About() {
 
             {/* Brain Wave Types */}
             <div className={CARD}>
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">Brain Wave Types</h2>
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">Brain Wave Types</h2>
               <ul className="space-y-3 text-[var(--text-secondary)]">
                 <li><strong className="text-[var(--text-primary)]">Delta (0.5–4 Hz):</strong> Deep sleep and physical restoration</li>
                 <li><strong className="text-[var(--text-primary)]">Theta (4–8 Hz):</strong> Meditation, creativity, and the edge of sleep</li>
@@ -176,7 +175,7 @@ export default function About() {
 
             {/* What is Noise Therapy */}
             <div className={CARD}>
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What is Noise Therapy?</h2>
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">What is Noise Therapy?</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed">
                 Noise Therapy uses steady, broadband sound to soften the contrast between quiet and
                 sudden, unpredictable noises — a door slamming, a dog barking — that can jolt the
@@ -192,7 +191,7 @@ export default function About() {
 
             {/* What is Tinnitus */}
             <div className={CARD}>
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What is Tinnitus?</h2>
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">What is Tinnitus?</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 Tinnitus is the perception of sound — most often a ringing, buzzing, hissing, or
                 humming — with no external source. It originates in the auditory system itself rather
@@ -210,7 +209,7 @@ export default function About() {
 
             {/* What is Box Breathing */}
             <div className={CARD}>
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What is Box Breathing?</h2>
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">What is Box Breathing?</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed">
                 Box breathing is a paced breathing technique — inhale, hold, exhale, hold, each for an
                 equal count — used by everyone from athletes to emergency responders to steady
@@ -223,7 +222,7 @@ export default function About() {
 
             {/* What is Heart-Brain Coherence */}
             <div className={CARD}>
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What is Heart–Brain Coherence?</h2>
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">What is Heart–Brain Coherence?</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 Heart-brain coherence is a physiological state in which your heart, nervous system, and
                 brain work in sync — reflected in a smooth, ordered heart rate variability (HRV) pattern
@@ -244,7 +243,7 @@ export default function About() {
 
             {/* What is a Body Scan */}
             <div className={CARD}>
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What is a Body Scan?</h2>
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">What is a Body Scan?</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 A body scan is a guided mindfulness practice in which you move your attention slowly and
                 deliberately through each part of your body — from the crown of your head to the tips of
@@ -264,7 +263,7 @@ export default function About() {
 
             {/* Benefits */}
             <div className={CARD}>
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-3 text-center">Benefits</h2>
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-3 text-center">Benefits</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed text-center max-w-2xl mx-auto mb-8">
                 Delivered across CRUX&apos;s tools — binaural beats, noise therapy, box breathing, heart-brain coherence, and body scan.
               </p>
@@ -274,7 +273,7 @@ export default function About() {
                     <div className="mb-4 text-[var(--primary)]">
                       <Icon name={icon} size={48} />
                     </div>
-                    <h3 className="text-[17px] font-bold mb-2 text-[var(--text-primary)]">{title}</h3>
+                    <h3 className="text-[17px] font-semibold mb-2 text-[var(--text-primary)]">{title}</h3>
                     <p className="text-sm font-medium leading-relaxed text-[var(--text-secondary)]">
                       {description}
                     </p>
@@ -286,11 +285,7 @@ export default function About() {
           </div>
 
           <div className="text-center mt-12">
-            <Link
-              href="/"
-              className="inline-block px-8 py-3 rounded-lg text-base font-semibold text-white transition-all duration-300 hover:-translate-y-0.5"
-              style={{ background: "var(--primary)", boxShadow: "var(--shadow)" }}
-            >
+            <Link href="/" className="btn-primary">
               Start Listening
             </Link>
           </div>

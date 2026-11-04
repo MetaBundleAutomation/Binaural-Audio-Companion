@@ -62,16 +62,14 @@ const NAME_COLOURS = [
 
 const LIVE_DOT = "#4FA98C";
 
-const PRIMARY_BUTTON =
-  "inline-flex items-center justify-center min-h-12 px-6 py-3 rounded-full text-[15px] font-bold text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[var(--primary-dark)]";
-const SMALL_SECONDARY_BUTTON =
-  "inline-flex items-center justify-center min-h-12 px-4 py-2 rounded-full text-[14px] font-semibold text-[var(--text-primary)] bg-[var(--background-card)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all cursor-pointer";
+const PRIMARY_BUTTON = "btn-primary";
+const SECONDARY_BUTTON = "btn-secondary";
+const GHOST_BUTTON = "btn-ghost";
 // Looks like a word, taps like a button: the hit area is 48px tall even though
 // the text is tiny.
 const TINY_BUTTON =
   "inline-flex items-center justify-center min-h-12 px-2.5 rounded-full text-[12px] font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer disabled:cursor-default disabled:hover:text-[var(--text-secondary)]";
-const PILL_LINK =
-  "inline-flex items-center min-h-12 px-4 rounded-full text-[14px] font-semibold text-[var(--text-primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all";
+const PILL_LINK = "btn-secondary px-4 text-[14px]";
 
 const NOTE_REDACTED = "Links, emails and numbers are removed to keep everyone safe.";
 const NOTE_SLOW_DOWN = "Slow down a little.";
@@ -588,12 +586,15 @@ export default function LiveChat() {
   return (
     <section
       id="room"
-      className="my-16 scroll-mt-24 rounded-3xl p-5 sm:p-8 border border-[var(--border-color)] bg-[var(--background-card)]"
+      className="card my-16 scroll-mt-24 p-5 sm:p-8"
       style={{ boxShadow: "var(--shadow-lg)" }}
     >
-      <h2 className="text-[26px] md:text-[32px] font-bold mb-2 tracking-tight text-[var(--text-primary)] text-center">
-        The room
-      </h2>
+      <div className="flex flex-col items-center text-center mb-3">
+        <span className="eyebrow">The Room</span>
+        <h2 className="mt-4 text-[26px] md:text-[32px] font-semibold tracking-tight text-[var(--text-primary)]">
+          Say hello to whoever&apos;s up
+        </h2>
+      </div>
 
       {unavailable ? (
         <p className="text-center text-[15px] text-[var(--text-secondary)]">
@@ -612,7 +613,7 @@ export default function LiveChat() {
             {countLine(count, open)}
           </p>
           <p className="text-center text-[15px] text-[var(--text-secondary)] mt-1 mb-6 text-balance">
-            Say hello to whoever&apos;s up. No accounts, nothing kept past 24 hours.
+            No accounts, nothing kept past 24 hours.
           </p>
 
           {open && visitor ? (
@@ -626,10 +627,10 @@ export default function LiveChat() {
                   </strong>
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <button type="button" onClick={newName} className={SMALL_SECONDARY_BUTTON}>
+                  <button type="button" onClick={newName} className={GHOST_BUTTON}>
                     New name
                   </button>
-                  <button type="button" onClick={leave} className={SMALL_SECONDARY_BUTTON}>
+                  <button type="button" onClick={leave} className={SECONDARY_BUTTON}>
                     Leave the room
                   </button>
                 </div>
@@ -659,7 +660,7 @@ export default function LiveChat() {
                   aria-label="Messages"
                   tabIndex={0}
                   onScroll={onListScroll}
-                  className="max-h-[60vh] min-h-[280px] overflow-y-auto overscroll-contain rounded-2xl px-4 py-2 border border-[var(--border-color)] bg-[var(--background-light)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]"
+                  className="card max-h-[60vh] min-h-[280px] overflow-y-auto overscroll-contain px-4 py-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]"
                 >
                   {visible.length === 0 ? (
                     <p className="py-6 text-center text-[15px] text-[var(--text-secondary)]">
@@ -696,8 +697,7 @@ export default function LiveChat() {
                   <button
                     type="button"
                     onClick={scrollToBottom}
-                    className="absolute bottom-3 left-1/2 -translate-x-1/2 inline-flex items-center justify-center min-h-12 px-5 rounded-full text-[14px] font-bold text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] transition-all cursor-pointer"
-                    style={{ boxShadow: "var(--shadow-lg)" }}
+                    className="btn-primary absolute bottom-3 left-1/2 -translate-x-1/2 px-5 text-[14px]"
                   >
                     New messages ↓
                   </button>
@@ -724,7 +724,7 @@ export default function LiveChat() {
               {showCrisis && (
                 <div
                   role="status"
-                  className="rounded-2xl p-4 sm:p-5 border-2 border-[var(--primary)] bg-[var(--background-light)]"
+                  className="card glow p-4 sm:p-5"
                 >
                   <p className="text-[15px] leading-relaxed text-[var(--text-primary)]">
                     It sounds like a lot right now. You&apos;re not on your own
@@ -737,7 +737,7 @@ export default function LiveChat() {
                     <button
                       type="button"
                       onClick={() => setShowCrisis(false)}
-                      className={SMALL_SECONDARY_BUTTON}
+                      className={GHOST_BUTTON}
                     >
                       Close
                     </button>

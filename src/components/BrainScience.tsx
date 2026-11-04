@@ -16,7 +16,7 @@ function TellMeMore({ children }: { children: React.ReactNode }) {
       <button
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all cursor-pointer"
+        className="btn-ghost"
       >
         <svg
           viewBox="0 0 24 24"
@@ -58,13 +58,13 @@ function Part({
   return (
     <div
       id={id ?? `brain-${number}`}
-      className="scroll-mt-24 rounded-2xl p-5 sm:p-7 border border-[var(--border-color)] bg-[var(--background-light)]"
+      className="card scroll-mt-24 p-5 sm:p-7"
     >
       <div className="flex items-baseline gap-3 mb-4">
         <span className="text-[13px] font-bold tracking-widest text-[var(--primary)]">
           {number}
         </span>
-        <h3 className="text-[20px] md:text-[22px] font-bold leading-snug tracking-tight text-[var(--text-primary)]">
+        <h3 className="text-[20px] md:text-[22px] font-semibold leading-snug tracking-tight text-[var(--text-primary)]">
           {title}
         </h3>
       </div>
@@ -95,19 +95,22 @@ export default function BrainScience() {
   return (
     <section id="brain-science" className="my-16 scroll-mt-24">
       <div
-        className="rounded-3xl p-5 sm:p-8 md:p-10 border border-[var(--border-color)] bg-[var(--background-card)]"
+        className="card p-5 sm:p-8 md:p-10"
         style={{ boxShadow: "var(--shadow-lg)" }}
       >
-        <h2 className="text-[26px] md:text-[32px] font-bold mb-3 tracking-tight text-[var(--text-primary)] text-center">
-          What&apos;s happening in your brain
-        </h2>
-        <p className="text-center text-[15px] text-[var(--text-secondary)] mb-8">
-          No jargon. No blame. Just the mechanics.
-        </p>
+        <div className="flex flex-col items-center text-center mb-8">
+          <span className="eyebrow">Your Brain</span>
+          <h2 className="mt-4 text-[26px] md:text-[32px] font-semibold tracking-tight text-[var(--text-primary)]">
+            What&apos;s happening in your brain
+          </h2>
+          <p className="mt-3 text-[15px] text-[var(--text-secondary)]">
+            No jargon. No blame. Just the mechanics.
+          </p>
+        </div>
 
         {/* Summary box — for anyone who reads nothing else */}
-        <div className="rounded-2xl px-5 py-5 sm:px-7 sm:py-6 mb-8 border-2 border-[var(--primary)] bg-[var(--background-light)]">
-          <div className="text-[11px] font-bold uppercase tracking-widest text-[var(--primary)] mb-2">
+        <div className="card glow px-5 py-5 sm:px-7 sm:py-6 mb-8">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--primary)] mb-2">
             In one paragraph
           </div>
           <p className="text-[17px] font-semibold leading-relaxed text-[var(--text-primary)]">
@@ -279,14 +282,13 @@ export default function BrainScience() {
           {/* The loop — the hero section. Never collapsed. */}
           <div
             id="brain-06"
-            className="scroll-mt-24 rounded-2xl p-5 sm:p-8 border-2 border-[var(--primary)] bg-[var(--background-light)]"
-            style={{ boxShadow: "var(--shadow-lg)" }}
+            className="card glow scroll-mt-24 p-5 sm:p-8"
           >
             <div className="flex items-baseline gap-3 mb-4">
               <span className="text-[13px] font-bold tracking-widest text-[var(--primary)]">
                 06
               </span>
-              <h3 className="text-[22px] md:text-[26px] font-bold tracking-tight text-[var(--text-primary)]">
+              <h3 className="text-[22px] md:text-[26px] font-semibold tracking-tight text-[var(--text-primary)]">
                 The loop
               </h3>
             </div>
@@ -320,13 +322,13 @@ export default function BrainScience() {
           {/* The good news — never collapsed either. */}
           <div
             id="brain-07"
-            className="scroll-mt-24 rounded-2xl p-5 sm:p-7 border border-[var(--border-color)] bg-[var(--background-light)]"
+            className="card scroll-mt-24 p-5 sm:p-7"
           >
             <div className="flex items-baseline gap-3 mb-4">
               <span className="text-[13px] font-bold tracking-widest text-[var(--primary)]">
                 07
               </span>
-              <h3 className="text-[20px] md:text-[22px] font-bold leading-snug tracking-tight text-[var(--text-primary)]">
+              <h3 className="text-[20px] md:text-[22px] font-semibold leading-snug tracking-tight text-[var(--text-primary)]">
                 The part that&apos;s actually good news
               </h3>
             </div>
@@ -391,8 +393,8 @@ export default function BrainScience() {
         </div>
 
         {/* Crisis numbers */}
-        <div className="mt-8 rounded-2xl p-5 sm:p-7 border border-[var(--border-color)] bg-[var(--background-light)]">
-          <div className="text-[13px] font-bold text-[var(--text-primary)] mb-3">
+        <div className="card mt-8 p-5 sm:p-7">
+          <div className="text-[13px] font-semibold text-[var(--text-primary)] mb-3">
             If things are bad right now
           </div>
           <ul className="flex flex-col gap-2 text-[15px] text-[var(--text-secondary)]">

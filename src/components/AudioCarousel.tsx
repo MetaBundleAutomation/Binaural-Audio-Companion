@@ -314,7 +314,7 @@ export default function AudioCarousel({
               {/* Track name + duration */}
               <div className="text-center z-10 px-4">
                 <p
-                  className="text-white font-bold leading-tight tracking-tight"
+                  className="text-white font-semibold leading-tight tracking-tight"
                   style={{ fontSize: isHero ? (embedded ? 18 : 22) : (embedded ? 13 : 17) }}
                 >
                   {track.name}
@@ -336,7 +336,7 @@ export default function AudioCarousel({
       {/* Prev / Next arrow buttons */}
       <button
         onClick={() => go(-1)}
-        className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full flex items-center justify-center bg-[var(--background-card)] border border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--primary)] transition-all cursor-pointer"
+        className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full flex items-center justify-center glass text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--primary)] transition-all cursor-pointer"
         aria-label="Previous track"
       >
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
@@ -346,7 +346,7 @@ export default function AudioCarousel({
 
       <button
         onClick={() => go(1)}
-        className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full flex items-center justify-center bg-[var(--background-card)] border border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--primary)] transition-all cursor-pointer"
+        className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full flex items-center justify-center glass text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--primary)] transition-all cursor-pointer"
         aria-label="Next track"
       >
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
@@ -394,9 +394,12 @@ export default function AudioCarousel({
 
   return (
     <section id="library" className="my-20">
-      <h2 className="text-[40px] font-bold mb-10 text-center tracking-tight text-[var(--text-primary)]">
-        Audio Library
-      </h2>
+      <div className="flex flex-col items-center text-center mb-10">
+        <span className="eyebrow">Audio Library</span>
+        <h2 className="mt-4 text-[26px] md:text-[32px] font-semibold tracking-tight text-[var(--text-primary)]">
+          Every session in one place
+        </h2>
+      </div>
       {carouselTrack}
       {dots}
     </section>

@@ -231,11 +231,16 @@ export default function BodyScan() {
               showControls ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
           >
-            <h2 className="text-[32px] font-bold tracking-tight text-white text-center">Body Scan</h2>
+            <div className="flex flex-col items-center text-center">
+              <span className="eyebrow">Body Scan</span>
+              <h2 className="mt-4 text-[26px] md:text-[32px] font-semibold tracking-tight text-white">
+                Head to toe, guided
+              </h2>
+            </div>
 
             <Link
               href="/instructions#body-scan"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-white/10 border border-white/20 hover:border-white/40 transition-all"
+              className="btn-ghost"
             >
               <svg
                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -255,8 +260,7 @@ export default function BodyScan() {
               <div className="flex justify-center">
                 <button
                   onClick={status === "playing" ? pause : play}
-                  className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-white"
-                  style={{ background: "var(--primary)", boxShadow: "0 8px 24px rgba(43,107,127,0.4)" }}
+                  className="btn-primary w-[70px] h-[70px] p-0 rounded-full"
                   aria-label={status === "playing" ? "Pause" : "Play"}
                 >
                   {status === "playing" ? (
@@ -292,7 +296,7 @@ export default function BodyScan() {
               <div className="flex justify-center">
                 <button
                   onClick={stop}
-                  className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium border border-white/25 text-white/60 hover:border-white/50 hover:text-white/90 transition-all cursor-pointer"
+                  className="btn-secondary"
                   aria-label="End session and return to start"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-4 h-4" aria-hidden="true">
@@ -310,22 +314,23 @@ export default function BodyScan() {
 
       {/* ── Card — idle and complete states (fades out when session is active) ── */}
       <div
-        className={`relative overflow-hidden rounded-3xl border border-[var(--border-color)] transition-opacity duration-500 ${
+        className={`card overflow-hidden transition-opacity duration-500 ${
           isActive ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
         style={{ boxShadow: "var(--shadow-lg)" }}
       >
-        <div className="absolute inset-0 bg-[var(--background-card)]" />
-
         <div className="relative z-10 flex flex-col items-center gap-6 p-10">
 
-          <h2 className="text-[32px] font-bold tracking-tight text-[var(--text-primary)] text-center">
-            Body Scan
-          </h2>
+          <div className="flex flex-col items-center text-center">
+            <span className="eyebrow">Body Scan</span>
+            <h2 className="mt-4 text-[26px] md:text-[32px] font-semibold tracking-tight text-[var(--text-primary)]">
+              Head to toe, guided
+            </h2>
+          </div>
 
           <Link
             href="/instructions#body-scan"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+            className="btn-ghost"
           >
             <svg
               viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -347,17 +352,17 @@ export default function BodyScan() {
               <div
                 role="group"
                 aria-label="Narrator"
-                className="flex p-1 rounded-full bg-[var(--background-light)] border border-[var(--border-color)]"
+                className="flex gap-2"
               >
                 {(["john", "emily"] as const).map((n) => (
                   <button
                     key={n}
                     onClick={() => set("bodyScanNarrator", n)}
                     aria-pressed={narrator === n}
-                    className={`px-5 py-2 rounded-full text-sm font-semibold transition-all cursor-pointer ${
+                    className={`px-5 py-2 rounded-full border text-sm font-semibold transition-all cursor-pointer ${
                       narrator === n
-                        ? "bg-[var(--primary)] text-white"
-                        : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                        ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)] text-[var(--text-primary)]"
+                        : "border-[var(--border-color)] bg-[var(--background-light)] text-[var(--text-secondary)] hover:border-[var(--primary)]"
                     }`}
                   >
                     {NARRATORS[n].label}
@@ -372,8 +377,7 @@ export default function BodyScan() {
             <div className="flex justify-center">
               <button
                 onClick={status === "playing" ? pause : play}
-                className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-white"
-                style={{ background: "var(--primary)", boxShadow: "0 8px 24px rgba(43,107,127,0.4)" }}
+                className="btn-primary w-[70px] h-[70px] p-0 rounded-full"
                 aria-label={status === "playing" ? "Pause" : "Play"}
               >
                 {status === "playing" ? (
@@ -409,7 +413,7 @@ export default function BodyScan() {
                 <div className="flex justify-center">
                   <button
                     onClick={stop}
-                    className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium border border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
+                    className="btn-secondary"
                     aria-label="End session and return to start"
                   >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-4 h-4" aria-hidden="true">
@@ -442,7 +446,7 @@ export default function BodyScan() {
               </p>
               <button
                 onClick={stop}
-                className="px-6 py-2 rounded-full text-sm font-semibold border border-[var(--primary)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-all cursor-pointer"
+                className="btn-primary"
               >
                 Begin again
               </button>

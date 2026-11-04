@@ -17,10 +17,8 @@ import { trackEvent } from "@/lib/analytics";
 const RIGHT_COLOR = "#4FA98C";
 const WRONG_COLOR = "#C97B5A";
 
-const PRIMARY_BUTTON =
-  "inline-flex items-center justify-center min-h-12 px-6 py-3 rounded-full text-[15px] font-bold text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[var(--primary-dark)]";
-const SECONDARY_BUTTON =
-  "inline-flex items-center justify-center min-h-12 px-6 py-3 rounded-full text-[15px] font-semibold text-center text-[var(--text-primary)] bg-[var(--background-card)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all cursor-pointer";
+const PRIMARY_BUTTON = "btn-primary";
+const SECONDARY_BUTTON = "btn-secondary text-center";
 
 type OptionStatus = "right" | "wrong" | "missed" | "neutral";
 
@@ -123,15 +121,15 @@ function OptionRow({
 
   return (
     <div
-      className={`rounded-xl border-2 transition-all ${
+      className={`card border-2 transition-all ${
         !isChecked && isSelected
-          ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,var(--background-card))]"
-          : `border-[var(--border-color)] bg-[var(--background-card)]${isChecked ? "" : " hover:border-[var(--primary-light)]"}`
+          ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)]"
+          : `border-[var(--border-color)] bg-[var(--background-light)]${isChecked ? "" : " hover:border-[var(--primary-light)]"}`
       } ${status === "neutral" ? "opacity-60" : ""}`}
       style={frame}
     >
       <label
-        className={`relative flex items-start gap-3 min-h-12 px-4 py-3 rounded-[10px] has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-[var(--primary)] ${
+        className={`relative flex items-start gap-3 min-h-12 px-4 py-3 rounded-[18px] has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-[var(--primary)] ${
           isChecked ? "" : "cursor-pointer"
         }`}
       >
@@ -172,7 +170,7 @@ function OptionRow({
 
       {status && status !== "neutral" && (
         <div className="mx-4 pt-2.5 pb-3.5 border-t border-[var(--border-color)]">
-          <div className="flex items-center gap-2 mb-1 text-[15px] font-bold text-[var(--text-primary)]">
+          <div className="flex items-center gap-2 mb-1 text-[15px] font-semibold text-[var(--text-primary)]">
             <StatusIcon status={status} />
             {STATUS_LABEL[status]}
           </div>
@@ -270,7 +268,7 @@ export default function BrainQuiz() {
         <h4
           ref={headingRef}
           tabIndex={-1}
-          className="scroll-mt-24 outline-none text-[18px] md:text-[19px] font-bold leading-snug text-[var(--text-primary)]"
+          className="scroll-mt-24 outline-none text-[18px] md:text-[19px] font-semibold tracking-tight leading-snug text-[var(--text-primary)]"
         >
           You got {score} of {total} questions fully right
         </h4>
@@ -280,7 +278,7 @@ export default function BrainQuiz() {
 
         {partsToReread.length > 0 && (
           <div className="mt-6">
-            <div className="mb-2 text-[11px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">
+            <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-secondary)]">
               Worth a re-read
             </div>
             <ul className="flex flex-col gap-2">
@@ -288,7 +286,7 @@ export default function BrainQuiz() {
                 <li key={partId}>
                   <a
                     href={`#brain-${partId}`}
-                    className="flex items-baseline gap-3 min-h-12 px-4 py-3 rounded-xl border-2 border-[var(--border-color)] bg-[var(--background-card)] hover:border-[var(--primary-light)] transition-all"
+                    className="card flex items-baseline gap-3 min-h-12 px-4 py-3 hover:border-[var(--primary-light)] transition-all"
                   >
                     <span className="text-[13px] font-bold tracking-widest text-[var(--text-secondary)]">
                       {partId}
@@ -328,8 +326,11 @@ export default function BrainQuiz() {
         aria-hidden="true"
       >
         <div
-          className="h-full rounded-full bg-[var(--primary)] transition-all"
-          style={{ width: `${((index + 1) / total) * 100}%` }}
+          className="h-full rounded-full transition-all"
+          style={{
+            width: `${((index + 1) / total) * 100}%`,
+            background: "linear-gradient(90deg, var(--accent), var(--accent-2))",
+          }}
         />
       </div>
 
@@ -338,7 +339,7 @@ export default function BrainQuiz() {
           <h4
             ref={headingRef}
             tabIndex={-1}
-            className="scroll-mt-24 outline-none text-[18px] md:text-[19px] font-bold leading-snug text-[var(--text-primary)]"
+            className="scroll-mt-24 outline-none text-[18px] md:text-[19px] font-semibold tracking-tight leading-snug text-[var(--text-primary)]"
           >
             <span className="sr-only">
               Question {index + 1} of {total}.{" "}
@@ -362,7 +363,7 @@ export default function BrainQuiz() {
             />
           ))}
           {isChecked && (
-            <p className="mt-2 text-[15px] font-bold text-[var(--text-primary)]">
+            <p className="mt-2 text-[15px] font-semibold text-[var(--text-primary)]">
               {resultLine(question, selected)}
             </p>
           )}

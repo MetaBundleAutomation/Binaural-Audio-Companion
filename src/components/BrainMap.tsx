@@ -76,10 +76,10 @@ export default function BrainMap() {
               key={part.id}
               onClick={() => setActive(isActive ? null : part.id)}
               aria-pressed={isActive}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-left border-2 transition-all cursor-pointer ${
+              className={`card flex items-center gap-3 px-4 py-3 text-left transition-all cursor-pointer ${
                 isActive
-                  ? "bg-[var(--background-card)]"
-                  : "border-[var(--border-color)] bg-[var(--background-card)] hover:border-[var(--primary-light)]"
+                  ? "bg-[color-mix(in_srgb,var(--primary)_16%,transparent)]"
+                  : "border-[var(--border-color)] bg-[var(--background-light)] hover:border-[var(--primary-light)]"
               }`}
               style={isActive ? { borderColor: part.color } : undefined}
             >
@@ -89,7 +89,7 @@ export default function BrainMap() {
                 aria-hidden="true"
               />
               <span className="min-w-0">
-                <span className="block text-[15px] font-bold leading-snug text-[var(--text-primary)]">
+                <span className="block text-[15px] font-semibold leading-snug text-[var(--text-primary)]">
                   {part.nickname}
                 </span>
                 <span className="block text-[11px] leading-snug text-[var(--text-secondary)]">
@@ -104,16 +104,16 @@ export default function BrainMap() {
       {/* Detail card — what it does, and where it is on your own head */}
       {activePart && (
         <div
-          className="mt-4 rounded-2xl px-6 py-5 border-2 bg-[var(--background-light)]"
+          className="card mt-4 px-6 py-5"
           style={{ borderColor: activePart.color }}
         >
           <div className="flex items-baseline justify-between gap-4 mb-3">
-            <div className="text-[17px] font-bold text-[var(--text-primary)]">
+            <div className="text-[17px] font-semibold tracking-tight text-[var(--text-primary)]">
               {activePart.nickname}
             </div>
             <button
               onClick={() => setActive(null)}
-              className="shrink-0 text-[13px] font-semibold text-[var(--text-secondary)] hover:text-[var(--primary)] transition-all cursor-pointer"
+              className="btn-ghost shrink-0"
               aria-label="Close"
             >
               Close
@@ -125,7 +125,7 @@ export default function BrainMap() {
           </p>
 
           <div className="pt-3 border-t border-[var(--border-color)]">
-            <div className="text-[11px] font-bold uppercase tracking-widest text-[var(--text-secondary)] mb-1.5">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-secondary)] mb-1.5">
               Where it is on you
             </div>
             <p className="text-[15px] leading-relaxed text-[var(--text-primary)]">

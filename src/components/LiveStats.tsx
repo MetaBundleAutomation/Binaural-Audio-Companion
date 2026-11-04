@@ -103,7 +103,7 @@ function Muted({ children }: { children: React.ReactNode }) {
 }
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <h3 className="text-[15px] font-bold text-[var(--text-primary)]">{children}</h3>;
+  return <h3 className="text-[15px] font-semibold tracking-tight text-[var(--text-primary)]">{children}</h3>;
 }
 
 export default function LiveStats() {
@@ -221,12 +221,12 @@ export default function LiveStats() {
         {tiles.map(({ label, value }) => (
           <div
             key={label}
-            className="flex flex-col-reverse rounded-xl px-4 py-4 border border-[var(--border-color)] bg-[var(--background-light)]"
+            className="card flex flex-col-reverse px-4 py-4"
           >
-            <dt className="mt-1 text-[12px] uppercase tracking-widest text-[var(--text-secondary)]">
+            <dt className="mt-1 text-[11px] uppercase tracking-[0.18em] text-[var(--text-secondary)]">
               {label}
             </dt>
-            <dd className="text-[28px] font-bold leading-tight text-[var(--text-primary)]">{value}</dd>
+            <dd className="text-[28px] font-semibold tracking-tight leading-tight text-[var(--text-primary)]">{value}</dd>
           </div>
         ))}
       </dl>
@@ -238,7 +238,7 @@ export default function LiveStats() {
           <div
             role="group"
             aria-label="Days shown"
-            className="inline-flex p-1 rounded-full border border-[var(--border-color)] bg-[var(--background-light)]"
+            className="inline-flex gap-1.5"
           >
             {RANGES.map((r) => {
               const active = r === range;
@@ -248,10 +248,10 @@ export default function LiveStats() {
                   type="button"
                   onClick={() => setRange(r)}
                   aria-pressed={active}
-                  className={`min-h-9 min-w-11 px-3 rounded-full text-[13px] font-semibold transition-all cursor-pointer ${
+                  className={`min-h-9 min-w-11 px-3 rounded-full border text-[13px] font-semibold transition-all cursor-pointer ${
                     active
-                      ? "bg-[var(--primary-dark)] text-white"
-                      : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                      ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)] text-[var(--text-primary)]"
+                      : "border-[var(--border-color)] bg-[var(--background-light)] text-[var(--text-secondary)] hover:border-[var(--primary)]"
                   }`}
                 >
                   {r}
@@ -274,11 +274,12 @@ export default function LiveStats() {
             {topPlayed.map((entry, i) => (
               <li
                 key={`${entry.tool}-${entry.item}-${i}`}
-                className="flex items-center gap-3 min-h-12 px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--background-light)]"
+                className="card flex items-center gap-3 min-h-12 px-4 py-3"
               >
                 <span
                   aria-hidden="true"
-                  className="w-7 h-7 shrink-0 rounded-full bg-[var(--primary)] text-white text-[13px] font-bold flex items-center justify-center"
+                  className="w-7 h-7 shrink-0 rounded-full text-white text-[13px] font-bold flex items-center justify-center"
+                  style={{ background: "linear-gradient(135deg, var(--accent), var(--accent-2))" }}
                 >
                   {i + 1}
                 </span>

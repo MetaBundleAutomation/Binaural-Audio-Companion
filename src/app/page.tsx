@@ -2,6 +2,15 @@ import Player from "@/components/Player";
 import LaunchScrollHandler from "@/components/LaunchScrollHandler";
 import BrainScience from "@/components/BrainScience";
 import LiveChat from "@/components/LiveChat";
+import NavIcon from "@/components/NavIcons";
+import { NAV_GROUPS } from "@/lib/nav";
+
+// The home grid shows every tool, learning and community link; "More" (About,
+// Settings) lives in the sidebar only.
+const HOME_GRID_GROUPS = new Set(["Tools", "Learn", "Community"]);
+const HOME_GRID_ITEMS = NAV_GROUPS
+  .filter(group => HOME_GRID_GROUPS.has(group.title))
+  .flatMap(group => group.items);
 
 export default function Home() {
   return (
@@ -9,50 +18,54 @@ export default function Home() {
       <LaunchScrollHandler />
 
       {/* Hero Section */}
-      <section id="hero" className="text-center py-20 px-4">
-        <h1 className="text-2xl md:text-3xl font-medium text-[var(--text-primary)] max-w-[600px] mx-auto leading-snug tracking-tight text-balance">
-          Always remember to be kind to yourself.
-        </h1>
-        <p className="mt-5 text-sm md:text-base text-[var(--text-secondary)] max-w-[600px] mx-auto font-medium leading-relaxed text-balance">
-          Audio sessions and guided meditations to help you feel calmer, focus more clearly throughout your day, or ease into sleep.
-        </p>
+      <section id="hero" className="pt-14 pb-10 md:pt-20 md:pb-14 px-5 text-center">
+        <div className="max-w-3xl mx-auto">
+          <span className="eyebrow">Free · No accounts · Made for veterans</span>
+          <h1 className="mt-6 text-balance text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-[var(--text-primary)] leading-[1.05]">
+            Always remember to be{" "}
+            <span className="text-brand-gradient">kind to yourself</span>.
+          </h1>
+          <p className="mt-6 text-pretty text-lg md:text-xl leading-relaxed text-[var(--text-secondary)]">
+            Audio sessions and guided meditations to help you feel calmer, focus more clearly throughout your day, or ease into sleep.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <a href="#player" className="btn-primary">
+              Start listening
+              <NavIcon name="arrow" className="h-4 w-4" />
+            </a>
+            <a href="#brain-science" className="btn-secondary">
+              What&apos;s the loop?
+            </a>
+          </div>
+        </div>
+      </section>
 
-        {/* Feature chips — tap to jump straight to a section */}
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          {([
-            { label: "Binaural Beats", href: "#player"             },
-            { label: "Noise Therapy",  href: "#noise"              },
-            { label: "Box Breathing",  href: "#box-breathing"      },
-            { label: "Coherence",      href: "#coherence-breathing" },
-            { label: "Body Scan",      href: "#body-scan"          },
-            { label: "Your Brain",     href: "#brain-science"      },
-            { label: "The Room",       href: "#room"               },
-          ] as const).map(({ label, href }) => (
-            <a
-              key={href}
-              href={href}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--text-secondary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] shrink-0" aria-hidden="true" />
-              {label}
+      {/* Tool grid — one card per tool, learning and community link */}
+      <section aria-label="Tools" className="max-w-[1400px] mx-auto px-5 pb-10 md:pb-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {HOME_GRID_ITEMS.map(item => (
+            <a key={item.href} href={item.href} className="card card-hover flex flex-col p-6">
+              <span
+                className="grid h-11 w-11 place-items-center rounded-xl text-white shadow-lg"
+                style={{ background: "linear-gradient(135deg, var(--accent), var(--accent-2))" }}
+                aria-hidden="true"
+              >
+                <NavIcon name={item.icon} className="h-5 w-5" />
+              </span>
+              <span className="mt-4 text-[17px] font-semibold text-[var(--text-primary)]">
+                {item.label}
+              </span>
+              {item.tagline && (
+                <span className="mt-1 grow text-[14px] leading-relaxed text-[var(--text-secondary)]">
+                  {item.tagline}
+                </span>
+              )}
+              <span className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-medium text-[var(--text-primary)]">
+                Open
+                <NavIcon name="arrow" className="h-4 w-4 text-[var(--accent-2)]" />
+              </span>
             </a>
           ))}
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="mt-10 flex justify-center">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="var(--primary)"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-5 h-5 opacity-60 animate-bounce"
-            aria-hidden="true"
-          >
-            <path d="M6 9l6 6 6-6" />
-          </svg>
         </div>
       </section>
 

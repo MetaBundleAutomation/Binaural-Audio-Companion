@@ -454,37 +454,35 @@ export default function CoherenceBreathing() {
 
   const toggleChime = () => set("coherenceChimeEnabled", !chimeEnabled);
 
-  const activeBtn: React.CSSProperties = {
-    background: "var(--primary)",
-    color: "white",
-    boxShadow: "0 4px 12px rgba(43,107,127,0.35)",
-  };
-  const inactiveBtn: React.CSSProperties = {
-    background: "var(--background-light)",
-    color: "var(--text-secondary)",
-    border: "1px solid var(--border-color)",
-  };
+  const chipBase = "rounded-full border font-semibold transition-all cursor-pointer";
+  const activeChip =
+    "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)] text-[var(--text-primary)]";
+  const inactiveChip =
+    "border-[var(--border-color)] bg-[var(--background-light)] text-[var(--text-secondary)] hover:border-[var(--primary)]";
 
   // ── Render ────────────────────────────────────────────────────────────────────
 
   return (
     <section className="my-16">
       <div
-        className="flex flex-col items-center gap-6 rounded-3xl p-8 border border-[var(--border-color)] bg-[var(--background-card)]"
+        className="card flex flex-col items-center gap-6 p-8"
         style={{ boxShadow: "var(--shadow-lg)" }}
       >
 
         {/* ── Idle / Intro ──────────────────────────────────────────────────────── */}
         {status === "idle" && (
           <>
-            <h2 className="text-[28px] font-bold tracking-tight text-[var(--text-primary)] text-center">
-              Heart–Brain Coherence
-            </h2>
+            <div className="flex flex-col items-center text-center">
+              <span className="eyebrow">Heart–Brain Coherence</span>
+              <h2 className="mt-4 text-[26px] md:text-[32px] font-semibold tracking-tight text-[var(--text-primary)]">
+                Breathe with your heart
+              </h2>
+            </div>
 
             {/* Link to the coherence guide in Instructions */}
             <Link
               href="/instructions#coherence-breathing"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold text-[var(--primary)] bg-[var(--background-light)] border border-[var(--border-color)] hover:border-[var(--primary)] transition-all"
+              className="btn-ghost"
             >
               <svg
                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -516,8 +514,7 @@ export default function CoherenceBreathing() {
                       key={p}
                       onClick={() => set("coherencePreset", p)}
                       aria-pressed={preset === p}
-                      className="py-1.5 px-4 rounded-xl text-[13px] font-semibold transition-all cursor-pointer"
-                      style={preset === p ? activeBtn : inactiveBtn}
+                      className={`py-1.5 px-4 text-[13px] ${chipBase} ${preset === p ? activeChip : inactiveChip}`}
                     >
                       {PRESETS[p].label}
                     </button>
@@ -534,8 +531,7 @@ export default function CoherenceBreathing() {
                       key={n}
                       onClick={() => set("coherenceBreaths", n)}
                       aria-pressed={targetBreaths === n}
-                      className="py-1.5 px-4 rounded-xl text-[13px] font-semibold transition-all cursor-pointer"
-                      style={targetBreaths === n ? activeBtn : inactiveBtn}
+                      className={`py-1.5 px-4 text-[13px] ${chipBase} ${targetBreaths === n ? activeChip : inactiveChip}`}
                     >
                       {n}
                     </button>
@@ -552,8 +548,7 @@ export default function CoherenceBreathing() {
                       key={tt}
                       onClick={() => set("coherenceToneType", tt)}
                       aria-pressed={toneType === tt}
-                      className="py-1.5 px-4 rounded-xl text-[13px] font-semibold transition-all cursor-pointer"
-                      style={toneType === tt ? activeBtn : inactiveBtn}
+                      className={`py-1.5 px-4 text-[13px] ${chipBase} ${toneType === tt ? activeChip : inactiveChip}`}
                     >
                       {tt === "chime" ? "Chime" : "Bowl"}
                     </button>
@@ -575,7 +570,7 @@ export default function CoherenceBreathing() {
             {/* Begin */}
             <button
               onClick={begin}
-              className="px-8 py-3 rounded-full border-2 border-[var(--primary)] text-[var(--primary)] font-semibold text-sm transition-all hover:bg-[var(--primary)] hover:text-white cursor-pointer"
+              className="btn-primary"
             >
               Begin when you&apos;re ready
             </button>
@@ -640,8 +635,7 @@ export default function CoherenceBreathing() {
                   key={p}
                   onClick={() => set("coherencePreset", p)}
                   aria-pressed={preset === p}
-                  className="py-1 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer"
-                  style={preset === p ? { background: "var(--primary)", color: "white" } : inactiveBtn}
+                  className={`py-1 px-3 text-xs ${chipBase} ${preset === p ? activeChip : inactiveChip}`}
                 >
                   {PRESETS[p].label}
                 </button>
@@ -658,7 +652,7 @@ export default function CoherenceBreathing() {
             {/* Stop — always visible, understated styling */}
             <button
               onClick={stop}
-              className="px-6 py-2 rounded-full border border-[var(--border-color)] text-[var(--text-secondary)] text-sm transition-all hover:border-[var(--text-secondary)] cursor-pointer"
+              className="btn-secondary"
             >
               Stop
             </button>
@@ -668,10 +662,13 @@ export default function CoherenceBreathing() {
         {/* ── Complete ──────────────────────────────────────────────────────────── */}
         {status === "complete" && (
           <>
-            <h2 className="text-[28px] font-bold tracking-tight text-[var(--text-primary)] text-center">
-              Heart–Brain Coherence
-            </h2>
-            <p className="text-[var(--text-secondary)] text-center leading-relaxed">
+            <div className="flex flex-col items-center text-center">
+              <span className="eyebrow">Heart–Brain Coherence</span>
+              <h2 className="mt-4 text-[26px] md:text-[32px] font-semibold tracking-tight text-[var(--text-primary)]">
+                Breathe with your heart
+              </h2>
+            </div>
+            <p className="text-[15px] text-[var(--text-secondary)] text-center leading-relaxed">
               Well done. Take a moment before you move on.
             </p>
             <div className="flex gap-4">
@@ -681,7 +678,7 @@ export default function CoherenceBreathing() {
                   setCompletedBreaths(0);
                   setStatus("idle");
                 }}
-                className="px-6 py-2 rounded-full border border-[var(--primary)] text-[var(--primary)] font-semibold text-sm transition-all hover:bg-[var(--primary)] hover:text-white cursor-pointer"
+                className="btn-primary"
               >
                 Begin again
               </button>
@@ -691,7 +688,7 @@ export default function CoherenceBreathing() {
                   setCompletedBreaths(0);
                   setStatus("idle");
                 }}
-                className="px-6 py-2 rounded-full border border-[var(--border-color)] text-[var(--text-secondary)] text-sm transition-all hover:border-[var(--text-secondary)] cursor-pointer"
+                className="btn-secondary"
               >
                 Done
               </button>
