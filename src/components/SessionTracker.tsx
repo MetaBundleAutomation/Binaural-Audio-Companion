@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import { HEARTBEAT_MS, lengthBucket, trackEvent } from "@/lib/analytics";
+import { logVisit } from "@/lib/supabase";
+import { getVisitor } from "@/lib/visitor";
 
 // A break longer than this, with the app hidden, starts a new session when the
 // person comes back — the same cut-off most analytics tools use.
@@ -43,6 +45,8 @@ export default function SessionTracker() {
     };
 
     const begin = () => {
+      const visitor = getVisitor();
+      if (visitor) void logVisit(visitor);
       activeMs = 0;
       heartbeatsSent = 0;
       ended = false;
@@ -66,6 +70,10 @@ export default function SessionTracker() {
         visibleSince = Date.now();
       }
     };
+
+    // The first session of this page load.
+    const firstVisitor = getVisitor();
+    if (firstVisitor) void logVisit(firstVisitor);
 
     const onPageHide = () => end();
     const onPageShow = (event: PageTransitionEvent) => {
