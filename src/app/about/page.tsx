@@ -88,7 +88,7 @@ export default function About() {
               {/* EDIT ME: Joshua's own words go here */}
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 I&apos;m Joshua Hoare, founder of Metabundle, a small Australian software company.
-                I built CRUX and I pay for it, so it stays free — no ads, no accounts, no catch.
+                I built CRUX and I pay to run it. There are no ads, no accounts and no catch.
               </p>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 It was made for Australian veterans living with PTSD, anxiety and tinnitus, and for
@@ -117,8 +117,8 @@ export default function About() {
             <div className={CARD}>
               <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">Support CRUX</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
-                CRUX is free and will stay that way. Support goes towards hosting, audio production
-                and new sessions, and keeps it running with no ads and no accounts.
+                CRUX is free to use, with no ads and no accounts. Support goes towards hosting,
+                audio production and new sessions, and helps keep it running.
               </p>
               {donateUrl ? (
                 <a
