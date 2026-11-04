@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import BrainMap from "./BrainMap";
+import BrainQuiz from "./BrainQuiz";
 import LoopDiagram from "./LoopDiagram";
 
 // A collapsible "Tell me more" block. Collapsed by default so the page can be
@@ -380,6 +381,11 @@ export default function BrainScience() {
                 We&apos;d rather undersell this and be straight with you.
               </Punchline>
             </div>
+          </Part>
+
+          {/* A gentle check that it landed — never a test you can fail. */}
+          <Part number="09" title="Quick check — did it land?" id="brain-quiz">
+            <BrainQuiz />
           </Part>
 
         </div>

@@ -42,6 +42,10 @@ export default function Instructions() {
                   <strong className="text-[var(--text-primary)]">I want to ease into stillness</strong>
                   {" → "}The Body Scan is a gentle place to start — just lie down, press play, and let the narrator guide you.
                 </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">I want to understand why it feels this way</strong>
+                  {" → "}Read <Link href="/#brain-science" className="underline underline-offset-2 text-[var(--primary)] hover:opacity-80">🧠 What&apos;s happening in your brain</Link> — no jargon, no blame, with a short quick check at the end.
+                </li>
               </ul>
             </div>
 
