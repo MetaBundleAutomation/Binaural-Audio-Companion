@@ -32,6 +32,9 @@
 - Every part now has a link target: `#brain-01` to `#brain-08`, and `#brain-quiz`
 - Added a "why it feels this way" line to "Where would you like to start?" on the Instructions page
 - Tested at 375 px, 640 px and desktop: every quiz state, all three result messages, a keyboard-only run, and contrast measured across all four themes and three brightness levels
+- Added Vercel Web Analytics (`@vercel/analytics` in `src/app/layout.tsx`), merged to `main` as PR #4. Page views now show under Analytics in the Vercel dashboard
+- Added usage events on top of that (`src/lib/analytics.ts`, `src/hooks/useToolTracking.ts`, `src/components/SessionTracker.tsx`). Each tool sends `tool_start`, `tool_stop` (with a length bucket) and `tool_5min` every five minutes of use, so in the dashboard: count of `tool_5min` x 5 = minutes of playtime per tool. The app sends `session_5min` and `session_end` the same way for time in the app, and the quiz sends `quiz_start` and `quiz_complete` with the score. Nothing identifies a person; events carry at most two properties because that is the Vercel Pro limit
+- Fixed the privacy sentence on the Instructions page, which said nothing is sent to any server. It now says preferences stay local and only anonymous usage is counted
 
 ### In progress
 - The PR is open and not merged. Josh wants to look at the Vercel preview before it goes to `main`

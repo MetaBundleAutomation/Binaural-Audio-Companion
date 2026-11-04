@@ -5,6 +5,7 @@ import Link from "next/link";
 import { tracks, hexToRgbTriplet, parseDuration, formatTime } from "@/data/tracks";
 import { useAudioEngine } from "@/hooks/useAudioEngine";
 import { usePreferences } from "@/hooks/usePreferences";
+import { useToolTracking } from "@/hooks/useToolTracking";
 import AudioCarousel from "./AudioCarousel";
 import AromatherapyCard from "./AromatherapyCard";
 import BoxBreathing from "./BoxBreathing";
@@ -21,6 +22,7 @@ function hexToRgbVars(hex: string): React.CSSProperties {
 export default function Player() {
   const engine         = useAudioEngine();
   const track          = tracks[engine.currentTrackIndex];
+  useToolTracking("binaural", track?.name, engine.isPlaying);
   const { prefs } = usePreferences();
   const [breathingMode, setBreathingMode] = useState<"box" | "coherence" | "body-scan">("box");
 

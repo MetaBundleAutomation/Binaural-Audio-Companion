@@ -1003,8 +1003,10 @@ export default function Instructions() {
 
               <blockquote className="mt-6 pl-4 border-l-2 border-[var(--border-color)] text-[var(--text-secondary)] text-[14px] leading-relaxed">
                 <strong className="text-[var(--text-primary)]">Your settings stay private to your device.</strong>{" "}
-                Everything is stored locally in your browser — nothing is sent to any server, and no one
-                else who uses the same link will ever see your preferences.
+                Your preferences are stored locally in your browser and never leave it — no one
+                else who uses the same link will ever see them. The only thing we count is anonymous
+                usage: page views and how long each tool is used, with no cookies and nothing that
+                identifies you.
               </blockquote>
             </div>
 

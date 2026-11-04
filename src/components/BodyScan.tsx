@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePreferences } from "@/hooks/usePreferences";
+import { useToolTracking } from "@/hooks/useToolTracking";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -52,6 +53,7 @@ export default function BodyScan() {
   const totalS      = audioDuration || NARRATORS[narrator].totalS;
   const progressPct = totalS > 0 ? Math.min(100, (elapsed / totalS) * 100) : 0;
   const isActive    = status === "playing" || status === "paused";
+  useToolTracking("body-scan", narrator, status === "playing");
   const showControls = status !== "playing" || isControlsVisible;
 
   // ── Video capability detection (no shared hook — done inline like other components) ──
