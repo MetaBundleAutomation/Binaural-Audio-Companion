@@ -161,9 +161,11 @@ function NoiseIcon({ type, size }: { type: SoundType; size: number }) {
 
 interface NoiseGeneratorProps {
   isAudioPlaying: boolean;
+  /** Called with the active sound key (or null) so the now-playing bar can show it. */
+  onActiveChange?: (sound: string | null) => void;
 }
 
-export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) {
+export default function NoiseGenerator({ isAudioPlaying, onActiveChange }: NoiseGeneratorProps) {
   const { set, prefs, isHydrated, toggleFavouriteNoise } = usePreferences();
 
   // Favourites-first display order
@@ -208,6 +210,9 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
 
   const noiseIsPlaying = activeSound !== null && isNoise(activeSound);
   useToolTracking("noise", activeSound, activeSound !== null);
+  useEffect(() => {
+    onActiveChange?.(activeSound);
+  }, [activeSound, onActiveChange]);
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
 

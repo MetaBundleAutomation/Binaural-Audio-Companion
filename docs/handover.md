@@ -79,12 +79,15 @@
 - New navigation: a fixed sidebar on desktop (`src/components/Sidebar.tsx`) and a glass top bar with a hamburger drawer on phones (`src/components/TopBar.tsx`), both reading the same list in `src/lib/nav.ts`. `Header.tsx` is gone; `AppShell.tsx` wraps every page. The crisis numbers sit at the bottom of the sidebar and the drawer, and a "Support CRUX" button appears there once `NEXT_PUBLIC_DONATE_URL` is set
 - Every section, page, button and card restyled to the new classes without touching behaviour or audio code
 
+- One tool per page: `/binaural`, `/noise`, `/breathe` (Box + Coherence tabs), `/body-scan`, `/brain`, `/room`. The home page is now just the hero and the grid of tool cards. Audio keeps playing while you move around: the four audio tools are rendered by `src/components/ToolStage.tsx` inside the root layout (mounted the first time their page is opened, then kept hidden), and a small "Now playing" bar (`NowPlayingBar.tsx`) shows what is running with a link back to its page. `Player.tsx` was split into `BinauralPlayer.tsx` and `BreathingHost.tsx`
+- The Settings "Launch screen" now opens a page instead of scrolling (`LaunchRedirect.tsx`, once per browser session) and gained a Body Scan option. Instructions deep links, the sitemap and the service worker precache list (`crux-v16`) know the new routes
+
 ### In progress
-- Next step is one tool per page (`/binaural`, `/noise`, `/breathe`, `/body-scan`, `/brain`, `/room`) so nobody has to scroll the long home page. Audio has to keep playing while navigating, so the tools will be mounted once in the shared layout and shown per route, with a small "now playing" bar. The nav links in `src/lib/nav.ts` switch from `/#section` to the new routes when that lands
+- Nothing; both halves of the overhaul are on `main`
 
 ### What didn't work
 - Nothing blocking. The glass blur is switched off below 768 px on purpose (it repaints on every scroll frame on a weak phone GPU); the bar and drawer use a solid tint there instead
 
 ### Next
 - Check the four themes on a real phone, especially Army and Midnight, where the glow colours are the least tested
-- `public/sw.js` precache list and `src/app/sitemap.ts` need the new routes once they exist
+- Consider a Settings toggle to hide the now-playing bar, and controls (pause / stop) on it, which would need the noise and breathing tools to expose a stop handle

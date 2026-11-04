@@ -95,7 +95,7 @@ export default function TopBar() {
               </nav>
 
               <Link
-                href="/#player"
+                href="/binaural"
                 onClick={() => setOpen(false)}
                 className="btn-primary mt-3 w-full"
               >

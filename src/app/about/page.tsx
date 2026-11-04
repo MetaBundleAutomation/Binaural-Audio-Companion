@@ -285,7 +285,7 @@ export default function About() {
           </div>
 
           <div className="text-center mt-12">
-            <Link href="/" className="btn-primary">
+            <Link href="/binaural" className="btn-primary">
               Start Listening
             </Link>
           </div>

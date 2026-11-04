@@ -179,7 +179,11 @@ function ChimeToggle({
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function CoherenceBreathing() {
+export default function CoherenceBreathing({
+  onRunningChange,
+}: {
+  onRunningChange?: (running: boolean) => void;
+} = {}) {
   const { prefs, isHydrated, set } = usePreferences();
 
   // ── Canvas refs ─────────────────────────────────────────────────────────────
@@ -204,6 +208,9 @@ export default function CoherenceBreathing() {
 
   // ── State ────────────────────────────────────────────────────────────────────
   const [status, setStatus]                     = useState<CoherenceStatus>("idle");
+  useEffect(() => {
+    onRunningChange?.(status === "running");
+  }, [status, onRunningChange]);
   useToolTracking("coherence", prefs.coherencePreset, status === "running");
   const [completedBreaths, setCompletedBreaths] = useState(0);
 

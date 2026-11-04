@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Sidebar from "@/components/Sidebar";
+import ToolStage from "@/components/ToolStage";
 import TopBar from "@/components/TopBar";
 
 /**
@@ -13,6 +14,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
       <Sidebar />
       <div className="flex min-h-screen min-w-0 flex-col lg:pl-60">
         <TopBar />
+        <ToolStage />
         {children}
       </div>
     </div>

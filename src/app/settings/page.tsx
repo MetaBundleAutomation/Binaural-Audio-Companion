@@ -252,17 +252,18 @@ export default function SettingsPage() {
               <Card>
                 <ControlLabel
                   label="Launch screen"
-                  description="Choose which section CRUX scrolls to when you open the app."
+                  description="Choose which page CRUX opens on when you launch the app."
                 />
                 <SegmentedControl
-                  options={["home", "player", "noise", "box-breathing"] as const}
+                  options={["home", "player", "noise", "box-breathing", "body-scan"] as const}
                   value={prefs.launchScreen}
                   onChange={v => set("launchScreen", v)}
                   className="grid grid-cols-2 gap-2"
                   formatLabel={v =>
                     v === "player"        ? "Binaural Beats" :
                     v === "noise"         ? "Noise Therapy"  :
-                    v === "box-breathing" ? "Box Breathing"  :
+                    v === "box-breathing" ? "Breathing"      :
+                    v === "body-scan"     ? "Body Scan"      :
                     "Home"
                   }
                 />
@@ -492,7 +493,7 @@ export default function SettingsPage() {
           </div>
 
           <div className="text-center mt-12">
-            <Link href="/" className="btn-primary">
+            <Link href="/binaural" className="btn-primary">
               Start Listening
             </Link>
           </div>
