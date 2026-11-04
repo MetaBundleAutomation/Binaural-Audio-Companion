@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import BrainMap from "./BrainMap";   
+import BrainMap from "./BrainMap";
+import BrainQuiz from "./BrainQuiz";
+import LoopDiagram from "./LoopDiagram";
 
 // A collapsible "Tell me more" block. Collapsed by default so the page can be
 // skimmed in ~90 seconds — important for an audience whose concentration is
@@ -45,19 +47,24 @@ function TellMeMore({ children }: { children: React.ReactNode }) {
 function Part({
   number,
   title,
+  id,
   children,
 }: {
   number: string;
   title: string;
+  id?: string;
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-2xl p-7 border border-[var(--border-color)] bg-[var(--background-light)]">
+    <div
+      id={id ?? `brain-${number}`}
+      className="scroll-mt-24 rounded-2xl p-5 sm:p-7 border border-[var(--border-color)] bg-[var(--background-light)]"
+    >
       <div className="flex items-baseline gap-3 mb-4">
         <span className="text-[13px] font-bold tracking-widest text-[var(--primary)]">
           {number}
         </span>
-        <h3 className="text-[22px] font-bold tracking-tight text-[var(--text-primary)]">
+        <h3 className="text-[20px] md:text-[22px] font-bold leading-snug tracking-tight text-[var(--text-primary)]">
           {title}
         </h3>
       </div>
@@ -88,10 +95,10 @@ export default function BrainScience() {
   return (
     <section id="brain-science" className="my-16 scroll-mt-24">
       <div
-        className="rounded-3xl p-10 border border-[var(--border-color)] bg-[var(--background-card)]"
+        className="rounded-3xl p-5 sm:p-8 md:p-10 border border-[var(--border-color)] bg-[var(--background-card)]"
         style={{ boxShadow: "var(--shadow-lg)" }}
       >
-        <h2 className="text-[32px] font-bold mb-3 tracking-tight text-[var(--text-primary)] text-center">
+        <h2 className="text-[26px] md:text-[32px] font-bold mb-3 tracking-tight text-[var(--text-primary)] text-center">
           What&apos;s happening in your brain
         </h2>
         <p className="text-center text-[15px] text-[var(--text-secondary)] mb-8">
@@ -99,7 +106,7 @@ export default function BrainScience() {
         </p>
 
         {/* Summary box — for anyone who reads nothing else */}
-        <div className="rounded-2xl px-7 py-6 mb-8 border-2 border-[var(--primary)] bg-[var(--background-light)]">
+        <div className="rounded-2xl px-5 py-5 sm:px-7 sm:py-6 mb-8 border-2 border-[var(--primary)] bg-[var(--background-light)]">
           <div className="text-[11px] font-bold uppercase tracking-widest text-[var(--primary)] mb-2">
             In one paragraph
           </div>
@@ -271,14 +278,15 @@ export default function BrainScience() {
 
           {/* The loop — the hero section. Never collapsed. */}
           <div
-            className="rounded-2xl p-8 border-2 border-[var(--primary)] bg-[var(--background-light)]"
+            id="brain-06"
+            className="scroll-mt-24 rounded-2xl p-5 sm:p-8 border-2 border-[var(--primary)] bg-[var(--background-light)]"
             style={{ boxShadow: "var(--shadow-lg)" }}
           >
             <div className="flex items-baseline gap-3 mb-4">
               <span className="text-[13px] font-bold tracking-widest text-[var(--primary)]">
                 06
               </span>
-              <h3 className="text-[26px] font-bold tracking-tight text-[var(--text-primary)]">
+              <h3 className="text-[22px] md:text-[26px] font-bold tracking-tight text-[var(--text-primary)]">
                 The loop
               </h3>
             </div>
@@ -291,6 +299,7 @@ export default function BrainScience() {
               <p className="text-[19px] font-bold leading-relaxed text-[var(--text-primary)]">
                 These four pieces form a circle that feeds itself.
               </p>
+              <LoopDiagram />
               <Body>
                 The alarm fires. The clerk can&apos;t stamp it &ldquo;years
                 ago&rdquo;. The supervisor is offline. The phone line is poor, so
@@ -309,12 +318,15 @@ export default function BrainScience() {
           </div>
 
           {/* The good news — never collapsed either. */}
-          <div className="rounded-2xl p-8 border border-[var(--border-color)] bg-[var(--background-light)]">
+          <div
+            id="brain-07"
+            className="scroll-mt-24 rounded-2xl p-5 sm:p-7 border border-[var(--border-color)] bg-[var(--background-light)]"
+          >
             <div className="flex items-baseline gap-3 mb-4">
               <span className="text-[13px] font-bold tracking-widest text-[var(--primary)]">
                 07
               </span>
-              <h3 className="text-[22px] font-bold tracking-tight text-[var(--text-primary)]">
+              <h3 className="text-[20px] md:text-[22px] font-bold leading-snug tracking-tight text-[var(--text-primary)]">
                 The part that&apos;s actually good news
               </h3>
             </div>
@@ -371,10 +383,15 @@ export default function BrainScience() {
             </div>
           </Part>
 
+          {/* A gentle check that it landed — never a test you can fail. */}
+          <Part number="09" title="Quick check — did it land?" id="brain-quiz">
+            <BrainQuiz />
+          </Part>
+
         </div>
 
         {/* Crisis numbers */}
-        <div className="mt-8 rounded-2xl px-7 py-6 border border-[var(--border-color)] bg-[var(--background-light)]">
+        <div className="mt-8 rounded-2xl p-5 sm:p-7 border border-[var(--border-color)] bg-[var(--background-light)]">
           <div className="text-[13px] font-bold text-[var(--text-primary)] mb-3">
             If things are bad right now
           </div>
