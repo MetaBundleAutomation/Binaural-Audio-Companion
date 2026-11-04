@@ -351,7 +351,7 @@ export default function BrainScience() {
               <p>
                 Across multiple published trials, binaural audio has been
                 linked to reduced anxiety and pain. The evidence is real but
-                still early — studies are small and don't agree on everything.
+                still early — studies are small and don’t agree on everything.
               </p>
               <p>
                 The researchers themselves rate the pain findings as low
