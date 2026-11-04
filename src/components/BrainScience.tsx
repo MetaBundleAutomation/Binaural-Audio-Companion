@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import BrainMap from "./BrainMap";   
+import BrainMap from "./BrainMap";
+import LoopDiagram from "./LoopDiagram";
 
 // A collapsible "Tell me more" block. Collapsed by default so the page can be
 // skimmed in ~90 seconds — important for an audience whose concentration is
@@ -291,6 +292,7 @@ export default function BrainScience() {
               <p className="text-[19px] font-bold leading-relaxed text-[var(--text-primary)]">
                 These four pieces form a circle that feeds itself.
               </p>
+              <LoopDiagram />
               <Body>
                 The alarm fires. The clerk can&apos;t stamp it &ldquo;years
                 ago&rdquo;. The supervisor is offline. The phone line is poor, so
