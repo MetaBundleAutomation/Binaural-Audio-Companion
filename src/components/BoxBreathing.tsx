@@ -163,7 +163,9 @@ export default function BoxBreathing() {
   const [status, setStatus] = useState<Status>("idle");
   useToolTracking(
     "box-breathing",
-    prefs.boxBreathingVoiceEnabled ? prefs.boxBreathingVoice : "no-voice",
+    prefs.boxBreathingVoiceEnabled
+      ? prefs.boxBreathingVoice === "default" ? "les" : prefs.boxBreathingVoice
+      : "no-voice",
     status === "intro" || status === "running",
   );
 
