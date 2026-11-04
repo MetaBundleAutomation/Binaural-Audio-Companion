@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePreferences } from "@/hooks/usePreferences";
+import { useToolTracking } from "@/hooks/useToolTracking";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -203,6 +204,7 @@ export default function CoherenceBreathing() {
 
   // ── State ────────────────────────────────────────────────────────────────────
   const [status, setStatus]                     = useState<CoherenceStatus>("idle");
+  useToolTracking("coherence", prefs.coherencePreset, status === "running");
   const [completedBreaths, setCompletedBreaths] = useState(0);
 
   // ── Sync prefs → refs (RAF loop reads refs, not React state) ─────────────────

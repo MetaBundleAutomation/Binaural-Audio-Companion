@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePreferences } from "@/hooks/usePreferences";
+import { useToolTracking } from "@/hooks/useToolTracking";
 
 declare global {
   interface Window { webkitAudioContext?: typeof AudioContext; }
@@ -160,6 +161,11 @@ export default function BoxBreathing() {
 
   // ── React state ──────────────────────────────────────────────────────────
   const [status, setStatus] = useState<Status>("idle");
+  useToolTracking(
+    "box-breathing",
+    prefs.boxBreathingVoiceEnabled ? prefs.boxBreathingVoice : "no-voice",
+    status === "intro" || status === "running",
+  );
 
   // ── Reduce Motion preference ──────────────────────────────────────────────
   // Tracked live so draw() can drop decorative motion the moment the OS setting

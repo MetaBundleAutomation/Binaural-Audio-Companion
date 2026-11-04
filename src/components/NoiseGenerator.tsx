@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import Link from "next/link";
 import { usePreferences } from "@/hooks/usePreferences";
+import { useToolTracking } from "@/hooks/useToolTracking";
 import { makeWhiteNoise, makePinkNoise, makeBrownNoise, makeGreenNoise } from "@/lib/audio/cruxNoise";
 import PureToneTherapyRaw from "./noise-therapy/PureToneTherapy";
 
@@ -206,6 +207,7 @@ export default function NoiseGenerator({ isAudioPlaying }: NoiseGeneratorProps) 
   const videoRef         = useRef<HTMLVideoElement | null>(null);
 
   const noiseIsPlaying = activeSound !== null && isNoise(activeSound);
+  useToolTracking("noise", activeSound, activeSound !== null);
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
 

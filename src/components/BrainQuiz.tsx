@@ -10,6 +10,7 @@ import {
   type QuizPartId,
   type QuizQuestion,
 } from "@/data/brainQuiz";
+import { trackEvent } from "@/lib/analytics";
 
 // Same two hexes as the supervisor and the alarm, so they read in every theme.
 // Colour is never the only cue — every status also has an icon and a word.
@@ -208,6 +209,7 @@ export default function BrainQuiz() {
   const question = BRAIN_QUIZ[index];
 
   function startFromTheTop() {
+    trackEvent("quiz_start");
     shouldMoveFocus.current = true;
     setIndex(0);
     setSelected(new Set());
@@ -235,6 +237,9 @@ export default function BrainQuiz() {
   function goForward() {
     shouldMoveFocus.current = true;
     if (index === total - 1) {
+      trackEvent("quiz_complete", {
+        score: `${total - notFullyRight.length}/${total}`,
+      });
       setPhase("results");
       return;
     }

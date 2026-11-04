@@ -3,6 +3,7 @@ import "@/app/globals.css";
 import type { Metadata } from "next";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
+import SessionTracker from "@/components/SessionTracker";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
@@ -97,6 +98,7 @@ export default function RootLayout({
         </PreferencesProvider>
         {/* Vercel Web Analytics — privacy-friendly page-view counts, no cookies */}
         <Analytics />
+        <SessionTracker />
       </body>
     </html>
   );
