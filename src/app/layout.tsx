@@ -2,6 +2,7 @@ import "@/app/globals.css";
 
 import type { Metadata } from "next";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { Analytics } from "@vercel/analytics/next";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
@@ -94,6 +95,8 @@ export default function RootLayout({
             <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
           )}
         </PreferencesProvider>
+        {/* Vercel Web Analytics — privacy-friendly page-view counts, no cookies */}
+        <Analytics />
       </body>
     </html>
   );

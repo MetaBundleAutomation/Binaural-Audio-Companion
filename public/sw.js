@@ -143,6 +143,8 @@ self.addEventListener("fetch", (event) => {
   // Skip Next.js HMR and API routes (API must always be fresh)
   if (url.pathname.startsWith("/_next/webpack-hmr")) return;
   if (url.pathname.startsWith("/api/")) return;
+  // Skip Vercel Analytics — its script and beacons must never be served stale
+  if (url.pathname.startsWith("/_vercel/")) return;
 
   // ── Audio + video — cache-first, Range-aware (full offline support) ─────────
   if (MEDIA_RE.test(url.pathname)) {

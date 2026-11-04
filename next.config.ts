@@ -14,6 +14,10 @@ import type { NextConfig } from "next";
 //    eval() for fast incremental rebuilds with inline source maps.  Production
 //    builds use a non-eval devtool so 'unsafe-eval' is omitted there.
 //  • connect-src includes Google Analytics endpoints used by @next/third-parties.
+//  • script-src includes va.vercel-scripts.com for Vercel Web Analytics. In
+//    production the script and its beacons are served from /_vercel/insights/
+//    on this origin (covered by 'self'); the external host is only used for the
+//    debug script in development.
 //  • media-src 'self' covers the binaural audio tracks served from /public.
 //  • worker-src 'self' covers the service worker (/sw.js).
 // ─────────────────────────────────────────────────────────────────────────────
@@ -22,7 +26,7 @@ const isDev = process.env.NODE_ENV === "development";
 const CSP = [
   "default-src 'self'",
   // 'unsafe-eval' added in dev only — webpack eval-source-map requires it
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://va.vercel-scripts.com`,
   "style-src 'self' 'unsafe-inline'",
   // data: removed — no data-URI images are used in this app
   "img-src 'self'",
