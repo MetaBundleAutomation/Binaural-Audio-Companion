@@ -50,3 +50,24 @@
 - Optional: open "Tell me more" automatically when someone arrives from a re-read link. Some quiz answers (Q1 especially) are inside those collapsed blocks, so it takes one extra tap to find them
 - `mindflow.metabundle.ai` now redirects to `crux.metabundle.ai`. CONTEXT.md still has the old address
 - `docs/screenshots/brain-quiz/` is only there for the PR's before and after pictures. It can be deleted once the PR has been reviewed
+
+## 5 November 2026
+
+### Finished
+- Named every usage event per tool and item as well (`binaural_focus_start`, `noise_heavyrain_5min`, `body_scan_ben_stop`...) so the Vercel Events panel lists each track, noise, voice, preset and narrator as its own row. Merged as PR #6
+- Built "The room": a live chat on the home page, YouTube-live style. Every visitor gets a random name like "tired koala" (`src/lib/visitor.ts`, kept in the browser's localStorage with a random id). The chat is `src/components/LiveChat.tsx`, collapsed until someone taps "Join the room". Messages vanish after 24 hours. Guard rails: two messages per ten seconds, links / emails / phone numbers stripped, slurs masked (browser and database both), Hide and Report buttons, and the crisis lines pinned while the room is open (`src/lib/roomRules.ts`)
+- Rebuilt the About page: a section about Josh (marked EDIT ME in `src/app/about/page.tsx`), live numbers (`src/components/LiveStats.tsx`: people here now, unique visitors over 7 / 30 / 90 days, hours listened, a visitors-per-day chart in `src/components/UsageChart.tsx`, top three most played), a Support CRUX section whose button appears once `NEXT_PUBLIC_DONATE_URL` is set, then the existing science sections
+- All of it runs on one Supabase project. Schema, policies and the `live_stats()` function are in `supabase/migrations/20261105000000_live_room.sql`; setup steps in `supabase/README.md`. The browser only holds the public key. Until `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are set on Vercel the room shows "opens soon" and the About page shows "Live numbers are being switched on", so the code is safe to ship first
+- Visits and finished plays are also logged to Supabase (`SessionTracker`, `useToolTracking`) so the About page numbers come from our own table, not the Vercel API
+- The GitHub FUNDING.yml still pointed at the upstream template author's Ko-fi; replaced with a commented placeholder
+
+### In progress
+- Josh to create the Supabase project, run the migration, and set the two env vars on Vercel (then redeploy). Also to set `NEXT_PUBLIC_DONATE_URL` once there is a donation page, and to rewrite the EDIT ME paragraphs on the About page in his own words
+
+### What didn't work
+- Nothing yet; the room could only be tested without a Supabase project (the "opens soon" state). First live test is after the env vars are set
+
+### Next
+- Decide how to moderate the room: for now the Report button just writes to the `reports` table and someone has to look in the Supabase dashboard (query in `supabase/README.md`). A tiny admin page is the obvious follow-up
+- Turn on `pg_cron` in Supabase and schedule the cleanup at the bottom of the migration so old messages are deleted, not just hidden
+- Consider a Settings toggle to hide the room entirely for people who don't want it

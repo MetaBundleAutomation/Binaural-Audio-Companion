@@ -51,7 +51,18 @@ NEXT_PUBLIC_URL="https://cruxthecoreofcalm.app"
 
 # Optional — Google Analytics
 NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=""
+
+# The room (live chat) and live numbers on the About page — see supabase/README.md
+NEXT_PUBLIC_SUPABASE_URL=""
+NEXT_PUBLIC_SUPABASE_ANON_KEY=""
+
+# "Support CRUX" button on the About page
+NEXT_PUBLIC_DONATE_URL=""
 ```
+
+Vercel Web Analytics is always on (page views plus the usage events described in
+`src/lib/analytics.ts`). The room and the live numbers switch on once the two
+Supabase variables are set; the setup steps are in [supabase/README.md](supabase/README.md).
 
 ---
 

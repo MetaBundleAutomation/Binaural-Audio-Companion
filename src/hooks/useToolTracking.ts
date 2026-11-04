@@ -9,6 +9,8 @@ import {
   type ToolId,
   type ToolPhase,
 } from "@/lib/analytics";
+import { logPlay } from "@/lib/supabase";
+import { getVisitor } from "@/lib/visitor";
 
 interface ActiveRun {
   item: string;
@@ -29,6 +31,9 @@ function endRun(tool: ToolId, current: ActiveRun) {
   clearInterval(current.heartbeat);
   const seconds = (Date.now() - current.startedAt) / 1000;
   send(tool, current.item, "stop", { tool, length: lengthBucket(seconds) });
+  // Runs shorter than a few seconds are taps, not listening.
+  const visitor = getVisitor();
+  if (visitor && seconds >= 5) void logPlay(visitor.id, tool, current.item, seconds);
 }
 
 /**

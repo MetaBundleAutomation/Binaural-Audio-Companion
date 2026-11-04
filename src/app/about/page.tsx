@@ -1,5 +1,12 @@
 import Link from "next/link";
 import Icon from "@/components/Icons";
+import LiveStats from "@/components/LiveStats";
+
+const CARD =
+  "bg-[var(--background-card)] rounded-2xl p-5 sm:p-8 border border-[var(--border-color)]";
+
+const PRIMARY_BUTTON =
+  "inline-flex items-center justify-center min-h-12 px-6 py-3 rounded-full text-[15px] font-bold text-white bg-[var(--primary-dark)] hover:bg-[var(--primary)] transition-all";
 
 const BENEFITS = [
   {
@@ -60,6 +67,8 @@ const BENEFITS = [
 ];
 
 export default function About() {
+  const donateUrl = process.env.NEXT_PUBLIC_DONATE_URL?.trim();
+
   return (
     <main className="min-h-screen">
       <section className="py-20 px-4">
@@ -74,8 +83,67 @@ export default function About() {
 
           <div className="space-y-8">
 
+            {/* Who's behind it */}
+            <div className={CARD}>
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">Who&apos;s behind it</h2>
+              {/* EDIT ME: Joshua's own words go here */}
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
+                I&apos;m Joshua Hoare, founder of Metabundle, a small Australian software company.
+                I built CRUX and I pay for it, so it stays free — no ads, no accounts, no catch.
+              </p>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
+                It was made for Australian veterans living with PTSD, anxiety and tinnitus, and for
+                anyone who needs a bit of calm. The content and the clinical input come from Les,
+                my business partner, and a doctor.
+              </p>
+              <p className="text-[var(--text-secondary)] leading-relaxed">
+                If something isn&apos;t working, or you have an idea for CRUX, email me at{" "}
+                <a
+                  href="mailto:Joshua@metabundle.ai"
+                  className="font-semibold text-[var(--text-primary)] underline underline-offset-4 decoration-[var(--primary-light)] break-words"
+                >
+                  Joshua@metabundle.ai
+                </a>
+                .
+              </p>
+            </div>
+
+            {/* Right now */}
+            <div className={CARD}>
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-5">Right now</h2>
+              <LiveStats />
+            </div>
+
+            {/* Support CRUX */}
+            <div className={CARD}>
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">Support CRUX</h2>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
+                CRUX is free and will stay that way. Support goes towards hosting, audio production
+                and new sessions, and keeps it running with no ads and no accounts.
+              </p>
+              {donateUrl ? (
+                <a
+                  href={donateUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={PRIMARY_BUTTON}
+                >
+                  Support CRUX
+                </a>
+              ) : (
+                <p className="text-[15px] text-[var(--text-secondary)]">
+                  A donation link is coming. In the meantime, the best support is telling a mate who
+                  needs it.
+                </p>
+              )}
+            </div>
+
+            <h2 className="pt-4 text-2xl md:text-3xl font-bold text-[var(--text-primary)] text-center">
+              The science behind the tools
+            </h2>
+
             {/* What are Binaural Beats */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+            <div className={CARD}>
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What are Binaural Beats?</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 Binaural beats are an auditory illusion created when two slightly different frequencies
@@ -95,7 +163,7 @@ export default function About() {
             </div>
 
             {/* Brain Wave Types */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+            <div className={CARD}>
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">Brain Wave Types</h2>
               <ul className="space-y-3 text-[var(--text-secondary)]">
                 <li><strong className="text-[var(--text-primary)]">Delta (0.5–4 Hz):</strong> Deep sleep and physical restoration</li>
@@ -107,7 +175,7 @@ export default function About() {
             </div>
 
             {/* What is Noise Therapy */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+            <div className={CARD}>
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What is Noise Therapy?</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed">
                 Noise Therapy uses steady, broadband sound to soften the contrast between quiet and
@@ -123,7 +191,7 @@ export default function About() {
             </div>
 
             {/* What is Tinnitus */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+            <div className={CARD}>
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What is Tinnitus?</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 Tinnitus is the perception of sound — most often a ringing, buzzing, hissing, or
@@ -141,7 +209,7 @@ export default function About() {
             </div>
 
             {/* What is Box Breathing */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+            <div className={CARD}>
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What is Box Breathing?</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed">
                 Box breathing is a paced breathing technique — inhale, hold, exhale, hold, each for an
@@ -154,7 +222,7 @@ export default function About() {
             </div>
 
             {/* What is Heart-Brain Coherence */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+            <div className={CARD}>
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What is Heart–Brain Coherence?</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 Heart-brain coherence is a physiological state in which your heart, nervous system, and
@@ -175,7 +243,7 @@ export default function About() {
             </div>
 
             {/* What is a Body Scan */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+            <div className={CARD}>
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">What is a Body Scan?</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 A body scan is a guided mindfulness practice in which you move your attention slowly and
@@ -195,7 +263,7 @@ export default function About() {
             </div>
 
             {/* Benefits */}
-            <div className="bg-[var(--background-card)] rounded-2xl p-8 border border-[var(--border-color)]">
+            <div className={CARD}>
               <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-3 text-center">Benefits</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed text-center max-w-2xl mx-auto mb-8">
                 Delivered across CRUX&apos;s tools — binaural beats, noise therapy, box breathing, heart-brain coherence, and body scan.

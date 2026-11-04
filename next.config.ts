@@ -13,7 +13,8 @@ import type { NextConfig } from "next";
 //    webpack's eval-source-map devtool which wraps every module factory in
 //    eval() for fast incremental rebuilds with inline source maps.  Production
 //    builds use a non-eval devtool so 'unsafe-eval' is omitted there.
-//  • connect-src includes Google Analytics endpoints used by @next/third-parties.
+//  • connect-src includes Google Analytics endpoints used by @next/third-parties,
+//    plus the Supabase project (https + wss) when NEXT_PUBLIC_SUPABASE_URL is set.
 //  • script-src includes va.vercel-scripts.com for Vercel Web Analytics. In
 //    production the script and its beacons are served from /_vercel/insights/
 //    on this origin (covered by 'self'); the external host is only used for the
@@ -23,6 +24,13 @@ import type { NextConfig } from "next";
 // ─────────────────────────────────────────────────────────────────────────────
 const isDev = process.env.NODE_ENV === "development";
 
+// Supabase (the room + live numbers). Only allowed when configured, so a deploy
+// without the env vars gets the tighter policy.
+const SUPABASE_URL = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(/\/+$/, "");
+const SUPABASE_SOURCES = SUPABASE_URL
+  ? ` ${SUPABASE_URL} ${SUPABASE_URL.replace(/^http(s?):/, "ws$1:")}` // REST + realtime websocket
+  : "";
+
 const CSP = [
   "default-src 'self'",
   // 'unsafe-eval' added in dev only — webpack eval-source-map requires it
@@ -31,7 +39,7 @@ const CSP = [
   // data: removed — no data-URI images are used in this app
   "img-src 'self'",
   "font-src 'self'",
-  "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com",
+  `connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com${SUPABASE_SOURCES}`,
   // blob: lets the in-browser-generated noise (White/Pink/Brown) and Pure Tone
   // play through <audio> from URL.createObjectURL() blobs; 'self' covers the
   // shipped audio files (Heavy Rain, binaural tracks, Box Breathing).
