@@ -1,12 +1,34 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { HEARTBEAT_MS, lengthBucket, trackEvent, type ToolId } from "@/lib/analytics";
+import {
+  HEARTBEAT_MS,
+  lengthBucket,
+  toolEventName,
+  trackEvent,
+  type ToolId,
+  type ToolPhase,
+} from "@/lib/analytics";
 
 interface ActiveRun {
   item: string;
   startedAt: number;
   heartbeat: ReturnType<typeof setInterval>;
+}
+
+type EventProps = Record<string, string | number | boolean | null>;
+
+// Every phase goes out twice: as the roll-up row (tool_start) and as the
+// per-item row (binaural_focus_start). Same properties on both.
+function send(tool: ToolId, item: string, phase: ToolPhase, props: EventProps) {
+  trackEvent(`tool_${phase}`, props);
+  trackEvent(toolEventName(tool, item, phase), props);
+}
+
+function endRun(tool: ToolId, current: ActiveRun) {
+  clearInterval(current.heartbeat);
+  const seconds = (Date.now() - current.startedAt) / 1000;
+  send(tool, current.item, "stop", { tool, length: lengthBucket(seconds) });
 }
 
 /**
@@ -17,14 +39,15 @@ interface ActiveRun {
  *   useToolTracking("binaural", track?.name, isPlaying);
  *
  * Behaviour:
- *   - `isActive` false → true   sends tool_start { tool, item }
- *   - every 5 minutes active    sends tool_5min  { tool, item }
- *   - `isActive` true → false   sends tool_stop  { tool, length }
- *   - the component unmounting, or the page being closed, also sends tool_stop
+ *   - `isActive` false → true   sends *_start { tool, item }
+ *   - every 5 minutes active    sends *_5min  { tool, item }
+ *   - `isActive` true → false   sends *_stop  { tool, length }
+ *   - the component unmounting, or the page being closed, also sends *_stop
  *     so runs that end by navigating away are still counted
  *
- * `item` is read when the run starts; changing it mid-run (a voice toggle, a
- * frequency nudge) does not create extra events.
+ * `item` is the label shown to the person (track name, noise, voice, preset,
+ * narrator). It is read when the run starts; changing it mid-run (a voice
+ * toggle, a frequency nudge) does not create extra events.
  *
  * Audio in CRUX keeps playing with the screen off, so a hidden tab does NOT
  * count as a stop. Only `pagehide` (close / navigate away) flushes early.
@@ -43,12 +66,12 @@ export function useToolTracking(
     const start = () => {
       if (run.current) return;
       const label = latest.current.item ?? "unknown";
-      trackEvent("tool_start", { tool, item: label });
+      send(tool, label, "start", { tool, item: label });
       run.current = {
         item: label,
         startedAt: Date.now(),
         heartbeat: setInterval(() => {
-          trackEvent("tool_5min", { tool, item: label });
+          send(tool, label, "5min", { tool, item: label });
         }, HEARTBEAT_MS),
       };
     };
@@ -56,10 +79,8 @@ export function useToolTracking(
     const stop = () => {
       const current = run.current;
       if (!current) return;
-      clearInterval(current.heartbeat);
       run.current = null;
-      const seconds = (Date.now() - current.startedAt) / 1000;
-      trackEvent("tool_stop", { tool, length: lengthBucket(seconds) });
+      endRun(tool, current);
     };
 
     if (isActive) start();
@@ -87,10 +108,8 @@ export function useToolTracking(
     return () => {
       const current = run.current;
       if (!current) return;
-      clearInterval(current.heartbeat);
       run.current = null;
-      const seconds = (Date.now() - current.startedAt) / 1000;
-      trackEvent("tool_stop", { tool, length: lengthBucket(seconds) });
+      endRun(tool, current);
     };
   }, [tool]);
 }
