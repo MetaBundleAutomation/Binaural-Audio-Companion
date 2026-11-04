@@ -12,7 +12,7 @@ export interface Preferences {
   defaultBeatId:    string | null;
   defaultNoiseId:   string | null;
   defaultVolume:    number;          // 0–100, default 30
-  launchScreen:         "home" | "player" | "noise" | "box-breathing";
+  launchScreen:         "home" | "player" | "noise" | "box-breathing" | "body-scan";
   boxBreathingVoice:    "default" | "sarah" | "john" | "julie";
   boxBreathingVoiceEnabled: boolean;
   coherencePreset:      "gentle" | "balanced" | "deeper";

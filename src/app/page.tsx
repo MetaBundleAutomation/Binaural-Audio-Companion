@@ -1,7 +1,4 @@
-import Player from "@/components/Player";
-import LaunchScrollHandler from "@/components/LaunchScrollHandler";
-import BrainScience from "@/components/BrainScience";
-import LiveChat from "@/components/LiveChat";
+import LaunchRedirect from "@/components/LaunchRedirect";
 import NavIcon from "@/components/NavIcons";
 import { NAV_GROUPS } from "@/lib/nav";
 
@@ -15,7 +12,7 @@ const HOME_GRID_ITEMS = NAV_GROUPS
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <LaunchScrollHandler />
+      <LaunchRedirect />
 
       {/* Hero Section */}
       <section id="hero" className="pt-14 pb-10 md:pt-20 md:pb-14 px-5 text-center">
@@ -29,11 +26,11 @@ export default function Home() {
             Audio sessions and guided meditations to help you feel calmer, focus more clearly throughout your day, or ease into sleep.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <a href="#player" className="btn-primary">
+            <a href="/binaural" className="btn-primary">
               Start listening
               <NavIcon name="arrow" className="h-4 w-4" />
             </a>
-            <a href="#brain-science" className="btn-secondary">
+            <a href="/brain" className="btn-secondary">
               What&apos;s the loop?
             </a>
           </div>
@@ -68,12 +65,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      <div className="max-w-[1400px] mx-auto px-5">
-        <Player />
-        <LiveChat />
-        <BrainScience />
-      </div>
 
       {/* Closing affirmation — a quiet bookend to the greeting at the top */}
       <p className="text-center text-base font-light italic text-[var(--text-secondary)] max-w-[600px] mx-auto px-4 pb-20 pt-4 text-balance">

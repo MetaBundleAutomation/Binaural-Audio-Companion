@@ -16,6 +16,21 @@ CRUX is a progressive web app (PWA) that combines three evidence-informed tools:
 
 ---
 
+## Pages
+
+| Route | What it is |
+| --- | --- |
+| `/` | Hero and the grid of tools |
+| `/binaural` | Binaural Beats player |
+| `/noise` | Noise Therapy (noises, nature videos, Pure Tone) |
+| `/breathe` | Box Breathing and Heart–Brain Coherence |
+| `/body-scan` | Guided body scan |
+| `/brain` | What's happening in your brain, with the quick-check quiz |
+| `/room` | The room: live anonymous chat |
+| `/instructions`, `/about`, `/settings`, `/disclaimer` | Guides, who's behind it and live numbers, preferences, legal |
+
+The four audio tools are rendered once by `src/components/ToolStage.tsx` in the root layout, so a session keeps playing while you move between pages; a now-playing bar links back to it.
+
 ## Tech Stack
 
 - [Next.js 15](https://nextjs.org/) (App Router)

@@ -89,7 +89,11 @@ function getRadius(phase: number, elapsed: number, idle: boolean): number {
 
 type Status = "idle" | "intro" | "running" | "paused";
 
-export default function BoxBreathing() {
+export default function BoxBreathing({
+  onRunningChange,
+}: {
+  onRunningChange?: (running: boolean) => void;
+} = {}) {
 
   // ── Canvas / animation refs ──────────────────────────────────────────────
 
@@ -161,6 +165,9 @@ export default function BoxBreathing() {
 
   // ── React state ──────────────────────────────────────────────────────────
   const [status, setStatus] = useState<Status>("idle");
+  useEffect(() => {
+    onRunningChange?.(status === "intro" || status === "running");
+  }, [status, onRunningChange]);
   useToolTracking(
     "box-breathing",
     prefs.boxBreathingVoiceEnabled

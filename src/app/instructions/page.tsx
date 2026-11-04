@@ -47,7 +47,7 @@ export default function Instructions() {
                 </li>
                 <li className="card card-hover p-4 sm:p-5">
                   <strong className="block text-[15px] font-semibold text-[var(--text-primary)]">I want to understand why it feels this way</strong>
-                  <span className="mt-1 block text-[14px]">Read <Link href="/#brain-science" className="underline underline-offset-2 text-[var(--primary)] hover:opacity-80">🧠 What&apos;s happening in your brain</Link> — no jargon, no blame, with a short quick check at the end.</span>
+                  <span className="mt-1 block text-[14px]">Read <Link href="/brain" className="underline underline-offset-2 text-[var(--primary)] hover:opacity-80">🧠 What&apos;s happening in your brain</Link> — no jargon, no blame, with a short quick check at the end.</span>
                 </li>
               </ul>
             </div>
@@ -202,7 +202,7 @@ export default function Instructions() {
               </ul>
 
               <Link
-                href="/#player"
+                href="/binaural"
                 className="btn-ghost mt-5"
               >
                 <svg
@@ -406,7 +406,7 @@ export default function Instructions() {
               </p>
 
               <Link
-                href="/#noise"
+                href="/noise"
                 className="btn-ghost mt-5"
               >
                 <svg
@@ -491,7 +491,7 @@ export default function Instructions() {
                 Works well with the <strong className="text-[var(--text-primary)]">Binaural Beats</strong> sessions.
               </p>
               <Link
-                href="/#box-breathing"
+                href="/breathe"
                 className="btn-ghost mt-5"
               >
                 <svg
@@ -591,7 +591,7 @@ export default function Instructions() {
               </div>
 
               <Link
-                href="/#coherence-breathing"
+                href="/breathe#coherence-breathing"
                 className="btn-ghost mt-2 mb-6"
               >
                 <svg
@@ -704,7 +704,7 @@ export default function Instructions() {
               </div>
 
               <Link
-                href="/#body-scan"
+                href="/body-scan"
                 className="btn-ghost mt-2 mb-6"
               >
                 <svg
@@ -799,7 +799,7 @@ export default function Instructions() {
               </p>
 
               <Link
-                href="/#aromatherapy-pairing"
+                href="/binaural#aromatherapy-pairing"
                 className="btn-ghost mt-5"
               >
                 <svg

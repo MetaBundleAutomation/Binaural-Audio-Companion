@@ -27,7 +27,11 @@ function formatTime(s: number): string {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function BodyScan() {
+export default function BodyScan({
+  onRunningChange,
+}: {
+  onRunningChange?: (running: boolean) => void;
+} = {}) {
   const { prefs, isHydrated, set } = usePreferences();
 
   // ── Refs ───────────────────────────────────────────────────────────────────
@@ -38,6 +42,9 @@ export default function BodyScan() {
 
   // ── State ──────────────────────────────────────────────────────────────────
   const [status,           setStatus]          = useState<SessionStatus>("idle");
+  useEffect(() => {
+    onRunningChange?.(status === "playing");
+  }, [status, onRunningChange]);
   const [isControlsVisible, setIsControlsVisible] = useState(true);
   const [elapsed,       setElapsed]       = useState(0);
   const [audioDuration, setAudioDuration] = useState(0);

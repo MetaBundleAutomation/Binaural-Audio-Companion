@@ -2,8 +2,8 @@ import type { NavIconName } from "@/components/NavIcons";
 
 /**
  * The app's navigation, used by the desktop sidebar and the phone drawer.
- * Tool links point at sections of the home page for now; when each tool gets
- * its own page these become routes and nothing else has to change.
+ * Every tool has its own page; the four audio tools are rendered by ToolStage
+ * so they keep playing across navigation.
  */
 
 export interface NavItem {
@@ -23,23 +23,23 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     title: "Tools",
     items: [
-      { label: "Binaural Beats", href: "/#player",        icon: "headphones", tagline: "Sessions for focus, calm and sleep" },
-      { label: "Noise Therapy",  href: "/#noise",         icon: "waves",      tagline: "Steady sound to settle the alarm" },
-      { label: "Breathing",      href: "/#box-breathing", icon: "wind",       tagline: "Box breathing and coherence" },
-      { label: "Body Scan",      href: "/#body-scan",     icon: "body",       tagline: "Guided, head to toe" },
+      { label: "Binaural Beats", href: "/binaural",        icon: "headphones", tagline: "Sessions for focus, calm and sleep" },
+      { label: "Noise Therapy",  href: "/noise",         icon: "waves",      tagline: "Steady sound to settle the alarm" },
+      { label: "Breathing",      href: "/breathe", icon: "wind",       tagline: "Box breathing and coherence" },
+      { label: "Body Scan",      href: "/body-scan",     icon: "body",       tagline: "Guided, head to toe" },
     ],
   },
   {
     title: "Learn",
     items: [
-      { label: "Your Brain",   href: "/#brain-science", icon: "brain", tagline: "What the loop is and why it feels this way" },
+      { label: "Your Brain",   href: "/brain", icon: "brain", tagline: "What the loop is and why it feels this way" },
       { label: "Instructions", href: "/instructions",   icon: "book",  tagline: "How to use each tool" },
     ],
   },
   {
     title: "Community",
     items: [
-      { label: "The Room", href: "/#room", icon: "chat", tagline: "Say hello to whoever is up" },
+      { label: "The Room", href: "/room", icon: "chat", tagline: "Say hello to whoever is up" },
     ],
   },
   {
