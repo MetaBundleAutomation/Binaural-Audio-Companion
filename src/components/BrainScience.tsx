@@ -110,7 +110,7 @@ export default function BrainScience() {
 
         {/* Summary box — for anyone who reads nothing else */}
         <div className="card glow px-5 py-5 sm:px-7 sm:py-6 mb-8">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--primary)] mb-2">
+          <div className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[var(--primary)] mb-2">
             In one paragraph
           </div>
           <p className="text-[17px] font-semibold leading-relaxed text-[var(--text-primary)]">

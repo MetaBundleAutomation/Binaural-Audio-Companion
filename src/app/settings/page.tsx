@@ -26,7 +26,7 @@ const THEMES: {
   swatch:  string;   // accent colour for the preview dot
   bg:      string;   // background colour for the preview dot ring
 }[] = [
-  { id: "slate",    label: "Slate",     swatch: "#00D084", bg: "#313B44" },
+  { id: "slate",    label: "Slate",     swatch: "#00D084", bg: "#161F24" },
   { id: "airforce", label: "Air Force", swatch: "#5592E8", bg: "#0D1830" },
   { id: "army",     label: "Army",      swatch: "#7A8C38", bg: "#131610" },
   { id: "midnight", label: "Midnight",  swatch: "#3A7080", bg: "#08090C" },
@@ -93,7 +93,7 @@ function SegmentedControl<T extends string | number>({
           aria-pressed={value === option}
           className={`flex-1 py-2 px-3 rounded-xl border text-[13px] font-semibold transition-all cursor-pointer ${
             value === option
-              ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)] text-[var(--text-primary)]"
+              ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_12%,transparent)] text-[var(--text-primary)]"
               : "border-[var(--border-color)] bg-[var(--background-light)] text-[var(--text-secondary)] hover:border-[var(--primary)]"
           }`}
         >
@@ -338,7 +338,7 @@ export default function SettingsPage() {
                     aria-label="Enable coherence chime"
                     onClick={() => set("coherenceChimeEnabled", !prefs.coherenceChimeEnabled)}
                     className={`relative shrink-0 w-12 h-6 rounded-full border-0 cursor-pointer transition-colors ${
-                      prefs.coherenceChimeEnabled ? "bg-[var(--primary)]" : "bg-[var(--border-color)]"
+                      prefs.coherenceChimeEnabled ? "bg-[var(--primary-dark)]" : "bg-[var(--border-color)]"
                     }`}
                   >
                     <span
@@ -411,7 +411,7 @@ export default function SettingsPage() {
                     aria-label="Show aromatherapy suggestions"
                     onClick={() => set("showAromatherapy", !prefs.showAromatherapy)}
                     className={`relative shrink-0 w-12 h-6 rounded-full border-0 cursor-pointer transition-colors ${
-                      prefs.showAromatherapy ? "bg-[var(--primary)]" : "bg-[var(--border-color)]"
+                      prefs.showAromatherapy ? "bg-[var(--primary-dark)]" : "bg-[var(--border-color)]"
                     }`}
                   >
                     <span
@@ -452,7 +452,7 @@ export default function SettingsPage() {
                         aria-pressed={isSelected}
                         className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all cursor-pointer ${
                           isSelected
-                            ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)] text-[var(--text-primary)]"
+                            ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_12%,transparent)] text-[var(--text-primary)]"
                             : "border-[var(--border-color)] bg-[var(--background-light)] text-[var(--text-secondary)] hover:border-[var(--primary)]"
                         }`}
                       >

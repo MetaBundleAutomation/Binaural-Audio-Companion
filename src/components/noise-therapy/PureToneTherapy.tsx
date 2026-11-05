@@ -277,6 +277,8 @@ export default function PureToneTherapy({
     const c1 = (cs.getPropertyValue('--primary') || '#2B6B7F').trim();
     const c2 = (cs.getPropertyValue('--primary-light') || '#3A8FA3').trim();
     let raf;
+    // Under the device's "reduce motion" setting the wave is drawn but does not travel.
+    const motionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
       canvas.width = canvas.clientWidth * dpr; canvas.height = canvas.clientHeight * dpr;
@@ -303,7 +305,7 @@ export default function PureToneTherapy({
       s.amp += (targetAmp - s.amp) * 0.08;
       const cycles = 2 + 12 * freqToSlider(s.freq);
       const mid = h / 2, ampPx = mid * 0.78 * s.amp;
-      s.phase += s.playing ? 0.05 : 0.012;
+      if (!(motionQuery && motionQuery.matches)) s.phase += s.playing ? 0.05 : 0.012;
       const grad = ctx.createLinearGradient(0, 0, w, 0);
       grad.addColorStop(0, c1); grad.addColorStop(0.55, c2); grad.addColorStop(1, c1);
       ctx.beginPath();
@@ -335,7 +337,7 @@ export default function PureToneTherapy({
     .crux-tone .ct-hz b{font-size:30px;font-weight:600;letter-spacing:-0.02em;color:var(--text-primary)}
     .crux-tone .ct-hz span{font-size:13px;color:var(--text-secondary);margin-left:4px}
     .crux-tone .ct-controls{display:flex;align-items:center;justify-content:center;gap:14px;margin:18px 0 6px}
-    .crux-tone .ct-play{width:70px;height:70px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:var(--on-accent);box-shadow:0 12px 40px -12px var(--glow);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s}
+    .crux-tone .ct-play{width:70px;height:70px;border-radius:50%;border:0;background:var(--btn-primary-bg);color:var(--on-accent);box-shadow:0 12px 40px -12px var(--glow);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s}
     .crux-tone .ct-play:hover{transform:translateY(-2px)}
     .crux-tone .ct-play:active{transform:scale(.95)}
     .crux-tone .ct-lock{display:flex;align-items:center;justify-content:center;gap:8px;margin:16px 0 4px;min-height:36px}

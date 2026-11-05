@@ -111,3 +111,32 @@
 - The app icon (Southern Cross on navy) was left as it is
 - If the uppercase headings are not wanted, revert the commit "Clinic-style headings and body font" on its own; the colours stay
 - Check Slate on a real phone at night. It is lighter than Navy was; Dim in Settings gives the darker slate
+
+## 5 November 2026 (night): readability and accessibility pass
+
+Josh found the new Slate colours a little hard to read, and reminded us who uses CRUX: people with poor eyesight, PTSD and possibly epilepsy. So the colours were redone by measurement, not by eye.
+
+### Finished
+- Every piece of text on all eleven pages now measures at least 7:1 contrast (WCAG AAA), in all five themes and at Dim, Default and Bright. Before this, Slate body and card text sat between 5.6 and 6.4, the footer small print fell to 3.4, and the older themes dropped to 3.2 on Bright
+- Slate is now the clinic's darker slate (#161F24) as the page. Buttons keep the clinic green (#00D084); green used as text is a lighter tint of it (#6BE8BB) because the pure green is not readable enough as small text. The background colour haze is off on Slate and halved on the other themes, since it sat behind text
+- Navy, Army, Air Force and Midnight got lighter text tints and deeper button gradients, so white button labels also reach 7:1
+- Nothing is smaller than 12px any more (labels were 9.5 to 11px) and no text is faded with opacity
+- A card inside a card no longer gets lighter with each layer (`.card .card` in `src/app/globals.css`). Stacked see-through panels were what dragged contrast down on the Your Brain page
+- Track cards are darker so their white titles read (they were pale with white text, 3.6:1). Noise tile taglines stay in the normal text colour. The loop diagram's numbers are light on a dark chip with a coloured ring. Names in the room use lighter tints. Switches use a deeper track when on, so the white knob stands out
+- The phone menu and top bar are fully solid. They were 6% see-through, which put the page heading faintly behind the menu links
+- Reduced motion: if the device's "reduce motion" setting is on, Body Scan uses its narration-only version, the fullscreen nature video shows its still image, and the pure-tone wave holds still. Box and coherence breathing already respected the setting
+- Seizure safety check. Nothing in the interface flashes: the fastest animation is the five small equaliser bars on a playing track, under one cycle a second and a few pixels wide. The three nature videos were measured frame by frame in the browser against the WCAG "three flashes" rule (flicker faster than three times a second over a quarter of a 10-degree area fails). Running water: at most 1.1% of the frame flickers that fast, worst area 6.3% against the 25% limit. Tropical beach: 0.13% and 1.2%. Beach sunrise: none. Whole-picture brightness never jumped more than 0.5% between frames
+
+### In progress
+- Nothing
+
+### What didn't work
+- Measuring by the colour variables alone missed the real problems. Text sits on stacked see-through layers, so the check has to walk the rendered page and add the layers up. The first pass also read colours mid-transition after switching brightness, which gave false failures until transitions were switched off for the measurement
+- The first Bright level was too light to hold 7:1 on nested panels with any sensible text colour, so Bright is now only a step lighter than Default
+
+### Next
+- The faded preview cards either side of the selected track are below 7:1 on purpose (they are previews); they reach full contrast when centred
+- Not measured: text drawn on the breathing canvases, text over the Body Scan video, hover states. Worth a look on a real phone
+- The video check sampled 30 frames a second on a coarse grid and covered about half of two of the videos. It is a screening check, not a certified photosensitivity (Harding) test
+- Good follow-ups: an Accessibility section in Settings (reduce motion, larger text) for people who do not know their device has those settings; transcripts for the guided audio; bigger touch targets on the small round buttons
+- Keep the rule: before changing a colour, measure it. The comment at the top of the Slate block in `globals.css` says what has to hold

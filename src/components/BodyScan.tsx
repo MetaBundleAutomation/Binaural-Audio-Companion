@@ -66,7 +66,10 @@ export default function BodyScan({
   // ── Video capability detection (no shared hook — done inline like other components) ──
   useEffect(() => {
     const v = document.createElement("video");
-    setCanPlayVideo(v.canPlayType("video/mp4") !== "");
+    // People who ask their device for reduced motion get the narration-only
+    // version (tier 2): the same session without the moving background.
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    setCanPlayVideo(v.canPlayType("video/mp4") !== "" && !reduceMotion);
   }, []);
 
   // ── Audio metadata + ended events; re-wired when narrator changes ──────────
@@ -283,7 +286,7 @@ export default function BodyScan({
               </div>
 
               {/* Scrub bar + time */}
-              <div className="flex items-center gap-3 px-1 text-[11px] tabular-nums text-white/70">
+              <div className="flex items-center gap-3 px-1 text-[12px] tabular-nums text-white/90">
                 <span>{formatTime(elapsed)}</span>
                 <input
                   type="range"
@@ -314,7 +317,7 @@ export default function BodyScan({
               </div>
             </div>
 
-            <p className="text-white/40 text-xs">Tap anywhere to show controls</p>
+            <p className="text-white/80 text-xs">Tap anywhere to show controls</p>
           </div>
         </div>
       )}
@@ -368,7 +371,7 @@ export default function BodyScan({
                     aria-pressed={narrator === n}
                     className={`px-5 py-2 rounded-full border text-sm font-semibold transition-all cursor-pointer ${
                       narrator === n
-                        ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)] text-[var(--text-primary)]"
+                        ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_12%,transparent)] text-[var(--text-primary)]"
                         : "border-[var(--border-color)] bg-[var(--background-light)] text-[var(--text-secondary)] hover:border-[var(--primary)]"
                     }`}
                   >
@@ -402,7 +405,7 @@ export default function BodyScan({
             {/* Scrub + end session shown in card only for audio-only fallback */}
             {!canPlayVideo && isActive && (
               <>
-                <div className="flex items-center gap-3 px-1 text-[11px] tabular-nums text-[var(--text-secondary)]">
+                <div className="flex items-center gap-3 px-1 text-[12px] tabular-nums text-[var(--text-secondary)]">
                   <span>{formatTime(elapsed)}</span>
                   <input
                     type="range"

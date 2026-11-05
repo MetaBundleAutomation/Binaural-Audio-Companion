@@ -182,6 +182,17 @@ export default function NoiseGenerator({ isAudioPlaying, onActiveChange }: Noise
   const [autoSync, setAutoSync]       = useState(false);
   const [isLoading, setIsLoading]     = useState(false);
   const [videoFullscreen, setVideoFullscreen] = useState<NoiseType | null>(null); // which video sound is showing fullscreen
+  // With the device's "reduce motion" setting on, the fullscreen video stays on
+  // its still image; the sound plays as usual.
+  const [reduceMotion, setReduceMotion] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mq) return;
+    setReduceMotion(mq.matches);
+    const onChange = () => setReduceMotion(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
   const [controlsVisible, setControlsVisible] = useState(true);
   const controlsTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -613,14 +624,11 @@ export default function NoiseGenerator({ isAudioPlaying, onActiveChange }: Noise
                   <div className="font-semibold text-[17px] tracking-tight mb-1 text-[var(--text-primary)]">
                     {n.label}
                   </div>
-                  <div
-                    className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-secondary)]"
-                    style={{ color: isSelected ? n.color : undefined }}
-                  >
+                  <div className="text-[12px] font-semibold uppercase tracking-widest text-[var(--text-secondary)]">
                     {n.tagline}
                   </div>
                   {isVideoSound(type) && (
-                    <div className="mt-1.5 text-[11px] font-semibold" style={{ color: n.color }}>
+                    <div className="mt-1.5 text-[12px] font-semibold text-[var(--text-secondary)]">
                       🎬 Includes full-screen nature video
                     </div>
                   )}
@@ -670,7 +678,7 @@ export default function NoiseGenerator({ isAudioPlaying, onActiveChange }: Noise
                 disabled={isLoading}
                 className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-[var(--on-accent)] hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-wait disabled:translate-y-0"
                 style={{
-                  background: "linear-gradient(135deg, var(--accent), var(--accent-2))",
+                  background: "var(--btn-primary-bg)",
                   boxShadow: "0 12px 40px -12px var(--glow)",
                 }}
                 aria-label={isLoading ? "Loading audio…" : noiseIsPlaying ? "Stop noise" : "Play noise"}
@@ -722,7 +730,7 @@ export default function NoiseGenerator({ isAudioPlaying, onActiveChange }: Noise
                   onClick={() => setAutoSync((v) => !v)}
                   className={`relative w-11 h-6 rounded-full border cursor-pointer transition-colors overflow-hidden ${
                     autoSync
-                      ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)]"
+                      ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_12%,transparent)]"
                       : "border-[var(--border-color)] bg-[var(--background-light)]"
                   }`}
                 >
@@ -762,7 +770,7 @@ export default function NoiseGenerator({ isAudioPlaying, onActiveChange }: Noise
           muted
           loop
           playsInline
-          autoPlay
+          autoPlay={!reduceMotion}
           preload="none"
           className="w-full h-full object-cover"
         />

@@ -192,8 +192,10 @@ function LoopRing() {
             <circle
               cx={round(left + 14)}
               cy={round(top)}
-              r={14}
-              fill={node.color}
+              r={13}
+              fill="var(--surface-solid)"
+              stroke={node.color}
+              strokeWidth={2.5}
             />
             <text
               x={round(left + 14)}
@@ -201,7 +203,7 @@ function LoopRing() {
               textAnchor="middle"
               fontSize={FONT_SIZE}
               fontWeight={700}
-              fill="var(--background)"
+              fill="var(--text-primary)"
             >
               {i + 1}
             </text>
@@ -240,8 +242,8 @@ function LoopList() {
               style={{ borderColor: step.color }}
             >
               <span
-                className="w-7 h-7 shrink-0 rounded-full flex items-center justify-center text-[14px] font-bold text-[var(--background)]"
-                style={{ backgroundColor: step.color }}
+                className="w-7 h-7 shrink-0 rounded-full border-2 flex items-center justify-center text-[14px] font-bold text-[var(--text-primary)] bg-[var(--surface-solid)]"
+                style={{ borderColor: step.color }}
               >
                 {i + 1}
               </span>

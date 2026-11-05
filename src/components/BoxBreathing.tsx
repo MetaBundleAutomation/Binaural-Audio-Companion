@@ -701,7 +701,7 @@ export default function BoxBreathing({
             tabIndex={0}
             onKeyDown={(e) => (e.key === " " || e.key === "Enter") && handleToggleVoice()}
             className={`relative w-11 h-6 rounded-full cursor-pointer transition-colors overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] ${
-              prefs.boxBreathingVoiceEnabled ? "bg-[var(--primary)]" : "bg-[var(--border-color)]"
+              prefs.boxBreathingVoiceEnabled ? "bg-[var(--primary-dark)]" : "bg-[var(--border-color)]"
             }`}
           >
             <span className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${
@@ -738,7 +738,7 @@ export default function BoxBreathing({
                   aria-pressed={prefs.boxBreathingVoice === v}
                   className={`py-1.5 px-4 rounded-full border text-[13px] font-semibold transition-all cursor-pointer ${
                     prefs.boxBreathingVoice === v
-                      ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)] text-[var(--text-primary)]"
+                      ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_12%,transparent)] text-[var(--text-primary)]"
                       : "border-[var(--border-color)] bg-[var(--background-light)] text-[var(--text-secondary)] hover:border-[var(--primary)]"
                   }`}
                 >

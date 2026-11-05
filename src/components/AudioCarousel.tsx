@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useMemo } from "react";
-import { tracks, lightenHex } from "@/data/tracks";
+import { tracks } from "@/data/tracks";
 import Icon from "./Icons";
 import { usePreferences } from "@/hooks/usePreferences";
 
@@ -23,8 +23,8 @@ const EMBED_STEP_2 = 127;
 
 const PEEK_SCALE   = 0.68;
 const FAR_SCALE    = 0.50;
-const PEEK_OPACITY = 0.65;
-const FAR_OPACITY  = 0.28;
+const PEEK_OPACITY = 0.8;
+const FAR_OPACITY  = 0.5;
 
 // Drag-vs-tap: ignore clicks where the pointer moved more than this
 const TAP_MAX_MOVE_PX = 8;
@@ -238,7 +238,8 @@ export default function AudioCarousel({
             <div
               className="w-full h-full rounded-3xl flex flex-col items-center justify-center gap-2 relative overflow-hidden"
               style={{
-                background: `linear-gradient(135deg, ${lightenHex(track.color, 0.18)} 0%, ${lightenHex(track.color, 0.32)} 100%)`,
+                // Darkened, not lightened: white text needs 7:1 on every track colour.
+                background: `linear-gradient(135deg, color-mix(in srgb, ${track.color} 80%, black) 0%, color-mix(in srgb, ${track.color} 62%, black) 100%)`,
                 border:     isHero ? "2px solid rgba(255,255,255,0.18)" : "2px solid transparent",
                 boxShadow:  isHero
                   ? `0 24px 64px rgba(0,0,0,0.45), 0 0 40px ${track.color}40, 0 0 0 1px rgba(255,255,255,0.06)`
@@ -249,7 +250,7 @@ export default function AudioCarousel({
               <div
                 className="absolute inset-0 pointer-events-none"
                 style={{
-                  background: "radial-gradient(ellipse at 35% 18%, rgba(255,255,255,0.22) 0%, transparent 65%)",
+                  background: "radial-gradient(ellipse at 35% 18%, rgba(255,255,255,0.10) 0%, transparent 65%)",
                 }}
               />
 
@@ -276,7 +277,7 @@ export default function AudioCarousel({
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-white">
                     <path d="M8 5v14l11-7z" />
                   </svg>
-                  <span className="text-white text-[10px] font-bold tracking-wide">PLAY</span>
+                  <span className="text-white text-[12px] font-bold tracking-wide">PLAY</span>
                 </div>
               )}
 
@@ -324,7 +325,7 @@ export default function AudioCarousel({
 
               {/* Short description — standalone hero only */}
               {!embedded && isHero && (
-                <p className="text-white/55 text-[12px] leading-relaxed text-center px-6 z-10 line-clamp-2">
+                <p className="text-white/90 text-[12px] leading-relaxed text-center px-6 z-10 line-clamp-2">
                   {track.description.split("—")[0].split("·")[0].trim()}
                 </p>
               )}

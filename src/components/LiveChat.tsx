@@ -50,13 +50,14 @@ const NEAR_BOTTOM_PX = 80;
 const COUNTER_FROM = 200;
 
 // Hashed from the name, so a person keeps the same colour for the whole visit
-// and the same name reads the same on every screen. All five sit on the dark
-// card backgrounds in every theme.
+// and the same name reads the same on every screen. These are light tints of
+// the app's coral, teal, green and grey, chosen so a name measures 7:1 or
+// better on the card backgrounds in every theme and brightness level.
 const NAME_COLOURS = [
-  "#C97B5A",
-  "#4BA8BD",
-  "#4FA98C",
-  "#8C9BAA",
+  "#E8C8BA",
+  "#A9D5DF",
+  "#AED7CA",
+  "#C8CFD6",
   "var(--primary-light)",
 ] as const;
 
@@ -245,7 +246,7 @@ function MessageRow({
           {message.name}
         </span>
         {own && (
-          <span className="px-1.5 py-px rounded-md text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)] border border-[var(--border-color)]">
+          <span className="px-1.5 py-px rounded-md text-[12px] font-bold uppercase tracking-widest text-[var(--text-secondary)] border border-[var(--border-color)]">
             you
           </span>
         )}

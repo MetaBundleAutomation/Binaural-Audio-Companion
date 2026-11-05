@@ -223,7 +223,7 @@ export default function LiveStats() {
             key={label}
             className="card flex flex-col-reverse px-4 py-4"
           >
-            <dt className="mt-1 text-[11px] uppercase tracking-[0.18em] text-[var(--text-secondary)]">
+            <dt className="mt-1 text-[12px] uppercase tracking-[0.18em] text-[var(--text-secondary)]">
               {label}
             </dt>
             <dd className="text-[28px] font-semibold tracking-tight leading-tight text-[var(--text-primary)]">{value}</dd>
@@ -250,7 +250,7 @@ export default function LiveStats() {
                   aria-pressed={active}
                   className={`min-h-9 min-w-11 px-3 rounded-full border text-[13px] font-semibold transition-all cursor-pointer ${
                     active
-                      ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)] text-[var(--text-primary)]"
+                      ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_12%,transparent)] text-[var(--text-primary)]"
                       : "border-[var(--border-color)] bg-[var(--background-light)] text-[var(--text-secondary)] hover:border-[var(--primary)]"
                   }`}
                 >
@@ -279,7 +279,7 @@ export default function LiveStats() {
                 <span
                   aria-hidden="true"
                   className="w-7 h-7 shrink-0 rounded-full text-[var(--on-accent)] text-[13px] font-bold flex items-center justify-center"
-                  style={{ background: "linear-gradient(135deg, var(--accent), var(--accent-2))" }}
+                  style={{ background: "var(--btn-primary-bg)" }}
                 >
                   {i + 1}
                 </span>
