@@ -26,6 +26,7 @@ const THEMES: {
   swatch:  string;   // accent colour for the preview dot
   bg:      string;   // background colour for the preview dot ring
 }[] = [
+  { id: "slate",    label: "Slate",     swatch: "#00D084", bg: "#313B44" },
   { id: "airforce", label: "Air Force", swatch: "#5592E8", bg: "#0D1830" },
   { id: "army",     label: "Army",      swatch: "#7A8C38", bg: "#131610" },
   { id: "midnight", label: "Midnight",  swatch: "#3A7080", bg: "#08090C" },
@@ -35,8 +36,8 @@ const THEMES: {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function applyTheme(theme: Preferences["theme"]) {
-  document.documentElement.classList.remove("theme-army", "theme-airforce", "theme-midnight");
-  if (theme !== "navy") {
+  document.documentElement.classList.remove("theme-navy", "theme-army", "theme-airforce", "theme-midnight");
+  if (theme !== "slate") {
     document.documentElement.classList.add(`theme-${theme}`);
   }
 }

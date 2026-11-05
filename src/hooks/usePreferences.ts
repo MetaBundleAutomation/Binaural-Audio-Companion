@@ -23,7 +23,7 @@ export interface Preferences {
   favouriteBeats:   string[];        // track names
   favouriteNoises:  string[];        // noise type strings
   brightness:         "dim" | "default" | "bright";
-  theme:              "navy" | "army" | "airforce" | "midnight";
+  theme:              "slate" | "navy" | "army" | "airforce" | "midnight";
   showAromatherapy:   boolean;
 }
 
@@ -48,7 +48,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   favouriteBeats:   [],
   favouriteNoises:  [],
   brightness:         "default",
-  theme:              "navy" as const,
+  theme:              "slate" as const,
   showAromatherapy:   true,
 };
 

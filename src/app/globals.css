@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 /* ──────────────────────────────────────────────────────────────────────────
-   CRUX design system — the Metabundle look (dark-first, glass surfaces,
-   gradient accents) on top of CRUX's four branch themes and three
-   brightness levels. Every colour below is a CSS variable so the themes
+   CRUX design system — the Metabundle layout language (dark-first, glass
+   surfaces) in the partner clinic's colours by default, with four branch
+   themes and three brightness levels on top. Every colour below is a CSS variable so the themes
    in Settings keep working; components reference the variables, never hexes.
    ────────────────────────────────────────────────────────────────────────── */
 
@@ -14,43 +14,93 @@
   --color-foreground: var(--text-primary);
 }
 
-/* ── Navy (default — Royal Australian Navy inspired, Metabundle blue/cyan) ── */
+/* ── Slate (default) ─────────────────────────────────────────────────────────
+   The partner clinic's palette, sampled from their website:
+   charcoal slate #313B44 over a darker bar #161F24, vivid green #00D084,
+   white text, and their olive #536942 as the quiet third colour. ────────── */
 
 :root {
   color-scheme: only dark;
-  --primary:          #4F8FF7;
-  --primary-dark:     #2563EB;
-  --primary-light:    #7CB3FF;
-  --secondary:        #93A0B8;
-  --accent:           #2563EB;   /* gradient start (buttons, glows) */
-  --accent-2:         #22D3EE;   /* gradient end */
-  --accent-3:         #8B5CF6;   /* third ambient blob */
-  --glow:             rgba(37, 99, 235, 0.55);
-  --background:       #05070F;
+  --primary:          #00D084;
+  --primary-dark:     #00A368;
+  --primary-light:    #4FE3AE;
+  --secondary:        #AEB8C0;
+  --accent:           #00B876;   /* gradient start (sliders, glows) */
+  --accent-2:         #00D084;   /* gradient end: the clinic's green */
+  --accent-3:         #536942;   /* third ambient blob: the clinic's olive */
+  --glow:             rgba(0, 208, 132, 0.38);
+  --on-accent:        #12211B;   /* text and icons sitting on an accent fill */
+  --btn-primary-bg:   var(--accent-2);
+  --fx-opacity:       0.4;       /* the clinic's look is flat: keep the glows faint */
+  --background:       #313B44;
   --background-light: rgba(255, 255, 255, 0.03);
   --background-card:  rgba(255, 255, 255, 0.045);
-  --surface-solid:    #0C1120;   /* for things that must be opaque (menus, banners) */
-  --text-primary:     #E6EBF5;
-  --text-secondary:   #93A0B8;
+  --surface-solid:    #161F24;   /* for things that must be opaque (menus, banners) */
+  --text-primary:     #F5F8FA;
+  --text-secondary:   #B9C3CB;
   --border-color:     rgba(255, 255, 255, 0.08);
   --shadow:    0 10px 30px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 24px 60px -28px rgba(0, 0, 0, 0.7);
 }
 html.brightness-dim {
-  --background:       #020309;
+  --background:       #161F24;
   --background-light: rgba(255, 255, 255, 0.02);
   --background-card:  rgba(255, 255, 255, 0.03);
-  --surface-solid:    #070B14;
-  --text-secondary:   #8794AB;
+  --surface-solid:    #0C1317;
+  --text-secondary:   #A3AEB7;
   --border-color:     rgba(255, 255, 255, 0.06);
 }
 html.brightness-bright {
-  --background:       #0D1424;
+  /* On the lighter slate the green is lifted a step so it stays above 4.5:1
+     as text on cards. The branch themes set their own --primary below. */
+  --primary:          #45E2AB;
+  --primary-light:    #7BEBC4;
+  --background:       #3A4550;
   --background-light: rgba(255, 255, 255, 0.045);
   --background-card:  rgba(255, 255, 255, 0.07);
+  --surface-solid:    #1E2830;
+  --text-secondary:   #C7D0D7;
+  --border-color:     rgba(255, 255, 255, 0.12);
+}
+
+/* The four branch themes keep white text on a gradient for filled buttons. */
+html:is(.theme-navy, .theme-army, .theme-airforce, .theme-midnight) {
+  --on-accent: #fff;
+  --fx-opacity: 1;
+  /* The end is darkened so white text stays at 4.5:1 or better across the
+     whole gradient; plain --accent-2 drops to about 1.5:1. */
+  --btn-primary-bg: linear-gradient(
+    90deg,
+    var(--accent),
+    color-mix(in oklab, var(--accent-2) 60%, black)
+  );
+}
+
+/* ── Navy (Royal Australian Navy inspired, Metabundle blue / cyan) ───────── */
+
+html.theme-navy {
+  --primary:          #4F8FF7;
+  --primary-dark:     #2563EB;
+  --primary-light:    #7CB3FF;
+  --secondary:        #93A0B8;
+  --accent:           #2563EB;
+  --accent-2:         #22D3EE;
+  --accent-3:         #8B5CF6;
+  --glow:             rgba(37, 99, 235, 0.55);
+  --background:       #05070F;
+  --surface-solid:    #0C1120;
+  --text-primary:     #E6EBF5;
+  --text-secondary:   #93A0B8;
+}
+html.theme-navy.brightness-dim {
+  --background:       #020309;
+  --surface-solid:    #070B14;
+  --text-secondary:   #8794AB;
+}
+html.theme-navy.brightness-bright {
+  --background:       #0D1424;
   --surface-solid:    #182238;
   --text-secondary:   #A6B2C8;
-  --border-color:     rgba(255, 255, 255, 0.12);
 }
 
 /* ── Army (Australian Army inspired — olive / earth) ─────────────────────── */
@@ -261,7 +311,7 @@ summary:focus-visible {
 /* ── Components ───────────────────────────────────────────────────────────── */
 
 @layer components {
-  /* Gradient pill — the one primary action in a view. */
+  /* Filled pill — the one primary action in a view. */
   .btn-primary {
     display: inline-flex;
     align-items: center;
@@ -273,14 +323,11 @@ summary:focus-visible {
     font-size: 15px;
     font-weight: 600;
     letter-spacing: -0.01em;
-    color: #fff;
-    /* The end is darkened so white text stays at 4.5:1 or better across the
-       whole gradient in every theme; plain --accent-2 drops to about 1.5:1. */
-    background: linear-gradient(
-      90deg,
-      var(--accent),
-      color-mix(in oklab, var(--accent-2) 60%, black)
-    );
+    /* Fill and text colour come from the theme: flat clinic green with dark
+       text by default, a darkened gradient with white text on the branch
+       themes. Either way the label stays at 4.5:1 or better. */
+    color: var(--on-accent);
+    background: var(--btn-primary-bg);
     box-shadow: 0 12px 40px -12px var(--glow);
     transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.2s ease;
     cursor: pointer;
