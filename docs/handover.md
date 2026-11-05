@@ -140,3 +140,23 @@ Josh found the new Slate colours a little hard to read, and reminded us who uses
 - The video check sampled 30 frames a second on a coarse grid and covered about half of two of the videos. It is a screening check, not a certified photosensitivity (Harding) test
 - Good follow-ups: an Accessibility section in Settings (reduce motion, larger text) for people who do not know their device has those settings; transcripts for the guided audio; bigger touch targets on the small round buttons
 - Keep the rule: before changing a colour, measure it. The comment at the top of the Slate block in `globals.css` says what has to hold
+
+## 6 November 2026: Instructions buttons that did not jump to their section
+
+Josh found that the "Instructions" button on Binaural Beats opens the Instructions page at the right section, but the one on Breathing did not.
+
+### Finished
+- The Instructions buttons on Box Breathing, Coherence and Body Scan opened the Instructions page but left it at the top. Binaural Beats, Noise Therapy and the aromatherapy card were fine. All six now land on their own section, on desktop and on a phone
+- Cause: the four audio tools stay in the page, hidden, after their first visit (`src/components/ToolStage.tsx`), so sound keeps playing between pages. Three of them used the same `id` as their section on the Instructions page (`box-breathing`, `coherence-breathing`, `body-scan`). A link such as `/instructions#body-scan` goes to the first element with that id, which was the hidden tool, so nothing moved
+- Knock-on effect, also fixed: after one of those failed jumps, pages opened from the menu stopped going to the top. Coming from far down a long page, Binaural Beats, Noise Therapy and Breathing opened at their footer
+- The tool sections now use ids ending in `-tool`. The ids on the Instructions page are unchanged, so links people have saved still work
+- "Tap to try Coherence Breathing" on the Instructions page opened the Box Breathing tab if Breathing had already been visited. It now opens the Coherence tab (`src/components/BreathingHost.tsx`)
+
+### In progress
+- Nothing
+
+### What didn't work
+- Nothing was wrong with the links themselves, which is why it was hard to see. The addresses were right; the page had two elements with the same id
+
+### Next
+- Rule for new work: an `id` inside a tool (Binaural Beats, Noise Therapy, Breathing, Body Scan) must not be used anywhere else in the app. There is a note at the top of `ToolStage.tsx`

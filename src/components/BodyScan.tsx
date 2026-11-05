@@ -205,7 +205,7 @@ export default function BodyScan({
   // ─── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <section id="body-scan" className="my-16 scroll-mt-24">
+    <section id="body-scan-tool" className="my-16 scroll-mt-24">
 
       {/* Narration audio — hidden, controlled via ref */}
       <audio ref={audioRef} src={NARRATORS[narrator].src} preload="none" />

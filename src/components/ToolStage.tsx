@@ -20,6 +20,12 @@ import NowPlayingBar, { type NowPlaying } from "./NowPlayingBar";
  * carousels measure themselves while visible) and then kept, hidden, for the
  * rest of the visit. The page files under `src/app/<tool>/` only carry the
  * route and its metadata; what you see on them is rendered from here.
+ *
+ * Because the tools stay in the page while hidden, an `id` inside a tool must
+ * not be reused anywhere else in the app. A link such as
+ * `/instructions#body-scan` goes to the first element with that id, and a
+ * hidden tool comes first: the page then does not scroll, and the pages opened
+ * after it stop scrolling to the top. Tool sections use ids ending in `-tool`.
  */
 
 const TOOL_ROUTES = ["/binaural", "/noise", "/breathe", "/body-scan"] as const;
