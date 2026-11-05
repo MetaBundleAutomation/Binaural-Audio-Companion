@@ -278,7 +278,7 @@ export default function LiveStats() {
               >
                 <span
                   aria-hidden="true"
-                  className="w-7 h-7 shrink-0 rounded-full text-white text-[13px] font-bold flex items-center justify-center"
+                  className="w-7 h-7 shrink-0 rounded-full text-[var(--on-accent)] text-[13px] font-bold flex items-center justify-center"
                   style={{ background: "linear-gradient(135deg, var(--accent), var(--accent-2))" }}
                 >
                   {i + 1}

@@ -668,7 +668,7 @@ export default function NoiseGenerator({ isAudioPlaying, onActiveChange }: Noise
               <button
                 onClick={handleToggleNoisePlay}
                 disabled={isLoading}
-                className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-white hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-wait disabled:translate-y-0"
+                className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-[var(--on-accent)] hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-wait disabled:translate-y-0"
                 style={{
                   background: "linear-gradient(135deg, var(--accent), var(--accent-2))",
                   boxShadow: "0 12px 40px -12px var(--glow)",

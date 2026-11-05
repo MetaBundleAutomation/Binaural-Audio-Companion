@@ -335,7 +335,7 @@ export default function PureToneTherapy({
     .crux-tone .ct-hz b{font-size:30px;font-weight:600;letter-spacing:-0.02em;color:var(--text-primary)}
     .crux-tone .ct-hz span{font-size:13px;color:var(--text-secondary);margin-left:4px}
     .crux-tone .ct-controls{display:flex;align-items:center;justify-content:center;gap:14px;margin:18px 0 6px}
-    .crux-tone .ct-play{width:70px;height:70px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 12px 40px -12px var(--glow);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s}
+    .crux-tone .ct-play{width:70px;height:70px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:var(--on-accent);box-shadow:0 12px 40px -12px var(--glow);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s}
     .crux-tone .ct-play:hover{transform:translateY(-2px)}
     .crux-tone .ct-play:active{transform:scale(.95)}
     .crux-tone .ct-lock{display:flex;align-items:center;justify-content:center;gap:8px;margin:16px 0 4px;min-height:36px}

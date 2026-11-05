@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { usePreferences } from "@/hooks/usePreferences";
 
-const THEME_CLASSES    = ["theme-army", "theme-airforce", "theme-midnight"] as const;
+const THEME_CLASSES    = ["theme-navy", "theme-army", "theme-airforce", "theme-midnight"] as const;
 const BRIGHTNESS_CLASSES = ["brightness-dim", "brightness-bright"] as const;
 
 /**
@@ -16,9 +16,9 @@ export default function AppearanceSync() {
   useEffect(() => {
     if (!isHydrated) return;
 
-    // Theme — navy is the default (no class needed)
+    // Theme — slate is the default (no class needed)
     document.documentElement.classList.remove(...THEME_CLASSES);
-    if (prefs.theme !== "navy") {
+    if (prefs.theme !== "slate") {
       document.documentElement.classList.add(`theme-${prefs.theme}`);
     }
   }, [prefs.theme, isHydrated]);

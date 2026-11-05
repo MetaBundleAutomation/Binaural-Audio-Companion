@@ -8,8 +8,8 @@ export async function GET() {
         <div
           style={{
             fontSize: 48,
-            color: "#E6EBF5",
-            background: "linear-gradient(135deg, #05070F 0%, #0C1120 100%)",
+            color: "#F5F8FA",
+            background: "linear-gradient(135deg, #161F24 0%, #313B44 100%)",
             width: "100%",
             height: "100%",
             padding: "60px 80px",
@@ -20,10 +20,10 @@ export async function GET() {
             textAlign: "center",
           }}
         >
-          <div style={{ fontSize: 72, fontWeight: 700, color: "#4F8FF7", marginBottom: 20 }}>
+          <div style={{ fontSize: 72, fontWeight: 700, color: "#00D084", marginBottom: 20 }}>
             {siteName}
           </div>
-          <div style={{ fontSize: 28, color: "#93A0B8", maxWidth: 800 }}>
+          <div style={{ fontSize: 28, color: "#B9C3CB", maxWidth: 800 }}>
             {description}
           </div>
         </div>

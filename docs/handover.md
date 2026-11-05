@@ -91,3 +91,23 @@
 ### Next
 - Check the four themes on a real phone, especially Army and Midnight, where the glow colours are the least tested
 - Consider a Settings toggle to hide the now-playing bar, and controls (pause / stop) on it, which would need the noise and breathing tools to expose a stop handle
+
+## 5 November 2026 (evening): the clinic's colours
+
+### Finished
+- The default look now uses the partner clinic's colours, sampled from the clinic's website (Les has the details): charcoal slate backgrounds, a vivid green accent, white text. It is a new default theme called "Slate" in `src/app/globals.css`. Navy is now a normal theme you pick in Settings (class `theme-navy`), next to Army, Air Force and Midnight. Anyone who had already picked a theme keeps it; everyone else sees Slate
+- Page and section headings (h1 and h2) are set in a condensed uppercase face like the clinic's, and body text is DM Sans, the text font on the clinic's site. Both load through `next/font` in `src/app/layout.tsx`. The clinic's own heading font is a paid one, so Barlow Condensed stands in for it. The rule is near the top of `globals.css`, outside the Tailwind layers on purpose so it beats the `tracking-tight` class on headings
+- Filled buttons and accent chips take their text colour from a new `--on-accent` variable: dark on the clinic green, white on the branch themes. The background glows are turned down on Slate with `--fx-opacity`
+- The browser theme colour, the manifest and the share image use the new slate
+
+### In progress
+- Nothing
+
+### What didn't work
+- The first Bright level let the green drop to 3.8:1 as text on cards. Bright now uses a slightly lighter green and a slightly darker slate, which measures 4.8:1. Text, secondary text and the green were measured at all three brightness levels
+
+### Next
+- The clinic's name and logo are not on the site or in this repo (the repo is public). That needs the clinic's say-so first
+- The app icon (Southern Cross on navy) was left as it is
+- If the uppercase headings are not wanted, revert the commit "Clinic-style headings and body font" on its own; the colours stay
+- Check Slate on a real phone at night. It is lighter than Navy was; Dim in Settings gives the darker slate

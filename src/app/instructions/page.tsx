@@ -561,7 +561,7 @@ export default function Instructions() {
                 ].map(({ n, head, body }) => (
                   <div key={n} className="flex gap-4 items-start">
                     <span
-                      className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold text-white"
+                      className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold text-[var(--on-accent)]"
                       style={{ background: "linear-gradient(135deg, var(--accent), var(--accent-2))" }}
                       aria-hidden="true"
                     >
@@ -689,7 +689,7 @@ export default function Instructions() {
                 ].map(({ n, head, body }) => (
                   <div key={n} className="flex gap-4 items-start">
                     <span
-                      className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold text-white"
+                      className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold text-[var(--on-accent)]"
                       style={{ background: "linear-gradient(135deg, var(--accent), var(--accent-2))" }}
                       aria-hidden="true"
                     >

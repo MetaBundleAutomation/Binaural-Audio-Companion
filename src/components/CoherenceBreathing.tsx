@@ -603,7 +603,7 @@ export default function CoherenceBreathing({
               ].map(({ n, head, body }) => (
                 <div key={n} className="flex gap-4 items-start">
                   <span
-                    className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                    className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-[var(--on-accent)]"
                     style={{ background: "var(--primary)" }}
                     aria-hidden="true"
                   >
