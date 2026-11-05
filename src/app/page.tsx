@@ -44,7 +44,7 @@ export default function Home() {
             <a key={item.href} href={item.href} className="card card-hover flex flex-col p-6">
               <span
                 className="grid h-11 w-11 place-items-center rounded-xl text-[var(--on-accent)] shadow-lg"
-                style={{ background: "linear-gradient(135deg, var(--accent), var(--accent-2))" }}
+                style={{ background: "var(--btn-primary-bg)" }}
                 aria-hidden="true"
               >
                 <NavIcon name={item.icon} className="h-5 w-5" />

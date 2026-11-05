@@ -562,7 +562,7 @@ export default function Instructions() {
                   <div key={n} className="flex gap-4 items-start">
                     <span
                       className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold text-[var(--on-accent)]"
-                      style={{ background: "linear-gradient(135deg, var(--accent), var(--accent-2))" }}
+                      style={{ background: "var(--btn-primary-bg)" }}
                       aria-hidden="true"
                     >
                       {n}
@@ -690,7 +690,7 @@ export default function Instructions() {
                   <div key={n} className="flex gap-4 items-start">
                     <span
                       className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold text-[var(--on-accent)]"
-                      style={{ background: "linear-gradient(135deg, var(--accent), var(--accent-2))" }}
+                      style={{ background: "var(--btn-primary-bg)" }}
                       aria-hidden="true"
                     >
                       {n}

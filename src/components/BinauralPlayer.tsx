@@ -93,7 +93,7 @@ export default function BinauralPlayer({ engine }: { engine: Engine }) {
                 onClick={engine.togglePlay}
                 className="w-[70px] h-[70px] rounded-full flex items-center justify-center cursor-pointer transition-all text-[var(--on-accent)] hover:-translate-y-0.5"
                 style={{
-                  background: "linear-gradient(135deg, var(--accent), var(--accent-2))",
+                  background: "var(--btn-primary-bg)",
                   boxShadow:  "0 12px 40px -12px var(--glow)",
                 }}
                 aria-label={engine.isPlaying ? "Pause" : "Play"}
@@ -110,7 +110,7 @@ export default function BinauralPlayer({ engine }: { engine: Engine }) {
               </button>
             </div>
 
-            <div className="flex items-center gap-3 px-1 text-[11px] tabular-nums text-[var(--text-secondary)]">
+            <div className="flex items-center gap-3 px-1 text-[12px] tabular-nums text-[var(--text-secondary)]">
               <span>{formatTime(Math.min(engine.elapsed, totalSeconds))}</span>
               <div className="flex-1 h-1 rounded-full bg-[var(--background-light)] overflow-hidden">
                 <div

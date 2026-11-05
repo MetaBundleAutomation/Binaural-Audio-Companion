@@ -63,7 +63,7 @@ export default function BrainMap() {
       <p className="text-center text-[13px] text-[var(--text-secondary)] mt-2 mb-1">
         Tap a part below — it’ll light up on the picture too
       </p>
-      <p className="text-center text-[11px] text-[var(--text-secondary)] opacity-70 mb-4">
+      <p className="text-center text-[12px] text-[var(--text-secondary)] mb-4">
         Illustration: “Blausen 0614 - Limbic system” by Blausen.com staff (2014), CC BY, via Medical gallery of Blausen Medical 2014
       </p>
 
@@ -78,7 +78,7 @@ export default function BrainMap() {
               aria-pressed={isActive}
               className={`card flex items-center gap-3 px-4 py-3 text-left transition-all cursor-pointer ${
                 isActive
-                  ? "bg-[color-mix(in_srgb,var(--primary)_16%,transparent)]"
+                  ? "bg-[color-mix(in_srgb,var(--primary)_12%,transparent)]"
                   : "border-[var(--border-color)] bg-[var(--background-light)] hover:border-[var(--primary-light)]"
               }`}
               style={isActive ? { borderColor: part.color } : undefined}
@@ -92,7 +92,7 @@ export default function BrainMap() {
                 <span className="block text-[15px] font-semibold leading-snug text-[var(--text-primary)]">
                   {part.nickname}
                 </span>
-                <span className="block text-[11px] leading-snug text-[var(--text-secondary)]">
+                <span className="block text-[12px] leading-snug text-[var(--text-secondary)]">
                   {part.realName}
                 </span>
               </span>
@@ -125,7 +125,7 @@ export default function BrainMap() {
           </p>
 
           <div className="pt-3 border-t border-[var(--border-color)]">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-secondary)] mb-1.5">
+            <div className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[var(--text-secondary)] mb-1.5">
               Where it is on you
             </div>
             <p className="text-[15px] leading-relaxed text-[var(--text-primary)]">

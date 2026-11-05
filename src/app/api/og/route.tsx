@@ -9,7 +9,7 @@ export async function GET() {
           style={{
             fontSize: 48,
             color: "#F5F8FA",
-            background: "linear-gradient(135deg, #161F24 0%, #313B44 100%)",
+            background: "linear-gradient(135deg, #0D1418 0%, #212B32 100%)",
             width: "100%",
             height: "100%",
             padding: "60px 80px",
@@ -23,7 +23,7 @@ export async function GET() {
           <div style={{ fontSize: 72, fontWeight: 700, color: "#00D084", marginBottom: 20 }}>
             {siteName}
           </div>
-          <div style={{ fontSize: 28, color: "#B9C3CB", maxWidth: 800 }}>
+          <div style={{ fontSize: 28, color: "#C5CED5", maxWidth: 800 }}>
             {description}
           </div>
         </div>

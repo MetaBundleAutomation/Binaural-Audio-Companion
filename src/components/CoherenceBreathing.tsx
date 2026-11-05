@@ -162,7 +162,7 @@ function ChimeToggle({
         onKeyDown={(e) => (e.key === " " || e.key === "Enter") && onToggle()}
         className={`relative rounded-full cursor-pointer transition-colors overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] ${
           small ? "w-9 h-5" : "w-11 h-6"
-        } ${checked ? "bg-[var(--primary)]" : "bg-[var(--border-color)]"}`}
+        } ${checked ? "bg-[var(--primary-dark)]" : "bg-[var(--border-color)]"}`}
       >
         <span
           className={`absolute rounded-full bg-white transition-transform ${
@@ -170,7 +170,7 @@ function ChimeToggle({
           } ${checked ? (small ? "translate-x-4" : "translate-x-5") : "translate-x-0"}`}
         />
       </div>
-      <span className={`text-[var(--text-secondary)] ${small ? "text-xs opacity-70" : "text-sm"}`}>
+      <span className={`text-[var(--text-secondary)] ${small ? "text-xs" : "text-sm"}`}>
         {label}
       </span>
     </div>
@@ -463,7 +463,7 @@ export default function CoherenceBreathing({
 
   const chipBase = "rounded-full border font-semibold transition-all cursor-pointer";
   const activeChip =
-    "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)] text-[var(--text-primary)]";
+    "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_12%,transparent)] text-[var(--text-primary)]";
   const inactiveChip =
     "border-[var(--border-color)] bg-[var(--background-light)] text-[var(--text-secondary)] hover:border-[var(--primary)]";
 
@@ -505,7 +505,7 @@ export default function CoherenceBreathing({
             </Link>
 
             {/* Eyes-open safety line */}
-            <p className="text-[var(--text-secondary)] text-xs text-center max-w-sm leading-relaxed italic opacity-75">
+            <p className="text-[var(--text-secondary)] text-xs text-center max-w-sm leading-relaxed italic">
               Eyes open or closed — whatever feels safe. If anything feels uncomfortable, stop and breathe normally.
             </p>
 
@@ -570,7 +570,7 @@ export default function CoherenceBreathing({
               />
             </div>
 
-            <p className="text-[11px] text-[var(--text-secondary)] text-center opacity-60">
+            <p className="text-[12px] text-[var(--text-secondary)] text-center">
               Tone cues guide each breath
             </p>
 
@@ -604,7 +604,7 @@ export default function CoherenceBreathing({
                 <div key={n} className="flex gap-4 items-start">
                   <span
                     className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-[var(--on-accent)]"
-                    style={{ background: "var(--primary)" }}
+                    style={{ background: "var(--btn-primary-bg)" }}
                     aria-hidden="true"
                   >
                     {n}
@@ -631,7 +631,7 @@ export default function CoherenceBreathing({
             />
 
             {/* Breath counter — muted, non-pressuring */}
-            <p className="text-[var(--text-secondary)] text-xs opacity-55 tracking-widest tabular-nums">
+            <p className="text-[var(--text-secondary)] text-xs tracking-widest tabular-nums">
               {completedBreaths} / {targetBreaths}
             </p>
 

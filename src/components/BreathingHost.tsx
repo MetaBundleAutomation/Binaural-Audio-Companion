@@ -47,7 +47,7 @@ export default function BreathingHost({
               aria-pressed={mode === m}
               className={`px-5 py-2 rounded-full border text-sm font-semibold transition-all cursor-pointer ${
                 mode === m
-                  ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)] text-[var(--text-primary)]"
+                  ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_12%,transparent)] text-[var(--text-primary)]"
                   : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               }`}
             >

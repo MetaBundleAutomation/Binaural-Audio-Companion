@@ -53,7 +53,7 @@ export default function NowPlayingBar({
       aria-live="polite"
     >
       <div className="glass-strong pointer-events-auto flex max-w-full items-center gap-2 overflow-x-auto rounded-full px-3 py-2 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.8)]">
-        <span className="flex shrink-0 items-center gap-2 pl-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-secondary)]">
+        <span className="flex shrink-0 items-center gap-2 pl-1 text-[12px] font-semibold uppercase tracking-[0.18em] text-[var(--text-secondary)]">
           <span
             className="h-1.5 w-1.5 rounded-full bg-[var(--accent-2)]"
             style={{ boxShadow: "0 0 8px var(--accent-2)" }}

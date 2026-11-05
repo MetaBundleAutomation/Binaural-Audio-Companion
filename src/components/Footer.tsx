@@ -30,7 +30,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <p className="font-semibold text-[var(--text-primary)] mb-3 text-[12px] uppercase tracking-widest opacity-60">
+            <p className="font-semibold text-[var(--text-secondary)] mb-3 text-[12px] uppercase tracking-widest">
               Contact
             </p>
             <div className="space-y-1.5">
@@ -55,7 +55,7 @@ export default function Footer() {
                 metabundle.ai
               </a>
             </div>
-            <p className="mt-3 text-[11px] opacity-60 italic leading-snug">
+            <p className="mt-3 text-[12px] italic leading-snug">
               Business enquiries only. For support and crisis resources, please visit our{" "}
               <Link href="/instructions" className="underline hover:opacity-80">Instructions page</Link>.
             </p>
@@ -63,7 +63,7 @@ export default function Footer() {
 
           {/* Legal */}
           <div>
-            <p className="font-semibold text-[var(--text-primary)] mb-3 text-[12px] uppercase tracking-widest opacity-60">
+            <p className="font-semibold text-[var(--text-secondary)] mb-3 text-[12px] uppercase tracking-widest">
               Legal
             </p>
             <div className="space-y-1.5">

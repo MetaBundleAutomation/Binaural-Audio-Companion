@@ -94,7 +94,7 @@ export const metadata: Metadata = {
   },
   other: {
     "color-scheme": "dark",
-    "theme-color": "#313B44",
+    "theme-color": "#161F24",
   },
 };
 

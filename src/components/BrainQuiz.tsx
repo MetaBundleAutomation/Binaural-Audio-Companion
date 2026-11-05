@@ -123,9 +123,9 @@ function OptionRow({
     <div
       className={`card border-2 transition-all ${
         !isChecked && isSelected
-          ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)]"
+          ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_12%,transparent)]"
           : `border-[var(--border-color)] bg-[var(--background-light)]${isChecked ? "" : " hover:border-[var(--primary-light)]"}`
-      } ${status === "neutral" ? "opacity-60" : ""}`}
+      } ${status === "neutral" ? "opacity-80" : ""}`}
       style={frame}
     >
       <label
@@ -278,7 +278,7 @@ export default function BrainQuiz() {
 
         {partsToReread.length > 0 && (
           <div className="mt-6">
-            <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-secondary)]">
+            <div className="mb-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-[var(--text-secondary)]">
               Worth a re-read
             </div>
             <ul className="flex flex-col gap-2">

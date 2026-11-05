@@ -21,7 +21,7 @@ export default function Wordmark({ compact = false }: { compact?: boolean }) {
           {siteName}
         </span>
         {!compact && (
-          <span className="mt-1 whitespace-nowrap text-[9.5px] font-semibold uppercase tracking-[0.18em] text-[var(--text-secondary)]">
+          <span className="mt-1 whitespace-nowrap text-[12px] font-semibold uppercase tracking-[0.18em] text-[var(--text-secondary)]">
             The Core of Calm
           </span>
         )}

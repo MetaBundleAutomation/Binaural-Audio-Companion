@@ -17,74 +17,79 @@
 }
 
 /* ── Slate (default) ─────────────────────────────────────────────────────────
-   The partner clinic's palette, sampled from their website:
-   charcoal slate #313B44 over a darker bar #161F24, vivid green #00D084,
-   white text, and their olive #536942 as the quiet third colour. ────────── */
+   The partner clinic's palette, sampled from their website: their dark slate
+   #161F24 as the page, their mid slate #313B44 for raised surfaces on the
+   Bright level, their green #00D084 for fills, white text.
+
+   Accessibility comes first here (low vision, PTSD, light sensitivity), so
+   the values are set by measurement, not by eye: body text, secondary text
+   and the green used as text all hold 7:1 or better (WCAG AAA) on the page,
+   on cards and on solid surfaces at all three brightness levels. Check any
+   change against that before shipping it. ─────────────────────────────── */
 
 :root {
   color-scheme: only dark;
-  --primary:          #00D084;
-  --primary-dark:     #00A368;
-  --primary-light:    #4FE3AE;
-  --secondary:        #AEB8C0;
-  --accent:           #00B876;   /* gradient start (sliders, glows) */
-  --accent-2:         #00D084;   /* gradient end: the clinic's green */
-  --accent-3:         #536942;   /* third ambient blob: the clinic's olive */
-  --glow:             rgba(0, 208, 132, 0.38);
-  --on-accent:        #12211B;   /* text and icons sitting on an accent fill */
+  --primary:          #6BE8BB;   /* green as text, borders and toggles: a tint of the clinic green */
+  --primary-dark:     #007F51;   /* green on a white chip (5:1) */
+  --primary-light:    #9AF0D0;
+  --secondary:        #D0D8DE;
+  --accent:           #00B876;   /* gradient start (sliders) */
+  --accent-2:         #00D084;   /* fills: the clinic's green */
+  --accent-3:         #536942;   /* the clinic's olive */
+  --glow:             rgba(0, 208, 132, 0.3);
+  --on-accent:        #0B1712;   /* text and icons sitting on an accent fill */
   --btn-primary-bg:   var(--accent-2);
-  --fx-opacity:       0.4;       /* the clinic's look is flat: keep the glows faint */
-  --background:       #313B44;
+  --fx-opacity:       0;         /* no colour haze behind text: flat, like the clinic's site */
+  --background:       #161F24;
   --background-light: rgba(255, 255, 255, 0.03);
-  --background-card:  rgba(255, 255, 255, 0.045);
-  --surface-solid:    #161F24;   /* for things that must be opaque (menus, banners) */
-  --text-primary:     #F5F8FA;
-  --text-secondary:   #B9C3CB;
-  --border-color:     rgba(255, 255, 255, 0.08);
+  --background-card:  rgba(255, 255, 255, 0.05);
+  --surface-solid:    #212B32;   /* for things that must be opaque (menus, banners) */
+  --text-primary:     #F7FAFC;
+  --text-secondary:   #D0D8DE;
+  --border-color:     rgba(255, 255, 255, 0.14);
   --shadow:    0 10px 30px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 24px 60px -28px rgba(0, 0, 0, 0.7);
 }
 html.brightness-dim {
-  --background:       #161F24;
+  --background:       #0D1418;
   --background-light: rgba(255, 255, 255, 0.02);
-  --background-card:  rgba(255, 255, 255, 0.03);
-  --surface-solid:    #0C1317;
-  --text-secondary:   #A3AEB7;
-  --border-color:     rgba(255, 255, 255, 0.06);
+  --background-card:  rgba(255, 255, 255, 0.035);
+  --surface-solid:    #161F24;
+  --text-secondary:   #C8D1D8;
+  --border-color:     rgba(255, 255, 255, 0.11);
 }
 html.brightness-bright {
-  /* On the lighter slate the green is lifted a step so it stays above 4.5:1
-     as text on cards. The branch themes set their own --primary below. */
-  --primary:          #45E2AB;
-  --primary-light:    #7BEBC4;
-  --background:       #3A4550;
-  --background-light: rgba(255, 255, 255, 0.045);
-  --background-card:  rgba(255, 255, 255, 0.07);
-  --surface-solid:    #1E2830;
-  --text-secondary:   #C7D0D7;
-  --border-color:     rgba(255, 255, 255, 0.12);
+  /* A lighter slate for bright rooms. The text tints are lifted with it so
+     everything still measures 7:1. The branch themes set their own --primary
+     below. */
+  --primary:          #96F1D2;
+  --primary-light:    #BDF7E2;
+  --background:       #1F2930;
+  --surface-solid:    #313B44;
+  --text-secondary:   #DCE3E8;
+  --border-color:     rgba(255, 255, 255, 0.18);
 }
 
-/* The four branch themes keep white text on a gradient for filled buttons. */
+/* The four branch themes keep white text on a gradient for filled buttons.
+   The gradient is deepened so the label measures 7:1 from end to end, and
+   the colour glows are halved so they do not wash out the text above them. */
 html:is(.theme-navy, .theme-army, .theme-airforce, .theme-midnight) {
   --on-accent: #fff;
-  --fx-opacity: 1;
-  /* The end is darkened so white text stays at 4.5:1 or better across the
-     whole gradient; plain --accent-2 drops to about 1.5:1. */
+  --fx-opacity: 0.5;
   --btn-primary-bg: linear-gradient(
     90deg,
-    var(--accent),
-    color-mix(in oklab, var(--accent-2) 60%, black)
+    color-mix(in oklab, var(--accent) 72%, black),
+    color-mix(in oklab, var(--accent-2) 40%, black)
   );
 }
 
 /* ── Navy (Royal Australian Navy inspired, Metabundle blue / cyan) ───────── */
 
 html.theme-navy {
-  --primary:          #4F8FF7;
+  --primary:          #99BEFA;
   --primary-dark:     #2563EB;
-  --primary-light:    #7CB3FF;
-  --secondary:        #93A0B8;
+  --primary-light:    #BCD4FC;
+  --secondary:        #B4BDCE;
   --accent:           #2563EB;
   --accent-2:         #22D3EE;
   --accent-3:         #8B5CF6;
@@ -92,26 +97,28 @@ html.theme-navy {
   --background:       #05070F;
   --surface-solid:    #0C1120;
   --text-primary:     #E6EBF5;
-  --text-secondary:   #93A0B8;
+  --text-secondary:   #B4BDCE;
 }
 html.theme-navy.brightness-dim {
   --background:       #020309;
   --surface-solid:    #070B14;
-  --text-secondary:   #8794AB;
+  --text-secondary:   #B1B9C8;
 }
 html.theme-navy.brightness-bright {
+  --primary:          #B0CDFB;
+  --primary-light:    #CBDEFD;
   --background:       #0D1424;
   --surface-solid:    #182238;
-  --text-secondary:   #A6B2C8;
+  --text-secondary:   #C3CBDA;
 }
 
 /* ── Army (Australian Army inspired — olive / earth) ─────────────────────── */
 
 html.theme-army {
-  --primary:          #9AAE50;
+  --primary:          #B8C684;
   --primary-dark:     #6B7A2E;
-  --primary-light:    #B9CC6E;
-  --secondary:        #9AA08A;
+  --primary-light:    #D0DAAD;
+  --secondary:        #BDC2AE;
   --accent:           #6B7A2E;
   --accent-2:         #C5D86D;
   --accent-3:         #4F8F6A;
@@ -119,26 +126,28 @@ html.theme-army {
   --background:       #070906;
   --surface-solid:    #141810;
   --text-primary:     #E8ECE0;
-  --text-secondary:   #A4AA8E;
+  --text-secondary:   #BDC2AE;
 }
 html.theme-army.brightness-dim {
   --background:       #030402;
   --surface-solid:    #0B0E08;
-  --text-secondary:   #969C80;
+  --text-secondary:   #B9BDAA;
 }
 html.theme-army.brightness-bright {
+  --primary:          #CED7A9;
+  --primary-light:    #E0E6C8;
   --background:       #151A10;
   --surface-solid:    #262C1C;
-  --text-secondary:   #B4BA9C;
+  --text-secondary:   #D0D4C2;
 }
 
 /* ── Air Force (RAAF inspired — bright cobalt / sky) ─────────────────────── */
 
 html.theme-airforce {
-  --primary:          #6AA4FF;
+  --primary:          #9BC2FF;
   --primary-dark:     #3570C8;
-  --primary-light:    #8FC0FF;
-  --secondary:        #8895BD;
+  --primary-light:    #C0D9FF;
+  --secondary:        #B5C0E1;
   --accent:           #3570C8;
   --accent-2:         #75ACFC;
   --accent-3:         #22D3EE;
@@ -146,26 +155,28 @@ html.theme-airforce {
   --background:       #05081A;
   --surface-solid:    #121C38;
   --text-primary:     #ECF2FF;
-  --text-secondary:   #A0AED8;
+  --text-secondary:   #B5C0E1;
 }
 html.theme-airforce.brightness-dim {
   --background:       #02040E;
   --surface-solid:    #0B1226;
-  --text-secondary:   #92A0CC;
+  --text-secondary:   #B1BBDA;
 }
 html.theme-airforce.brightness-bright {
+  --primary:          #BCD6FF;
+  --primary-light:    #D6E6FF;
   --background:       #101A36;
   --surface-solid:    #1E2C50;
-  --text-secondary:   #AEBCE0;
+  --text-secondary:   #CBD4EB;
 }
 
 /* ── Midnight (ultra dark — branch-neutral, teal / cyan) ─────────────────── */
 
 html.theme-midnight {
-  --primary:          #5FA8BC;
+  --primary:          #8FC2D0;
   --primary-dark:     #3A7080;
-  --primary-light:    #8CCADB;
-  --secondary:        #7A8A98;
+  --primary-light:    #B4D6DF;
+  --secondary:        #B0BBC5;
   --accent:           #3A7080;
   --accent-2:         #67E8F9;
   --accent-3:         #4F8F8C;
@@ -173,19 +184,21 @@ html.theme-midnight {
   --background:       #030407;
   --surface-solid:    #0C1218;
   --text-primary:     #D8DCE0;
-  --text-secondary:   #8E9EAC;
+  --text-secondary:   #B0BBC5;
   --shadow:    0 10px 30px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 24px 60px -28px rgba(0, 0, 0, 0.85);
 }
 html.theme-midnight.brightness-dim {
   --background:       #010203;
   --surface-solid:    #06090C;
-  --text-secondary:   #808F9D;
+  --text-secondary:   #B0BAC2;
 }
 html.theme-midnight.brightness-bright {
+  --primary:          #A7CFDA;
+  --primary-light:    #C6E0E7;
   --background:       #0D1218;
   --surface-solid:    #1A232C;
-  --text-secondary:   #9CACBA;
+  --text-secondary:   #C0CAD3;
 }
 
 /* ── Base ─────────────────────────────────────────────────────────────────── */
@@ -413,11 +426,11 @@ summary:focus-visible {
     border-radius: 9999px;
     background: rgba(255, 255, 255, 0.025);
     border: 1px solid var(--border-color);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--accent-2);
+    color: var(--primary);
   }
   .eyebrow::before {
     content: "";
@@ -439,6 +452,15 @@ summary:focus-visible {
     );
     border: 1px solid var(--border-color);
   }
+  /* A card inside a card adds only a faint tint, and a third level adds none:
+     translucent whites stack, and each layer lightens the surface under the
+     text until contrast drops below 7:1. The border still marks the panel. */
+  .card .card {
+    background: var(--background-light);
+  }
+  .card .card .card {
+    background: transparent;
+  }
 }
 
 /* ── Phones: no blur, no entrance animation ────────────────────────────────
@@ -450,7 +472,8 @@ summary:focus-visible {
     backdrop-filter: none !important;
   }
   .glass-strong {
-    background: color-mix(in srgb, var(--surface-solid) 94%, transparent) !important;
+    /* Fully opaque: with no blur, any see-through puts page text behind menu text. */
+    background: var(--surface-solid) !important;
   }
 }
 
