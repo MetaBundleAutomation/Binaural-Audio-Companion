@@ -196,8 +196,10 @@ export default function BrainScience() {
               then, not now.
             </Body>
             <Body>
-              Trauma and long-term pain both knock this clerk about. Scans show
-              this part actually gets smaller.
+              Trauma and long-term pain both knock this clerk about. On
+              average, scans find this part is a little smaller in people with
+              PTSD — though some of that may have been there before the
+              trauma.
             </Body>
             <Punchline>
               That&apos;s why a flashback doesn&apos;t feel like remembering. It
@@ -339,9 +341,12 @@ export default function BrainScience() {
               </Body>
               <Body>
                 This is the solid finding, not the hopeful one: trauma-focused
-                therapy reduces symptoms and changes the underlying wiring. The
-                alarm settles. The supervisor comes back. The clerk starts filing
-                again.
+                therapy reliably reduces symptoms. Fewer false alarms. More room
+                to think. Memories that start to feel like then, not now.
+              </Body>
+              <Body>
+                Early scan studies suggest the brain itself shifts alongside
+                that. That research is young, but it points the same way.
               </Body>
               <p className="text-[19px] font-bold leading-relaxed text-[var(--primary)]">
                 The brain that learned this can learn something else.

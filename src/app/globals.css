@@ -274,7 +274,13 @@ summary:focus-visible {
     font-weight: 600;
     letter-spacing: -0.01em;
     color: #fff;
-    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    /* The end is darkened so white text stays at 4.5:1 or better across the
+       whole gradient in every theme; plain --accent-2 drops to about 1.5:1. */
+    background: linear-gradient(
+      90deg,
+      var(--accent),
+      color-mix(in oklab, var(--accent-2) 60%, black)
+    );
     box-shadow: 0 12px 40px -12px var(--glow);
     transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.2s ease;
     cursor: pointer;

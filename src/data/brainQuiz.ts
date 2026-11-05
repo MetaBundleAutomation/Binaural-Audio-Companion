@@ -98,10 +98,10 @@ export const BRAIN_QUIZ: QuizQuestion[] = [
       },
       {
         id: "q3b",
-        text: "Trauma and long-term pain both knock it about, and scans show it gets smaller.",
+        text: "Trauma and long-term pain both knock it about, and on average scans find it a little smaller.",
         correct: true,
         feedback:
-          "In scans of groups of people, this area is on average a little smaller in PTSD and in some long-term pain conditions.",
+          "In scans of groups of people, this area is on average a little smaller in PTSD and in some long-term pain conditions. Some of that difference may have been there before the trauma.",
       },
       {
         id: "q3c",
@@ -259,7 +259,7 @@ export const BRAIN_QUIZ: QuizQuestion[] = [
     options: [
       {
         id: "q8a",
-        text: "Circuits can change — trauma-focused therapy reduces symptoms and changes the wiring.",
+        text: "Circuits can change — trauma-focused therapy reliably reduces symptoms.",
         correct: true,
         feedback:
           "This is the solid finding, not the hopeful one. Therapy reliably reduces symptoms, and early scan studies suggest the brain's activity can shift alongside that.",
