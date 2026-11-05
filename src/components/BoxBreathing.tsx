@@ -638,7 +638,7 @@ export default function BoxBreathing({
   const btnClass = status === "running" || status === "intro" ? "btn-secondary" : "btn-primary";
 
   return (
-    <section id="box-breathing" className="my-16 scroll-mt-24">
+    <section id="box-breathing-tool" className="my-16 scroll-mt-24">
       <div
         className="card flex flex-col items-center gap-6 p-10"
         style={{ boxShadow: "var(--shadow-lg)" }}
