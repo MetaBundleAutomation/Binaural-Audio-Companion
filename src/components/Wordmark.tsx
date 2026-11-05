@@ -17,7 +17,7 @@ export default function Wordmark({ compact = false }: { compact?: boolean }) {
         <NavIcon name="headphones" className="h-5 w-5" />
       </span>
       <span className="flex flex-col leading-none">
-        <span className="text-[22px] font-bold tracking-tight text-[var(--text-primary)]">
+        <span className="display text-[26px] font-bold text-[var(--text-primary)]">
           {siteName}
         </span>
         {!compact && (

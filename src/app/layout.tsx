@@ -1,7 +1,7 @@
 import "@/app/globals.css";
 
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Barlow_Condensed, DM_Sans } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
 import SessionTracker from "@/components/SessionTracker";
@@ -16,13 +16,25 @@ import Toast from "@/components/Toast";
 import DisclaimerBanner from "@/components/DisclaimerBanner";
 import { baseURL, description, siteName, title } from "@/config";
 
-// display: "optional" — if Inter is not ready in the first-paint window the
-// metric-matched system fallback is used for the session, so text never
-// restyles late on a slow connection.
-const inter = Inter({
+// Body text: DM Sans, the text face on the clinic's own site.
+// display: "optional" — if it is not ready in the first-paint window the
+// metric-matched system fallback is used for that page view, so body text
+// never restyles late on a slow connection.
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-dm-sans",
   display: "optional",
+});
+
+// Headings: Barlow Condensed, a free stand-in for the licensed condensed
+// grotesque the clinic sets its uppercase headings in. "swap" so headings
+// always end up in the display face; next/font's size-adjusted fallback keeps
+// the shift small.
+const barlowCondensed = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  variable: "--font-barlow-condensed",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -92,7 +104,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={inter.variable}>
+    <html lang="en" suppressHydrationWarning className={`${dmSans.variable} ${barlowCondensed.variable}`}>
       <body>
         <BackgroundFX />
         <ServiceWorkerRegistration />
