@@ -8,10 +8,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
     },
     {
-      url: `${baseURL}/ask`,
-      lastModified: new Date(),
-    },
-    {
       url: `${baseURL}/binaural`,
       lastModified: new Date(),
     },
@@ -41,26 +37,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseURL}/instructions`,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseURL}/help`,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseURL}/questions`,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseURL}/bills`,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseURL}/guides/treatment`,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseURL}/guides/ibd`,
       lastModified: new Date(),
     },
   ];

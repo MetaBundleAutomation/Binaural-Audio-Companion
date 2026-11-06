@@ -20,7 +20,7 @@ export async function GET() {
             textAlign: "center",
           }}
         >
-          <div style={{ fontSize: 60, lineHeight: 1.1, fontWeight: 700, color: "#00D084", marginBottom: 28, maxWidth: 1000, textAlign: "center" }}>
+          <div style={{ fontSize: 72, fontWeight: 700, color: "#00D084", marginBottom: 20 }}>
             {siteName}
           </div>
           <div style={{ fontSize: 28, color: "#C5CED5", maxWidth: 800 }}>

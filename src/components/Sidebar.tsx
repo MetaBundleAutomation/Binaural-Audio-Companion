@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import NavIcon from "@/components/NavIcons";
 import Wordmark from "@/components/Wordmark";
-import { ASK_ITEM, CRISIS_LINES, DONATE_URL, HELP_ITEM, HOME_ITEM, NAV_GROUPS, isNavActive } from "@/lib/nav";
+import { CRISIS_LINES, DONATE_URL, HOME_ITEM, NAV_GROUPS, isNavActive } from "@/lib/nav";
 
 /** The browser's current `#hash`, kept fresh so section links can show as active. */
 export function useHash(): string {
@@ -45,22 +45,14 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex flex-col gap-5" aria-label="Primary">
-        <div className="flex flex-col gap-0.5">
-          {[HOME_ITEM, ASK_ITEM].map((item) => {
-            const active = isNavActive(item.href, pathname, hash);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={active ? "page" : undefined}
-                className={linkClass(active)}
-              >
-                <NavIcon name={item.icon} className={`h-5 w-5 ${active ? "text-[var(--accent-2)]" : ""}`} />
-                {item.label}
-              </Link>
-            );
-          })}
-        </div>
+        <Link
+          href={HOME_ITEM.href}
+          aria-current={isNavActive(HOME_ITEM.href, pathname, hash) ? "page" : undefined}
+          className={linkClass(isNavActive(HOME_ITEM.href, pathname, hash))}
+        >
+          <NavIcon name={HOME_ITEM.icon} className="h-5 w-5" />
+          {HOME_ITEM.label}
+        </Link>
 
         {NAV_GROUPS.map((group) => (
           <div key={group.title}>
@@ -106,7 +98,7 @@ export default function Sidebar() {
             className="btn-primary w-full text-[14px]"
           >
             <NavIcon name="heart" className="h-4 w-4" />
-            Support the platform
+            Support CRUX
           </a>
         )}
         <div className="rounded-xl border border-[var(--border-color)] bg-white/[0.02] px-3 py-3 text-[12px] leading-relaxed text-[var(--text-secondary)]">
@@ -120,9 +112,6 @@ export default function Sidebar() {
               {line.name} <span className="font-semibold">{line.number}</span>
             </a>
           ))}
-          <Link href={HELP_ITEM.href} className="mt-1 block font-semibold text-[var(--text-primary)] underline underline-offset-4">
-            More numbers
-          </Link>
         </div>
       </div>
     </aside>

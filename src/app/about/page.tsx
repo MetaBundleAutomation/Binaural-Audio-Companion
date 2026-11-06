@@ -72,7 +72,7 @@ export default function About() {
           <div className="text-center">
             <span className="eyebrow">About</span>
             <h1 className="mt-5 text-balance text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-[var(--text-primary)]">
-              About the Platform
+              About CRUX
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-[var(--text-secondary)] max-w-2xl mx-auto">
               Enhance your mental well-being with binaural beats, noise therapy, and box breathing —
@@ -88,7 +88,7 @@ export default function About() {
               {/* EDIT ME: Joshua's own words go here */}
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 I&apos;m Joshua Hoare, founder of Metabundle, a small Australian software company.
-                I built this platform and I pay to run it. There are no ads, no accounts and no catch.
+                I built CRUX and I pay to run it. There are no ads, no accounts and no catch.
               </p>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                 It was made for Australian veterans living with PTSD, anxiety and tinnitus, and for
@@ -96,7 +96,7 @@ export default function About() {
                 my business partner, and a doctor.
               </p>
               <p className="text-[var(--text-secondary)] leading-relaxed">
-                If something isn&apos;t working, or you have an idea for it, email me at{" "}
+                If something isn&apos;t working, or you have an idea for CRUX, email me at{" "}
                 <a
                   href="mailto:Joshua@metabundle.ai"
                   className="font-semibold text-[var(--text-primary)] underline underline-offset-4 decoration-[var(--primary-light)] break-words"
@@ -113,11 +113,11 @@ export default function About() {
               <LiveStats />
             </div>
 
-            {/* Support the platform */}
+            {/* Support CRUX */}
             <div className={CARD}>
-              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">Support the platform</h2>
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">Support CRUX</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
-                It is free to use, with no ads and no accounts. Support goes towards hosting,
+                CRUX is free to use, with no ads and no accounts. Support goes towards hosting,
                 audio production and new sessions, and helps keep it running.
               </p>
               {donateUrl ? (
@@ -127,7 +127,7 @@ export default function About() {
                   rel="noopener noreferrer"
                   className="btn-primary"
                 >
-                  Support the platform
+                  Support CRUX
                 </a>
               ) : (
                 <p className="text-[15px] text-[var(--text-secondary)]">
@@ -153,7 +153,7 @@ export default function About() {
                 brainwave entrainment.
               </p>
               <p className="text-[var(--text-secondary)] leading-relaxed">
-                The platform also includes a set of tracks built on a different principle: alternating
+                CRUX also includes a set of tracks built on a different principle: alternating
                 left-right audio stimulation. Rather than a frequency difference, these tracks pulse
                 a tone rhythmically between the left and right ears at a steady beat. The result is
                 grounding and physically engaging in a way that complements the binaural sessions —
@@ -202,7 +202,7 @@ export default function About() {
                 For most people it is linked to noise exposure, age-related hearing changes, or periods
                 of heightened stress. While there is no single cure, many find relief through sound: a
                 steady background noise that fills the silence, or a single tone pitched close to the
-                ringing, can reduce how much attention the brain gives to it. The platform&apos;s noise therapy
+                ringing, can reduce how much attention the brain gives to it. CRUX&apos;s noise therapy
                 and Pure Tone tool are both designed with that in mind.
               </p>
             </div>
@@ -236,7 +236,7 @@ export default function About() {
                 longer out-breath — which directly activates the parasympathetic nervous system — and a
                 genuine feeling of gratitude or appreciation, which amplifies and sustains the coherent
                 rhythm. Research from the HeartMath Institute links regular coherence practice to greater
-                emotional resilience, reduced cortisol, and improved cognitive clarity. The platform guides you
+                emotional resilience, reduced cortisol, and improved cognitive clarity. CRUX guides you
                 through all three preset breath ratios so you can find the pace that feels most natural.
               </p>
             </div>
@@ -265,7 +265,7 @@ export default function About() {
             <div className={CARD}>
               <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-3 text-center">Benefits</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed text-center max-w-2xl mx-auto mb-8">
-                Delivered across the platform&apos;s tools — binaural beats, noise therapy, box breathing, heart-brain coherence, and body scan.
+                Delivered across CRUX&apos;s tools — binaural beats, noise therapy, box breathing, heart-brain coherence, and body scan.
               </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {BENEFITS.map(({ icon, title, description }) => (

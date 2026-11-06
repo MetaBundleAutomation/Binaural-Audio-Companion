@@ -1,6 +1,4 @@
-# Community Treatment and Educational Platform
-
-Formerly CRUX, The Core of Calm. "crux" is still the internal codename in storage keys, the service worker cache and file names.
+# CRUX — The Core of Calm
 
 Binaural beats, noise therapy and box breathing — designed for Australian military veterans with PTSD, anxiety and tinnitus, and anyone seeking calm, focus or better sleep.
 
@@ -8,9 +6,9 @@ Funded and powered by [Metabundle](https://metabundle.ai).
 
 ---
 
-## What is it?
+## What is CRUX?
 
-It is a progressive web app (PWA) that began as three evidence-informed tools:
+CRUX is a progressive web app (PWA) that combines three evidence-informed tools:
 
 - **Binaural Beats** — audio sessions tuned to specific brainwave frequencies (Delta, Theta, Alpha, Beta, Gamma) to support focus, relaxation, meditation or sleep.
 - **Noise Therapy** — white, pink and brown noise to mask environmental triggers and reduce hypervigilance.
@@ -22,18 +20,13 @@ It is a progressive web app (PWA) that began as three evidence-informed tools:
 
 | Route | What it is |
 | --- | --- |
-| `/` | The library: a tablet-style home screen of every tool, page and partner site (`src/lib/library.ts`) |
-| `/ask` | Ask CRUX: a guide that points to the right tool or page. On-device by default, Claude when `ANTHROPIC_API_KEY` is set |
+| `/` | Hero and the grid of tools |
 | `/binaural` | Binaural Beats player |
 | `/noise` | Noise Therapy (noises, nature videos, Pure Tone) |
 | `/breathe` | Box Breathing and Heart–Brain Coherence |
 | `/body-scan` | Guided body scan |
 | `/brain` | What's happening in your brain, with the quick-check quiz |
 | `/room` | The room: live anonymous chat |
-| `/help` | Help Now: tap-to-call numbers (`src/lib/help.ts`) |
-| `/questions` | Doctor Questions: build a list for an appointment, kept on the device |
-| `/bills` | Bill Toolkit: bills, paid history, calculator and converter, kept on the device |
-| `/guides/[id]` | In-app home for each set of outside guides (`src/lib/collections.ts`) |
 | `/instructions`, `/about`, `/settings`, `/disclaimer` | Guides, who's behind it and live numbers, preferences, legal |
 
 The four audio tools are rendered once by `src/components/ToolStage.tsx` in the root layout, so a session keeps playing while you move between pages; a now-playing bar links back to it.

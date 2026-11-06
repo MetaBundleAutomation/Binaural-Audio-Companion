@@ -178,7 +178,7 @@ export default function SettingsPage() {
           <div className="mb-10">
             <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-1">My Defaults</h2>
             <p className="text-sm text-[var(--text-secondary)] mb-6">
-              Your defaults are what the app automatically picks for you each time you open it.
+              Your defaults are what CRUX automatically picks for you each time you open it.
             </p>
 
             <div className="space-y-4">
@@ -253,7 +253,7 @@ export default function SettingsPage() {
               <Card>
                 <ControlLabel
                   label="Launch screen"
-                  description="Choose which page opens when you launch the app."
+                  description="Choose which page CRUX opens on when you launch the app."
                 />
                 <SegmentedControl
                   options={["home", "player", "noise", "box-breathing", "body-scan"] as const}
@@ -391,7 +391,7 @@ export default function SettingsPage() {
           <div className="mb-10">
             <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-1">Personalisation</h2>
             <p className="text-sm text-[var(--text-secondary)] mb-6">
-              Tailor the experience to how you like it.
+              Tailor the CRUX experience to how you like it.
             </p>
 
             <div className="space-y-4">

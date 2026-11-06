@@ -161,84 +161,24 @@ Josh found that the "Instructions" button on Binaural Beats opens the Instructio
 ### Next
 - Rule for new work: an `id` inside a tool (Binaural Beats, Noise Therapy, Breathing, Body Scan) must not be used anywhere else in the app. There is a note at the top of `ToolStage.tsx`
 
-## 6 November 2026 (afternoon): the library home screen and Ask CRUX
+## 7 November 2026: rolled back to CRUX as veterans know it
 
-Josh's direction: CRUX becomes the place a person goes to find what they need. The home page becomes a tablet-style screen of features, a chat guide points people to the right one, and content from other specialties can be added over time.
-
-### Finished
-- Home is now a tablet-style library (`src/components/LibraryHome.tsx`): a status row, an ask bar, the four Calm tools as widgets, the other shelves as app icons, and a dock. An Icons / List switch shows every feature as a row with a line of description, for anyone who finds icons hard to read
-- One list drives it all: `src/lib/library.ts`. The home screen, the sidebar and drawer, and the guide all read from it. Adding a feature is one entry there
-- Les's other sites are on the shelves as separate sites that open in a new tab: Treatment Guides (the Community Treatment Platform), IBD Compass and Bill Toolkit. IBS Compass and Spectrum Compass sit on an "In review" shelf with a Draft label, because their own pages say a doctor has not finished checking them. The guide never suggests those two
-- Ask CRUX (`/ask`, `src/components/Guide.tsx`): a short chat that points to the right tool or page. It is in the sidebar, the phone menu, the dock, and the ask bar on the home screen
-- It runs in two ways. With no key it matches the words on the device and sends nothing anywhere (`src/lib/guide.ts`). With `ANTHROPIC_API_KEY` set on Vercel it asks Claude to choose from the library (`src/app/api/guide/route.ts`, instructions in `src/lib/guidePrompt.ts`), and falls back to the on-device answer if that fails
-- Safety, in both modes: every message is checked on the device first. Words that suggest suicide or self-harm get Open Arms, Lifeline and 000 as tap-to-call buttons straight away. Words that read like a medical emergency (chest pain, can't breathe) get "call 000". Neither is sent to the AI. The guide does not diagnose or advise on medication, treatment or claims; it says that is one for the GP and points to the Treatment Guides
-- Nothing a person types is stored or logged. Usage events record that a question was asked and how it was answered, never the words
-- The new pages were measured for contrast in all five themes at three brightness levels: lowest 7.3, nothing under 12px, no faded text. Checked at phone width
-- Service worker cache is now `crux-v17` and precaches `/ask`
-
-### In progress
-- AI mode is built but has only been tested against a stand-in server, not the real Claude service, because there is no key on this machine. Before turning it on: Josh adds `ANTHROPIC_API_KEY` in Vercel, sets a monthly spend limit on the Anthropic account, and tries a dozen real questions
-
-### What didn't work
-- The first test run answered "I have chest pain" with the body scan. That is why the medical emergency check exists
-- Words like "about" and "how do I" matched too much on the device and were taken out of the matcher
-- Importing `supabase.ts` into the guide, just to know whether the room is switched on, added the whole Supabase client to the home page. The guide now reads the two env vars itself
-
-### Next
-- To add another specialty's content: one entry in `library.ts` with `shelf: "care"` and `provider` set to who supplied it. If a clinician has not reviewed it, add `status: "in-review"`
-- The rate limit on `/api/guide` is per server instance. It slows one noisy visitor but it is not a spending cap. Add a Vercel Firewall rate-limit rule on that path before AI mode goes live
-- With AI mode on, questions are sent to Anthropic's service overseas. The Ask page says so. The clinic or a lawyer should confirm they are comfortable with that
-- The clinic's name is still not on the site. Paid listings from other specialties need a rule for how they are labelled before any are sold
-- The on-device matcher is a word list in `guide.ts` (`NEEDS`). Add words there as real use shows what people type
-
-## 6 November 2026 (evening): renamed to Community Treatment and Educational Platform
-
-Josh's decision: CRUX becomes the Community Treatment and Educational Platform, the one place for the calm tools and for health education from the clinic and other specialties.
+On 6 November the home page became a library of features, a guide chat was added, the app was renamed, and Les's other apps were brought inside it. Les raised three worries: veterans already use CRUX and this made it too complicated, the medical content in the other apps needs expert review before it goes live, and it should have waited for the conversation with the clinic. Josh asked for it to be rolled back.
 
 ### Finished
-- The name people see is now "Community Treatment and Educational Platform": page titles, the wordmark, the footer, the installed-app name, the share image, the About, Instructions, Settings and Disclaimer pages, and the lock-screen media label. In running text it is called "the platform" or "the app"
-- The name lives in one place, `src/config.ts` (`siteName`). The short label under the home-screen icon is `shortName`, currently "CTEP"
-- The footer says "Formerly CRUX, The Core of Calm" so people who knew the old name are not lost
-- "Ask CRUX" is now "Ask the Guide"
-- The Disclaimer page had the name changed and nothing else. Its date now reads November 2026
+- The live site is CRUX again, as it was after the clinic colours went in: the same home page and menu, the four tools, Your Brain, Instructions, the room, About and Settings
+- Kept: the readability pass (5 November, night) and the fix for the Instructions buttons (6 November). Both are fixes to what was already there, not new features
+- Taken off the live site: the library home screen, Ask (the guide chat), the new name, Bill Toolkit, Doctor Questions, Help Now, and the pages for the other apps
+- Nothing was thrown away. All of it is on the branch `parked/platform-hub`, and in pull requests 15, 16 and 17
 
 ### In progress
 - Nothing
 
 ### What didn't work
-- Nothing
+- Big changes to what veterans see went straight to the live site in one afternoon, ahead of the conversation with the clinic. Changes of that size should go to a preview link first and wait for a yes
 
 ### Next
-- "crux" is still the internal codename: storage keys (`crux:*`), the service worker cache name and file names. Leave those alone, or people lose their saved settings
-- The web address still contains "crux". Changing it is a domain setting in Vercel
-- The Disclaimer was written for a relaxation tool. With "Treatment" in the name and treatment education on the shelves, it needs a proper read by whoever owns the legal wording
-- People who already installed the app keep the old name under their icon until they reinstall it
-
-## 6 November 2026 (late): Les's apps brought inside the platform
-
-Josh's direction: stop linking out to the other apps and make them part of this one, so everything is integrated while the funding conversations go on. The articles will still need a heavy review.
-
-### Finished
-- Nothing on the home screen leaves the app any more. Every feature opens a page inside the platform
-- **Bill Toolkit** is rebuilt here at `/bills` (`src/components/bills/`, `src/lib/bills.ts`): bills with a calendar, paid history by financial year with a print button, a calculator and a unit converter. It was written from scratch by looking at what the original does, not copied from its code. Bills are kept on the device under `crux:bills`
-- **Doctor Questions** at `/questions` (`src/components/DoctorQuestions.tsx`): tick questions, add your own, copy or print the list. The question bank in `src/data/doctorQuestions.ts` is new and general on purpose. It is not the condition-specific list from IBD Compass
-- **Help Now** at `/help`: eight tap-to-call numbers. Each one was checked against the service's own website on 6 November 2026 (`src/lib/help.ts`). It is in the dock, the phone menu, and linked from every "If things are bad" box
-- **Treatment Guides, IBD Compass, IBS Compass and Spectrum Compass** each have a home page inside the app at `/guides/...` (`src/lib/collections.ts`). The page lists every section with a line on what it covers, and shows the tools in this app that go with it. The two drafts carry a Draft notice and are hidden from search engines
-- Ask the Guide knows the new features: appointment questions go to Doctor Questions, bills to the Bill Toolkit, "what number can I call" to Help Now
-- Printing now works: black on white, menus hidden, only the list or the paid-bills record on the page (`@media print` at the end of `globals.css`)
-- All new pages measured for contrast in five themes at three brightness levels (lowest 7.3), checked at phone width, and every button is at least 44px tall
-- Service worker cache is now `crux-v18`
-
-### In progress
-- **The articles themselves have not moved.** Each section on the `/guides/...` pages still opens the article on its original site in a new tab. The source for those four apps is private, and the text was not copied off the live sites. When Les shares the files, each link in `collections.ts` changes to an in-app page and nothing else moves
-
-### What didn't work
-- Three stat boxes side by side on a phone split "$200.59" over two lines. Total owing now takes its own row on a phone
-- The guide answered "I have an appointment with my GP" with the line about not giving medical advice, because "GP" was in the wrong word list. Fixed
-
-### Next
-- Les: share the source for Community Treatment Platform, IBD Compass, IBS Compass and Spectrum Compass (add Josh's GitHub account, or drop the content files into this repo). Say whether it may sit in this public repo
-- The children's calm corner and games from Spectrum Compass were left out on purpose. This app has an anonymous chat room, and nobody has decided yet how children's features and that room should share one app
-- The three AI assistants in the Compass apps were not rebuilt. There is one guide here, and it only points to things in the library
-- The Bill Toolkit here starts empty. Bills saved on the original Bill Toolkit site stay there, and there is no import yet
-- Les planned a paid tier for the original Bill Toolkit. This version is free and inside the platform, so that plan needs a conversation
+- Decide with the clinic what, if anything, comes back from the parked branch, and in what order
+- Any medical content from the other apps needs a named clinical reviewer before it is shown to anyone
+- People who installed the app during those few hours may see "CTEP" under the icon until they remove it and add it again
+- The offline cache name is back to `crux-v16`. That is fine: phones pick up the change because the file itself is different
