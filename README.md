@@ -20,7 +20,8 @@ CRUX is a progressive web app (PWA) that combines three evidence-informed tools:
 
 | Route | What it is |
 | --- | --- |
-| `/` | Hero and the grid of tools |
+| `/` | The library: a tablet-style home screen of every tool, page and partner site (`src/lib/library.ts`) |
+| `/ask` | Ask CRUX: a guide that points to the right tool or page. On-device by default, Claude when `ANTHROPIC_API_KEY` is set |
 | `/binaural` | Binaural Beats player |
 | `/noise` | Noise Therapy (noises, nature videos, Pure Tone) |
 | `/breathe` | Box Breathing and Heart–Brain Coherence |

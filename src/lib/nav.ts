@@ -1,9 +1,11 @@
 import type { NavIconName } from "@/components/NavIcons";
+import { feature } from "@/lib/library";
 
 /**
  * The app's navigation, used by the desktop sidebar and the phone drawer.
  * Every tool has its own page; the four audio tools are rendered by ToolStage
- * so they keep playing across navigation.
+ * so they keep playing across navigation. Labels, icons and taglines come from
+ * the library (`library.ts`), which also feeds the home screen and the guide.
  */
 
 export interface NavItem {
@@ -19,39 +21,23 @@ export interface NavGroup {
   items: NavItem[];
 }
 
+/** A navigation entry for a library feature, so labels and icons never drift. */
+function item(id: string): NavItem {
+  const f = feature(id);
+  return { label: f.label, href: f.href, icon: f.icon, tagline: f.tagline };
+}
+
 export const NAV_GROUPS: NavGroup[] = [
-  {
-    title: "Tools",
-    items: [
-      { label: "Binaural Beats", href: "/binaural",        icon: "headphones", tagline: "Sessions for focus, calm and sleep" },
-      { label: "Noise Therapy",  href: "/noise",         icon: "waves",      tagline: "Steady sound to settle the alarm" },
-      { label: "Breathing",      href: "/breathe", icon: "wind",       tagline: "Box breathing and coherence" },
-      { label: "Body Scan",      href: "/body-scan",     icon: "body",       tagline: "Guided, head to toe" },
-    ],
-  },
-  {
-    title: "Learn",
-    items: [
-      { label: "Your Brain",   href: "/brain", icon: "brain", tagline: "What the loop is and why it feels this way" },
-      { label: "Instructions", href: "/instructions",   icon: "book",  tagline: "How to use each tool" },
-    ],
-  },
-  {
-    title: "Community",
-    items: [
-      { label: "The Room", href: "/room", icon: "chat", tagline: "Say hello to whoever is up" },
-    ],
-  },
-  {
-    title: "More",
-    items: [
-      { label: "About",    href: "/about",    icon: "info" },
-      { label: "Settings", href: "/settings", icon: "settings" },
-    ],
-  },
+  { title: "Tools",     items: ["binaural", "noise", "breathe", "body-scan"].map(item) },
+  { title: "Learn",     items: ["brain", "instructions"].map(item) },
+  { title: "Community", items: ["room"].map(item) },
+  { title: "More",      items: ["about", "settings"].map(item) },
 ];
 
 export const HOME_ITEM: NavItem = { label: "Home", href: "/", icon: "home" };
+
+/** The guide sits straight under Home in the sidebar and the drawer. */
+export const ASK_ITEM: NavItem = item("ask");
 
 export const CRISIS_LINES = [
   { name: "Open Arms", number: "1800 011 046", tel: "1800011046" },

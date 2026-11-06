@@ -15,7 +15,17 @@ export type NavIconName =
   | "heart"
   | "menu"
   | "close"
-  | "arrow";
+  | "arrow"
+  | "search"
+  | "compass"
+  | "leaf"
+  | "family"
+  | "receipt"
+  | "external"
+  | "grid"
+  | "list"
+  | "send"
+  | "phone";
 
 const PATHS: Record<NavIconName, React.ReactNode> = {
   home: <path d="M3 11.5 12 4l9 7.5M5 10v10h5v-6h4v6h5V10" />,
@@ -76,6 +86,58 @@ const PATHS: Record<NavIconName, React.ReactNode> = {
   menu: <path d="M4 7h16M4 12h16M4 17h16" />,
   close: <path d="M6 6l12 12M18 6 6 18" />,
   arrow: <path d="M5 12h14M13 6l6 6-6 6" />,
+  search: (
+    <>
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.8-3.8" />
+    </>
+  ),
+  compass: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m15.5 8.5-2 5-5 2 2-5z" />
+    </>
+  ),
+  leaf: (
+    <>
+      <path d="M5 19c0-8 5-13 15-14-1 10-6 15-14 15" />
+      <path d="M5 19c2-5 5-8 9-10" />
+    </>
+  ),
+  family: (
+    <>
+      <circle cx="8" cy="7" r="2.5" />
+      <circle cx="17" cy="9.5" r="2" />
+      <path d="M3.5 20v-3.5A4.5 4.5 0 0 1 8 12a4.5 4.5 0 0 1 4.5 4.5V20" />
+      <path d="M14 20v-2.5a3 3 0 0 1 6 0V20" />
+    </>
+  ),
+  receipt: (
+    <>
+      <path d="M6 3h12v18l-3-2-3 2-3-2-3 2z" />
+      <path d="M9 8h6M9 12h6" />
+    </>
+  ),
+  external: (
+    <>
+      <path d="M14 5h5v5" />
+      <path d="M19 5 11 13" />
+      <path d="M18 14v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h4" />
+    </>
+  ),
+  grid: (
+    <>
+      <rect x="4" y="4" width="6.5" height="6.5" rx="1.5" />
+      <rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5" />
+      <rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5" />
+      <rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5" />
+    </>
+  ),
+  list: <path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01" />,
+  send: <path d="M4 12 20 4l-6 16-3-7z" />,
+  phone: (
+    <path d="M6.5 3h3l1.5 4.5-2 1.5a12 12 0 0 0 6 6l1.5-2 4.5 1.5v3a2 2 0 0 1-2 2A16.5 16.5 0 0 1 4.5 5a2 2 0 0 1 2-2z" />
+  ),
 };
 
 export default function NavIcon({

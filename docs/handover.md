@@ -160,3 +160,33 @@ Josh found that the "Instructions" button on Binaural Beats opens the Instructio
 
 ### Next
 - Rule for new work: an `id` inside a tool (Binaural Beats, Noise Therapy, Breathing, Body Scan) must not be used anywhere else in the app. There is a note at the top of `ToolStage.tsx`
+
+## 6 November 2026 (afternoon): the library home screen and Ask CRUX
+
+Josh's direction: CRUX becomes the place a person goes to find what they need. The home page becomes a tablet-style screen of features, a chat guide points people to the right one, and content from other specialties can be added over time.
+
+### Finished
+- Home is now a tablet-style library (`src/components/LibraryHome.tsx`): a status row, an ask bar, the four Calm tools as widgets, the other shelves as app icons, and a dock. An Icons / List switch shows every feature as a row with a line of description, for anyone who finds icons hard to read
+- One list drives it all: `src/lib/library.ts`. The home screen, the sidebar and drawer, and the guide all read from it. Adding a feature is one entry there
+- Les's other sites are on the shelves as separate sites that open in a new tab: Treatment Guides (the Community Treatment Platform), IBD Compass and Bill Toolkit. IBS Compass and Spectrum Compass sit on an "In review" shelf with a Draft label, because their own pages say a doctor has not finished checking them. The guide never suggests those two
+- Ask CRUX (`/ask`, `src/components/Guide.tsx`): a short chat that points to the right tool or page. It is in the sidebar, the phone menu, the dock, and the ask bar on the home screen
+- It runs in two ways. With no key it matches the words on the device and sends nothing anywhere (`src/lib/guide.ts`). With `ANTHROPIC_API_KEY` set on Vercel it asks Claude to choose from the library (`src/app/api/guide/route.ts`, instructions in `src/lib/guidePrompt.ts`), and falls back to the on-device answer if that fails
+- Safety, in both modes: every message is checked on the device first. Words that suggest suicide or self-harm get Open Arms, Lifeline and 000 as tap-to-call buttons straight away. Words that read like a medical emergency (chest pain, can't breathe) get "call 000". Neither is sent to the AI. The guide does not diagnose or advise on medication, treatment or claims; it says that is one for the GP and points to the Treatment Guides
+- Nothing a person types is stored or logged. Usage events record that a question was asked and how it was answered, never the words
+- The new pages were measured for contrast in all five themes at three brightness levels: lowest 7.3, nothing under 12px, no faded text. Checked at phone width
+- Service worker cache is now `crux-v17` and precaches `/ask`
+
+### In progress
+- AI mode is built but has only been tested against a stand-in server, not the real Claude service, because there is no key on this machine. Before turning it on: Josh adds `ANTHROPIC_API_KEY` in Vercel, sets a monthly spend limit on the Anthropic account, and tries a dozen real questions
+
+### What didn't work
+- The first test run answered "I have chest pain" with the body scan. That is why the medical emergency check exists
+- Words like "about" and "how do I" matched too much on the device and were taken out of the matcher
+- Importing `supabase.ts` into the guide, just to know whether the room is switched on, added the whole Supabase client to the home page. The guide now reads the two env vars itself
+
+### Next
+- To add another specialty's content: one entry in `library.ts` with `shelf: "care"` and `provider` set to who supplied it. If a clinician has not reviewed it, add `status: "in-review"`
+- The rate limit on `/api/guide` is per server instance. It slows one noisy visitor but it is not a spending cap. Add a Vercel Firewall rate-limit rule on that path before AI mode goes live
+- With AI mode on, questions are sent to Anthropic's service overseas. The Ask page says so. The clinic or a lawyer should confirm they are comfortable with that
+- The clinic's name is still not on the site. Paid listings from other specialties need a rule for how they are labelled before any are sold
+- The on-device matcher is a word list in `guide.ts` (`NEEDS`). Add words there as real use shows what people type

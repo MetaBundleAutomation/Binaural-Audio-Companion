@@ -18,12 +18,13 @@
 // the SW delete all older caches on activate, so returning users get fresh files.
 // Also version a file's URL when its bytes change (e.g. heavy-rain.mp3 →
 // heavy-rain-v2.mp3, or ?v=N): a brand-new URL can never be served from an old cache.
-const CACHE = "crux-v16";
+const CACHE = "crux-v17";
 
 // Small, critical assets — the app shell, the file-based sounds, and the posters.
 // Cached on install so every sound works offline immediately.
 const CORE_PRECACHE = [
   "/",
+  "/ask",
   "/binaural",
   "/noise",
   "/breathe",
