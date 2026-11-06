@@ -8,7 +8,7 @@ export default function Instructions() {
           <div className="text-center">
             <span className="eyebrow">Instructions</span>
             <h1 className="mt-5 text-balance text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-[var(--text-primary)]">
-              How to Use the Platform
+              How to Use CRUX
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-[var(--text-secondary)] max-w-2xl mx-auto">
               Simple guidelines to help you get the most from your binaural audio sessions.
@@ -336,7 +336,7 @@ export default function Instructions() {
                 <li>
                   <strong className="text-[var(--text-primary)]">Screen off? No problem.</strong>{" "}
                   Once a sound is playing, you can turn your screen off or lock your phone and it
-                  will keep playing. This saves battery and is ideal at bedtime. Leave the app open and your sound keeps playing when the screen turns off, either on its own or when you press the power button.
+                  will keep playing. This saves battery and is ideal at bedtime. Leave CRUX open and your sound keeps playing when the screen turns off, either on its own or when you press the power button.
                   You can adjust the volume before and while the sound is playing, so it stays comfortable for you.
                 </li>
               </ul>
@@ -881,11 +881,11 @@ export default function Instructions() {
               </blockquote>
             </div>
 
-            {/* Make it yours */}
+            {/* Make CRUX Yours */}
             <div className="card p-5 sm:p-8">
-              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">⭐ Make It Yours</h2>
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">⭐ Make CRUX Yours</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-5">
-                The app remembers your preferences so you spend less time setting things up and more time actually using it.
+                CRUX remembers your preferences so you spend less time setting things up and more time actually using it.
               </p>
               <ul className="space-y-4 text-[var(--text-secondary)] leading-relaxed">
                 <li>
@@ -895,7 +895,7 @@ export default function Instructions() {
                   favourite. Favourites float to the top of each list automatically.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">Set what the app opens with.</strong>{" "}
+                  <strong className="text-[var(--text-primary)]">Set what CRUX opens with.</strong>{" "}
                   Your last-used beat and noise are remembered automatically. To pin a specific
                   starting point instead, open{" "}
                   <Link href="/settings" className="underline underline-offset-2 text-[var(--primary)] hover:opacity-80">Settings</Link>{" "}
@@ -928,9 +928,9 @@ export default function Instructions() {
 
             {/* Save to Your Device */}
             <div className="card p-5 sm:p-8">
-              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-2">📲 Save the App to Your Device</h2>
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-2">📲 Save CRUX to Your Device</h2>
               <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
-                It can be installed like a regular app — no app store required. Once installed,
+                CRUX can be installed like a regular app — no app store required. Once installed,
                 it opens in its own full-screen window, works offline, and your settings are always
                 waiting for you exactly where you left them.
               </p>
@@ -941,13 +941,13 @@ export default function Instructions() {
                 <div className="rounded-xl border border-[var(--border-color)] bg-[var(--background-light)] p-5">
                   <p className="font-semibold text-[var(--text-primary)] mb-3">iPhone &amp; iPad (Safari)</p>
                   <ol className="space-y-2 text-[var(--text-secondary)] text-[14px] leading-relaxed list-decimal list-outside pl-5">
-                    <li>Open this site in <strong className="text-[var(--text-primary)]">Safari</strong> — this does not work in Chrome or Firefox on iOS.</li>
+                    <li>Open CRUX in <strong className="text-[var(--text-primary)]">Safari</strong> — this does not work in Chrome or Firefox on iOS.</li>
                     <li>Tap the <strong className="text-[var(--text-primary)]">Share</strong> button at the bottom of the screen (the box with an arrow pointing up).</li>
                     <li>Scroll down in the share sheet and tap <strong className="text-[var(--text-primary)]">Add to Home Screen</strong>.</li>
                     <li>Give it a name (or leave it as-is) and tap <strong className="text-[var(--text-primary)]">Add</strong> in the top-right corner.</li>
                   </ol>
                   <p className="text-[var(--text-secondary)] text-[13px] mt-3 pl-0">
-                    The app icon will appear on your home screen. Tap it to open — it launches without any browser bars.
+                    The CRUX icon will appear on your home screen. Tap it to open — it launches without any browser bars.
                   </p>
                 </div>
 
@@ -955,7 +955,7 @@ export default function Instructions() {
                 <div className="rounded-xl border border-[var(--border-color)] bg-[var(--background-light)] p-5">
                   <p className="font-semibold text-[var(--text-primary)] mb-3">Android (Chrome)</p>
                   <ol className="space-y-2 text-[var(--text-secondary)] text-[14px] leading-relaxed list-decimal list-outside pl-5">
-                    <li>Open this site in <strong className="text-[var(--text-primary)]">Chrome</strong>.</li>
+                    <li>Open CRUX in <strong className="text-[var(--text-primary)]">Chrome</strong>.</li>
                     <li>Tap the <strong className="text-[var(--text-primary)]">three-dot menu</strong> (⋮) in the top-right corner of the browser.</li>
                     <li>Tap <strong className="text-[var(--text-primary)]">Add to Home screen</strong> or <strong className="text-[var(--text-primary)]">Install app</strong> — the exact wording depends on your Android version.</li>
                     <li>Tap <strong className="text-[var(--text-primary)]">Add</strong> when prompted.</li>
@@ -969,7 +969,7 @@ export default function Instructions() {
                 <div className="rounded-xl border border-[var(--border-color)] bg-[var(--background-light)] p-5">
                   <p className="font-semibold text-[var(--text-primary)] mb-3">Desktop — Chrome or Edge</p>
                   <ol className="space-y-2 text-[var(--text-secondary)] text-[14px] leading-relaxed list-decimal list-outside pl-5">
-                    <li>Open this site in <strong className="text-[var(--text-primary)]">Chrome</strong> or <strong className="text-[var(--text-primary)]">Edge</strong>.</li>
+                    <li>Open CRUX in <strong className="text-[var(--text-primary)]">Chrome</strong> or <strong className="text-[var(--text-primary)]">Edge</strong>.</li>
                     <li>Look for the <strong className="text-[var(--text-primary)]">install icon</strong> on the right side of the address bar — it looks like a screen with a download arrow, or a circle with a plus sign (⊕).</li>
                     <li>Click it and then click <strong className="text-[var(--text-primary)]">Install</strong>.</li>
                   </ol>
@@ -998,13 +998,13 @@ export default function Instructions() {
               <ul className="space-y-3 text-[var(--text-secondary)] leading-relaxed mb-6">
                 <li>
                   <strong className="text-[var(--text-primary)]">Not medical advice.</strong>{" "}
-                  This is a wellness tool, not a medical device. It does not replace professional
+                  CRUX is a wellness tool, not a medical device. It does not replace professional
                   mental health care.
                 </li>
                 <li>
                   <strong className="text-[var(--text-primary)]">Do not use while driving or operating machinery.</strong>{" "}
                   Binaural beats and guided breathing are designed to relax and alter your mental
-                  state — always use it in a safe, stationary environment.
+                  state — always use CRUX in a safe, stationary environment.
                 </li>
                 <li>
                   <strong className="text-[var(--text-primary)]">Keep the volume comfortable.</strong>{" "}

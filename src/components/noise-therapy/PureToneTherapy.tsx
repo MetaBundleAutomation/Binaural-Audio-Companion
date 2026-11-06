@@ -30,7 +30,6 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { siteName } from '@/config';
 
 const F_MIN = 100;
 const F_MAX = 12000;
@@ -169,7 +168,7 @@ export default function PureToneTherapy({
     try {
       navigator.mediaSession.metadata = new window.MediaMetadata({
         title: 'Pure Tone · ' + f.toLocaleString() + ' Hz',
-        artist: siteName, album: 'Noise Therapy',
+        artist: 'CRUX', album: 'Noise Therapy',
         artwork: [{ src: artworkUrl || ARTWORK, sizes: '512x512', type: artworkUrl ? 'image/png' : 'image/svg+xml' }],
       });
       navigator.mediaSession.playbackState = state;

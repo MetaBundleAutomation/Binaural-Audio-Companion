@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import NavIcon from "@/components/NavIcons";
 import Wordmark from "@/components/Wordmark";
 import { useHash } from "@/components/Sidebar";
-import { ASK_ITEM, CRISIS_LINES, DONATE_URL, HELP_ITEM, HOME_ITEM, NAV_GROUPS, isNavActive } from "@/lib/nav";
+import { CRISIS_LINES, DONATE_URL, HOME_ITEM, NAV_GROUPS, isNavActive } from "@/lib/nav";
 
 /**
  * Phone and tablet navigation: a floating glass bar with the wordmark and a
@@ -36,7 +36,7 @@ export default function TopBar() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  const items = [HOME_ITEM, ASK_ITEM, HELP_ITEM, ...NAV_GROUPS.flatMap((g) => g.items)];
+  const items = [HOME_ITEM, ...NAV_GROUPS.flatMap((g) => g.items)];
 
   return (
     <header className="sticky top-0 z-40 px-3 pt-3 lg:hidden">
@@ -111,7 +111,7 @@ export default function TopBar() {
                   className="btn-secondary mt-2 w-full"
                 >
                   <NavIcon name="heart" className="h-4 w-4" />
-                  Support the platform
+                  Support CRUX
                 </a>
               )}
 

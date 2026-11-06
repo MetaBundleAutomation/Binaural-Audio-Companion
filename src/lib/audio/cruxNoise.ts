@@ -22,8 +22,6 @@
  * Framework-agnostic — works in any client component. ESM exports.
  */
 
-import { siteName } from '@/config';
-
 const SAMPLE_RATE = 44100;
 const CROSSFADE_SEC = 0.08; // 80 ms equal-power wrap crossfade
 const PEAK = 0.5;           // normalised target (leaves headroom; tune in UI volume)
@@ -169,7 +167,7 @@ export function playLoop(audioEl, url, { title = 'Noise Therapy', artworkUrl } =
   if (typeof navigator !== 'undefined' && 'mediaSession' in navigator) {
     try {
       navigator.mediaSession.metadata = new window.MediaMetadata({
-        title, artist: siteName, album: 'Noise Therapy',
+        title, artist: 'CRUX', album: 'Noise Therapy',
         artwork: artworkUrl ? [{ src: artworkUrl, sizes: '512x512', type: 'image/png' }] : [],
       });
       navigator.mediaSession.playbackState = 'playing';
