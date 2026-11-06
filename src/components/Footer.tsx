@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { siteName } from "@/config";
 
 export default function Footer() {
   return (
@@ -11,9 +12,9 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <p className="text-[17px] font-semibold tracking-tight text-[var(--text-primary)]">
-              CRUX
+              {siteName}
             </p>
-            <p className="mt-1">The Core of Calm</p>
+            <p className="mt-1">Formerly CRUX, The Core of Calm</p>
             <p className="mt-3 leading-relaxed">
               Funded and powered by{" "}
               <a
@@ -81,7 +82,7 @@ export default function Footer() {
         {/* ── Bottom bar ── */}
         <div className="mt-8 pt-6 border-t border-[var(--border-color)] flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between text-[12px] text-[var(--text-secondary)]">
           <p>For educational and wellness purposes only. Not a substitute for professional medical care.</p>
-          <p suppressHydrationWarning>&copy; {new Date().getFullYear()} CRUX. All rights reserved.</p>
+          <p suppressHydrationWarning>&copy; {new Date().getFullYear()} {siteName}. All rights reserved.</p>
         </div>
 
       </div>

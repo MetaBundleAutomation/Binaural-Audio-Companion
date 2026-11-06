@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { tracks, parseDuration } from "@/data/tracks";
 import { usePreferences } from "@/hooks/usePreferences";
+import { siteName } from "@/config";
 
 export interface AudioEngine {
   isPlaying: boolean;
@@ -336,7 +337,7 @@ export function useAudioEngine(): AudioEngine {
     if ("mediaSession" in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: track.name,
-        artist: "CRUX",
+        artist: siteName,
         album: "Binaural Audio",
       });
       navigator.mediaSession.playbackState = "playing";
@@ -415,7 +416,7 @@ export function useAudioEngine(): AudioEngine {
     if ("mediaSession" in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: tracks[index].name,
-        artist: "CRUX",
+        artist: siteName,
         album: "Binaural Audio",
       });
     }

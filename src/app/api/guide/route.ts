@@ -6,7 +6,7 @@ import { GUIDE_LIMITS, guideFeatures, safetyAnswer, type GuideAnswer } from "@/l
 import { guideSystemPrompt } from "@/lib/guidePrompt";
 
 /**
- * Ask CRUX, AI mode.
+ * Ask the Guide, AI mode.
  *
  *   GET  → { ai: boolean }   whether an AI key is configured on this deploy
  *   POST → GuideAnswer       the guide's reply to a short conversation

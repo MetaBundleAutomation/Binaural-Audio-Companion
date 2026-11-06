@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { siteName } from "@/config";
 
 export const metadata: Metadata = {
-  title: "Disclaimer — CRUX",
-  description: "Important information about CRUX, including wellness, safety, and limitation of liability notices.",
+  title: `Disclaimer | ${siteName}`,
+  description: "Important information about the platform, including wellness, safety, and limitation of liability notices.",
   robots: { index: false, follow: false },
 };
 
@@ -15,7 +16,7 @@ export default function DisclaimerPage() {
         Disclaimer
       </h1>
       <p className="mt-4 text-[15px] text-[var(--text-secondary)]">
-        Last updated May 2026
+        Last updated November 2026
       </p>
 
       <div className="mt-12 space-y-10">
@@ -26,10 +27,10 @@ export default function DisclaimerPage() {
             Not medical advice
           </h2>
           <p className="text-[15px] text-[var(--text-secondary)] leading-relaxed">
-            CRUX is a general wellness and relaxation tool. It is not a medical
+            The {siteName} (&ldquo;the platform&rdquo;) is a general wellness and relaxation tool. It is not a medical
             device, does not provide medical advice or diagnosis, and is not a
             substitute for professional medical, psychiatric, or psychological
-            care. Nothing in CRUX should be interpreted as treatment for any
+            care. Nothing in the platform should be interpreted as treatment for any
             physical or mental health condition.
           </p>
           <p className="text-[15px] text-[var(--text-secondary)] leading-relaxed mt-3">
@@ -50,13 +51,13 @@ export default function DisclaimerPage() {
               <strong className="text-[var(--text-primary)]">Do not use while driving or operating machinery.</strong>{" "}
               Binaural beats and guided breathing exercises promote deep
               relaxation and may cause drowsiness or reduced alertness.
-              Always use CRUX in a safe, stationary environment.
+              Always use the platform in a safe, stationary environment.
             </li>
             <li>
               <span className="text-[var(--primary)]">—</span>{" "}
               <strong className="text-[var(--text-primary)]">Use at a comfortable volume.</strong>{" "}
               Prolonged exposure to high-volume audio can cause permanent
-              hearing damage. CRUX works best at low to moderate volumes,
+              hearing damage. The platform works best at low to moderate volumes,
               especially with headphones.
             </li>
             <li>
@@ -81,9 +82,9 @@ export default function DisclaimerPage() {
             Limitation of liability
           </h2>
           <p className="text-[15px] text-[var(--text-secondary)] leading-relaxed">
-            CRUX and its developers, operators, and associated parties accept no
+            The platform and its developers, operators, and associated parties accept no
             liability for any loss, injury, or adverse outcome arising from use of
-            this application. Use of CRUX is entirely at your own risk. By using
+            this application. Use of the platform is entirely at your own risk. By using
             the app you acknowledge that you have read and understood this
             disclaimer.
           </p>

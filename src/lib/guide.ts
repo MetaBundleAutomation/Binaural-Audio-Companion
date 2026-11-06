@@ -1,7 +1,7 @@
 import { GUIDE_FEATURES, type Feature } from "@/lib/library";
 
 /**
- * Ask CRUX: the guide that points a person to the right tool or page.
+ * Ask the Guide: the guide that points a person to the right tool or page.
  *
  * It works in two ways and this file is shared by both:
  *   - On the device. `localAnswer()` matches the person's words against a small
@@ -192,7 +192,7 @@ const NEEDS: Need[] = [
   {
     words: ["instructions", "headphones", "install", "home screen", "offline", "not working", "no sound", "volume", "safe", "safety"],
     picks: ["instructions", "settings"],
-    line: "Instructions covers how each tool works and how to set CRUX up on your phone.",
+    line: "Instructions covers how each tool works and how to set the app up on your phone.",
   },
   {
     words: ["colour", "colours", "color", "colors", "theme", "brightness", "bright", "brighter", "dim", "dimmer", "dark", "darker", "screen", "hard to read", "text size"],
@@ -212,18 +212,18 @@ const NEEDS: Need[] = [
   {
     words: ["autism", "autistic", "adhd", "ibs", "irritable"],
     picks: [],
-    line: "CRUX has nothing reviewed on that yet. There is a draft on the In review shelf on the home screen, waiting on a doctor's check.",
+    line: "There is nothing reviewed on that here yet. There is a draft on the In review shelf on the home screen, waiting on a doctor's check.",
   },
   {
     words: ["who made", "who makes", "who built", "who runs", "donate", "donation"],
     picks: ["about"],
-    line: "About says who makes CRUX and why it is free.",
+    line: "About says who makes this and why it is free.",
   },
 ];
 
 const NO_MATCH: GuideAnswer = {
   reply:
-    "I couldn't match that to anything in CRUX. Tell me a bit more, for example whether it is sleep, feeling wound up, ringing ears, or wanting to understand what is going on. These are where most people start.",
+    "I couldn't match that to anything here. Tell me a bit more, for example whether it is sleep, feeling wound up, ringing ears, or wanting to understand what is going on. These are where most people start.",
   featureIds: ["breathe", "brain"],
   crisis: false,
   source: "device",

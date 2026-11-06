@@ -106,7 +106,7 @@ export default function Sidebar() {
             className="btn-primary w-full text-[14px]"
           >
             <NavIcon name="heart" className="h-4 w-4" />
-            Support CRUX
+            Support the platform
           </a>
         )}
         <div className="rounded-xl border border-[var(--border-color)] bg-white/[0.02] px-3 py-3 text-[12px] leading-relaxed text-[var(--text-secondary)]">
