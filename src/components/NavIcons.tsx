@@ -25,7 +25,8 @@ export type NavIconName =
   | "grid"
   | "list"
   | "send"
-  | "phone";
+  | "phone"
+  | "clipboard";
 
 const PATHS: Record<NavIconName, React.ReactNode> = {
   home: <path d="M3 11.5 12 4l9 7.5M5 10v10h5v-6h4v6h5V10" />,
@@ -135,6 +136,12 @@ const PATHS: Record<NavIconName, React.ReactNode> = {
   ),
   list: <path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01" />,
   send: <path d="M4 12 20 4l-6 16-3-7z" />,
+  clipboard: (
+    <>
+      <rect x="5" y="4.5" width="14" height="16.5" rx="2" />
+      <path d="M9 4.5V3.5h6v1M9 10h6M9 14h6M9 18h3" />
+    </>
+  ),
   phone: (
     <path d="M6.5 3h3l1.5 4.5-2 1.5a12 12 0 0 0 6 6l1.5-2 4.5 1.5v3a2 2 0 0 1-2 2A16.5 16.5 0 0 1 4.5 5a2 2 0 0 1 2-2z" />
   ),

@@ -204,9 +204,9 @@ export default function LibraryHome() {
         {/* Dock */}
         <nav aria-label="Dock" className="mt-10 flex justify-center">
           {view === "icons" ? (
-            <div className="grid w-full max-w-md grid-cols-3 gap-x-2 rounded-[1.75rem] border border-[var(--border-color)] bg-[var(--surface-solid)] px-3 py-2">
+            <div className="grid w-full max-w-lg grid-cols-4 gap-x-1 rounded-[1.75rem] border border-[var(--border-color)] bg-[var(--surface-solid)] px-2 py-2 sm:px-3">
               {dock.map((f) => (
-                <FeatureApp key={f.id} feature={f} from="home" />
+                <FeatureApp key={f.id} feature={f} from="home" compact />
               ))}
             </div>
           ) : (

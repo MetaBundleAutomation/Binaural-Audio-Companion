@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { FeatureRow } from "@/components/FeatureTile";
 import NavIcon from "@/components/NavIcons";
@@ -14,7 +15,7 @@ import {
 } from "@/lib/guide";
 import { guideSession, type GuideMessage } from "@/lib/guideSession";
 import type { Feature } from "@/lib/library";
-import { CRISIS_LINES } from "@/lib/nav";
+import { CRISIS_LINES, HELP_ITEM } from "@/lib/nav";
 
 /**
  * Ask the Guide: a short chat that points a person to the right tool or page.
@@ -300,6 +301,9 @@ function CrisisBlock({ emergency }: { emergency: boolean }) {
       <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
         {emergency ? [triple, ...lines] : [...lines, triple]}
       </div>
+      <Link href={HELP_ITEM.href} className="btn-ghost mt-3 min-h-11">
+        More numbers
+      </Link>
     </div>
   );
 }

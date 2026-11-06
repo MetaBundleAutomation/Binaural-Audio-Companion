@@ -174,9 +174,9 @@ const NEEDS: Need[] = [
     line: "Your Brain explains why the body stays on alert. The Treatment Guides cover PTSD, pain, sleep and more in plain language.",
   },
   {
-    words: ["treatment", "treatments", "therapy", "medication", "medications", "medicine", "tablets", "dose", "dva", "claim", "claims", "gold card", "white card", "referral", "diagnosis", "diagnosed", "doctor", "gp", "psychologist", "psychiatrist", "specialist"],
-    picks: ["treatment-guides"],
-    line: "I can't advise on treatment, medication or claims. That is one for your GP or specialist. The Treatment Guides explain what the options involve, so you can go in prepared.",
+    words: ["treatment", "treatments", "therapy", "medication", "medications", "medicine", "tablets", "dose", "dva", "claim", "claims", "gold card", "white card", "referral", "diagnosis", "diagnosed"],
+    picks: ["treatment-guides", "questions"],
+    line: "I can't advise on treatment, medication or claims. That is one for your GP or specialist. The Treatment Guides explain what the options involve, and Doctor Questions helps you build a list to take with you.",
   },
   {
     words: ["lonely", "alone", "talk", "someone", "chat", "company", "isolated", "nobody", "no one", "mates"],
@@ -200,14 +200,24 @@ const NEEDS: Need[] = [
     line: "Settings has the colour themes and three brightness levels.",
   },
   {
-    words: ["crohn", "crohn's", "crohns", "colitis", "ibd", "bowel", "gut"],
-    picks: ["ibd-compass"],
-    line: "IBD Compass covers Crohn's disease and colitis. It is a separate site.",
+    words: ["appointment", "appointments", "questions", "ask my doctor", "ask the doctor", "see my doctor", "seeing my doctor", "see the doctor", "seeing the doctor", "prepare", "forget", "doctor", "gp", "specialist", "psychologist", "psychiatrist"],
+    picks: ["questions"],
+    line: "Doctor Questions helps you build a list to take to your appointment, so nothing gets forgotten.",
   },
   {
-    words: ["bill", "bills", "budget", "rent", "electricity", "payment", "payments"],
+    words: ["phone number", "phone numbers", "number", "numbers", "call", "ring", "helpline", "hotline", "who can i call", "someone to call", "who do i call"],
+    picks: ["help"],
+    line: "Help Now lists the numbers to call, each one a single tap.",
+  },
+  {
+    words: ["crohn", "crohn's", "crohns", "colitis", "ibd", "bowel", "gut"],
+    picks: ["ibd-compass"],
+    line: "IBD Compass covers Crohn's disease and colitis.",
+  },
+  {
+    words: ["bill", "bills", "budget", "rent", "electricity", "payment", "payments", "calculator", "convert", "converter"],
     picks: ["bill-toolkit"],
-    line: "Bill Toolkit is a large-print list and calendar for household bills. It is a separate site.",
+    line: "Bill Toolkit is a large-print list and calendar for household bills. It stays on your device.",
   },
   {
     words: ["autism", "autistic", "adhd", "ibs", "irritable"],
