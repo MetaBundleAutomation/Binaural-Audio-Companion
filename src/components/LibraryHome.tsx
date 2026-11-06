@@ -119,7 +119,7 @@ export default function LibraryHome() {
                 type="button"
                 onClick={() => chooseView(option)}
                 aria-pressed={view === option}
-                className={`inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] font-semibold transition-colors ${
+                className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3.5 text-[13px] font-semibold transition-colors ${
                   view === option
                     ? "border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_12%,transparent)] text-[var(--text-primary)]"
                     : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
@@ -148,7 +148,7 @@ export default function LibraryHome() {
               autoComplete="off"
               enterKeyHint="send"
               placeholder="Say it in your own words"
-              className="min-w-0 grow bg-transparent py-2 text-[16px] text-[var(--text-primary)] outline-none placeholder:text-[var(--text-secondary)]"
+              className="min-w-0 grow bg-transparent py-2.5 text-[16px] text-[var(--text-primary)] outline-none placeholder:text-[var(--text-secondary)]"
             />
             <button type="submit" className="btn-primary min-h-11 shrink-0 px-5 py-2">
               Ask
@@ -156,7 +156,7 @@ export default function LibraryHome() {
           </div>
           <div className="mt-3 flex flex-wrap justify-center gap-2">
             {HOME_STARTERS.map((starter) => (
-              <button key={starter} type="button" onClick={() => ask(starter)} className="btn-ghost">
+              <button key={starter} type="button" onClick={() => ask(starter)} className="btn-ghost min-h-11">
                 {starter}
               </button>
             ))}

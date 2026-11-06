@@ -166,7 +166,7 @@ export default function Guide() {
             <p className="text-[15px] font-semibold text-[var(--text-primary)]">Try one of these, or type your own.</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {GUIDE_STARTERS.map((starter) => (
-                <button key={starter} type="button" onClick={() => void send(starter)} className="btn-ghost">
+                <button key={starter} type="button" onClick={() => void send(starter)} className="btn-ghost min-h-11">
                   {starter}
                 </button>
               ))}
@@ -233,7 +233,7 @@ export default function Guide() {
 
         {messages.length > 0 && (
           <div className="mt-3 flex justify-end">
-            <button type="button" onClick={startOver} className="btn-ghost">
+            <button type="button" onClick={startOver} className="btn-ghost min-h-11">
               Start over
             </button>
           </div>
@@ -247,13 +247,20 @@ export default function Guide() {
         {ai === null && "Nothing you type here is kept by CRUX."}
       </p>
 
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[14px] text-[var(--text-secondary)]">
-        <span className="font-semibold text-[var(--text-primary)]">If things are bad right now:</span>
-        {CRISIS_LINES.map((line) => (
-          <a key={line.tel} href={`tel:${line.tel}`} className="underline underline-offset-4 hover:text-[var(--text-primary)]">
-            {line.name} <span className="font-semibold text-[var(--text-primary)]">{line.number}</span>
-          </a>
-        ))}
+      <div className="mt-6 flex flex-col items-center gap-2">
+        <span className="text-[14px] font-semibold text-[var(--text-primary)]">If things are bad right now:</span>
+        <div className="flex flex-wrap justify-center gap-2">
+          {CRISIS_LINES.map((line) => (
+            <a
+              key={line.tel}
+              href={`tel:${line.tel}`}
+              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--border-color)] px-4 text-[14px] text-[var(--text-secondary)] hover:border-[var(--primary)]"
+            >
+              <NavIcon name="phone" className="h-4 w-4" />
+              {line.name} <span className="font-semibold text-[var(--text-primary)]">{line.number}</span>
+            </a>
+          ))}
+        </div>
       </div>
     </div>
   );
