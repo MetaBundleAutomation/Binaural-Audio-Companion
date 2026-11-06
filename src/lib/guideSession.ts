@@ -1,7 +1,7 @@
 import type { GuideAnswer } from "@/lib/guide";
 
 /**
- * The Ask CRUX conversation, held in memory for this visit only.
+ * The Ask the Guide conversation, held in memory for this visit only.
  *
  * It lives outside the page component so a person can tap a suggested tool,
  * come back, and find the conversation still there. It is never written to

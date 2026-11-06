@@ -111,7 +111,7 @@ export default function TopBar() {
                   className="btn-secondary mt-2 w-full"
                 >
                   <NavIcon name="heart" className="h-4 w-4" />
-                  Support CRUX
+                  Support the platform
                 </a>
               )}
 

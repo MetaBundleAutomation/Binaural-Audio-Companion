@@ -190,3 +190,26 @@ Josh's direction: CRUX becomes the place a person goes to find what they need. T
 - With AI mode on, questions are sent to Anthropic's service overseas. The Ask page says so. The clinic or a lawyer should confirm they are comfortable with that
 - The clinic's name is still not on the site. Paid listings from other specialties need a rule for how they are labelled before any are sold
 - The on-device matcher is a word list in `guide.ts` (`NEEDS`). Add words there as real use shows what people type
+
+## 6 November 2026 (evening): renamed to Community Treatment and Educational Platform
+
+Josh's decision: CRUX becomes the Community Treatment and Educational Platform, the one place for the calm tools and for health education from the clinic and other specialties.
+
+### Finished
+- The name people see is now "Community Treatment and Educational Platform": page titles, the wordmark, the footer, the installed-app name, the share image, the About, Instructions, Settings and Disclaimer pages, and the lock-screen media label. In running text it is called "the platform" or "the app"
+- The name lives in one place, `src/config.ts` (`siteName`). The short label under the home-screen icon is `shortName`, currently "CTEP"
+- The footer says "Formerly CRUX, The Core of Calm" so people who knew the old name are not lost
+- "Ask CRUX" is now "Ask the Guide"
+- The Disclaimer page had the name changed and nothing else. Its date now reads November 2026
+
+### In progress
+- Nothing
+
+### What didn't work
+- Nothing
+
+### Next
+- "crux" is still the internal codename: storage keys (`crux:*`), the service worker cache name and file names. Leave those alone, or people lose their saved settings
+- The web address still contains "crux". Changing it is a domain setting in Vercel
+- The Disclaimer was written for a relaxation tool. With "Treatment" in the name and treatment education on the shelves, it needs a proper read by whoever owns the legal wording
+- People who already installed the app keep the old name under their icon until they reinstall it

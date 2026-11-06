@@ -1,9 +1,9 @@
 import type { NavIconName } from "@/components/NavIcons";
 
 /**
- * The library: every tool, page and outside site that CRUX can send a person
+ * The library: every tool, page and outside site that the app can send a person
  * to. One list feeds the home screen, the sidebar and drawer (through
- * `nav.ts`) and the Ask CRUX guide, so adding a feature is one entry here.
+ * `nav.ts`) and the Ask the Guide chat, so adding a feature is one entry here.
  *
  * To add content from another specialty, add a `Feature` with `shelf: "care"`
  * (or a new shelf below), an `href`, and `provider` set to who supplied it.
@@ -21,7 +21,7 @@ export interface Feature {
   /** Stable id: used by analytics and by the guide. Never reuse or rename. */
   id: string;
   label: string;
-  /** A path inside CRUX, or a full address for a separate site. */
+  /** A path inside the app, or a full address for a separate site. */
   href: string;
   icon: NavIconName;
   /** One short line: shown in the list view, the drawer and the guide's cards. */
@@ -31,7 +31,7 @@ export interface Feature {
   shelf: ShelfId;
   /** True when it opens a separate site in a new tab. */
   external?: boolean;
-  /** Who supplied it, when that is not CRUX itself. Shown next to the feature. */
+  /** Who supplied it, when that is not the platform itself. Shown next to the feature. */
   provider?: string;
   /** Health content still waiting on a clinician's review. */
   status?: "in-review";
@@ -119,7 +119,7 @@ export const FEATURES: Feature[] = [
     icon: "book",
     tagline: "How to use each tool",
     about:
-      "How to use each tool, a wind-down routine for before sleep, how to save CRUX to a phone, and safety information.",
+      "How to use each tool, a wind-down routine for before sleep, how to save the app to a phone, and safety information.",
     shelf: "understand",
   },
   {
@@ -202,7 +202,7 @@ export const FEATURES: Feature[] = [
   // ── Dock: always within reach ──────────────────────────────────────────────
   {
     id: "ask",
-    label: "Ask CRUX",
+    label: "Ask the Guide",
     href: "/ask",
     icon: "search",
     tagline: "Say what you need and it points the way",
@@ -216,7 +216,7 @@ export const FEATURES: Feature[] = [
     icon: "settings",
     tagline: "Colours, brightness and defaults",
     about:
-      "Colour theme, screen brightness (dim, default, bright), default sound and volume, and which screen CRUX opens on.",
+      "Colour theme, screen brightness (dim, default, bright), default sound and volume, and which screen the app opens on.",
     shelf: "dock",
   },
   {
@@ -224,8 +224,8 @@ export const FEATURES: Feature[] = [
     label: "About",
     href: "/about",
     icon: "info",
-    tagline: "Who makes CRUX and why",
-    about: "Who makes CRUX, why it is free, and how to support it.",
+    tagline: "Who makes this and why",
+    about: "Who makes the platform, why it is free, and how to support it.",
     shelf: "dock",
   },
 ];

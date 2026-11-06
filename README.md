@@ -1,4 +1,6 @@
-# CRUX — The Core of Calm
+# Community Treatment and Educational Platform
+
+Formerly CRUX, The Core of Calm. "crux" is still the internal codename in storage keys, the service worker cache and file names.
 
 Binaural beats, noise therapy and box breathing — designed for Australian military veterans with PTSD, anxiety and tinnitus, and anyone seeking calm, focus or better sleep.
 
@@ -6,9 +8,9 @@ Funded and powered by [Metabundle](https://metabundle.ai).
 
 ---
 
-## What is CRUX?
+## What is it?
 
-CRUX is a progressive web app (PWA) that combines three evidence-informed tools:
+It is a progressive web app (PWA) that began as three evidence-informed tools:
 
 - **Binaural Beats** — audio sessions tuned to specific brainwave frequencies (Delta, Theta, Alpha, Beta, Gamma) to support focus, relaxation, meditation or sleep.
 - **Noise Therapy** — white, pink and brown noise to mask environmental triggers and reduce hypervigilance.

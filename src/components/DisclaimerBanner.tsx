@@ -45,7 +45,7 @@ export default function DisclaimerBanner() {
       aria-label="Wellness disclaimer"
     >
       <p className="text-[13px] text-[var(--text-secondary)] leading-snug">
-        CRUX is a wellness tool, not medical advice. Not for use while driving or
+        This is a wellness tool, not medical advice. Not for use while driving or
         operating machinery.{" "}
         <Link
           href="/disclaimer"

@@ -17,7 +17,7 @@ import type { Feature } from "@/lib/library";
 import { CRISIS_LINES } from "@/lib/nav";
 
 /**
- * Ask CRUX: a short chat that points a person to the right tool or page.
+ * Ask the Guide: a short chat that points a person to the right tool or page.
  *
  * Every message is checked on the device first for signs of danger; if there
  * are any, the crisis numbers are shown at once and nothing is sent anywhere.
@@ -150,17 +150,17 @@ export default function Guide() {
   return (
     <div className="mx-auto max-w-3xl px-4 pb-16 pt-10 sm:px-5 md:pt-14">
       <div className="text-center">
-        <span className="eyebrow">Ask CRUX</span>
+        <span className="eyebrow">Ask the Guide</span>
         <h1 className="mt-5 text-balance text-3xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-4xl md:text-5xl">
           What do you need?
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-pretty text-[16px] leading-relaxed text-[var(--text-secondary)]">
           Say what is going on in your own words and I will point you to the right tool or page.
-          I am a guide to what is in CRUX. I am not a doctor and I can&apos;t give medical advice.
+          I am a guide to what is on this platform. I am not a doctor and I can&apos;t give medical advice.
         </p>
       </div>
 
-      <section className="card mt-8 p-4 sm:p-6" aria-label="Ask CRUX">
+      <section className="card mt-8 p-4 sm:p-6" aria-label="Ask the guide">
         {messages.length === 0 ? (
           <div>
             <p className="text-[15px] font-semibold text-[var(--text-primary)]">Try one of these, or type your own.</p>
@@ -242,9 +242,9 @@ export default function Guide() {
 
       <p className="mt-4 text-center text-[13px] leading-relaxed text-[var(--text-secondary)]">
         {ai === true &&
-          "This guide uses an AI service (Claude, made by Anthropic) to find a match. What you type is sent to it to get an answer, and CRUX does not keep it. Leave out your name and anything that identifies you."}
+          "This guide uses an AI service (Claude, made by Anthropic) to find a match. What you type is sent to it to get an answer, and this app does not keep it. Leave out your name and anything that identifies you."}
         {ai === false && "This guide runs on your device. What you type is not sent anywhere and is not kept."}
-        {ai === null && "Nothing you type here is kept by CRUX."}
+        {ai === null && "Nothing you type here is kept."}
       </p>
 
       <div className="mt-6 flex flex-col items-center gap-2">

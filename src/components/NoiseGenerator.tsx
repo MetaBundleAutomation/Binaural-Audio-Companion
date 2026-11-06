@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import Link from "next/link";
 import { usePreferences } from "@/hooks/usePreferences";
+import { siteName } from "@/config";
 import { useToolTracking } from "@/hooks/useToolTracking";
 import { makeWhiteNoise, makePinkNoise, makeBrownNoise, makeGreenNoise } from "@/lib/audio/cruxNoise";
 import PureToneTherapyRaw from "./noise-therapy/PureToneTherapy";
@@ -343,7 +344,7 @@ export default function NoiseGenerator({ isAudioPlaying, onActiveChange }: Noise
     if (typeof navigator === "undefined" || !("mediaSession" in navigator)) return;
     try {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: MEDIA_TITLE[type], artist: "CRUX", album: "Noise Therapy",
+        title: MEDIA_TITLE[type], artist: siteName, album: "Noise Therapy",
         artwork: [{ src: ARTWORK_URL, sizes: "512x512", type: "image/png" }],
       });
       navigator.mediaSession.playbackState = "playing";

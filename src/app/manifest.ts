@@ -1,11 +1,12 @@
 import type { MetadataRoute } from "next";
+import { shortName, siteName } from "@/config";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "CRUX — The Core of Calm",
-    short_name: "CRUX",
+    name: siteName,
+    short_name: shortName,
     description:
-      "Binaural beats, coloured noise and box breathing for calm and focus.",
+      "Calm tools and health education for veterans, first responders and their families.",
     start_url: "/",
     scope: "/",
     display: "standalone",
