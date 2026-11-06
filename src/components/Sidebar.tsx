@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import NavIcon from "@/components/NavIcons";
 import Wordmark from "@/components/Wordmark";
-import { CRISIS_LINES, DONATE_URL, HOME_ITEM, NAV_GROUPS, isNavActive } from "@/lib/nav";
+import { ASK_ITEM, CRISIS_LINES, DONATE_URL, HOME_ITEM, NAV_GROUPS, isNavActive } from "@/lib/nav";
 
 /** The browser's current `#hash`, kept fresh so section links can show as active. */
 export function useHash(): string {
@@ -45,14 +45,22 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex flex-col gap-5" aria-label="Primary">
-        <Link
-          href={HOME_ITEM.href}
-          aria-current={isNavActive(HOME_ITEM.href, pathname, hash) ? "page" : undefined}
-          className={linkClass(isNavActive(HOME_ITEM.href, pathname, hash))}
-        >
-          <NavIcon name={HOME_ITEM.icon} className="h-5 w-5" />
-          {HOME_ITEM.label}
-        </Link>
+        <div className="flex flex-col gap-0.5">
+          {[HOME_ITEM, ASK_ITEM].map((item) => {
+            const active = isNavActive(item.href, pathname, hash);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                className={linkClass(active)}
+              >
+                <NavIcon name={item.icon} className={`h-5 w-5 ${active ? "text-[var(--accent-2)]" : ""}`} />
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
 
         {NAV_GROUPS.map((group) => (
           <div key={group.title}>

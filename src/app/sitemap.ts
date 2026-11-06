@@ -8,6 +8,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
     },
     {
+      url: `${baseURL}/ask`,
+      lastModified: new Date(),
+    },
+    {
       url: `${baseURL}/binaural`,
       lastModified: new Date(),
     },
