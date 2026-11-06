@@ -29,8 +29,9 @@ function item(id: string): NavItem {
 
 export const NAV_GROUPS: NavGroup[] = [
   { title: "Tools",     items: ["binaural", "noise", "breathe", "body-scan"].map(item) },
-  { title: "Learn",     items: ["brain", "instructions"].map(item) },
+  { title: "Learn",     items: ["brain", "treatment-guides", "questions", "instructions"].map(item) },
   { title: "Community", items: ["room"].map(item) },
+  { title: "Everyday",  items: ["bill-toolkit"].map(item) },
   { title: "More",      items: ["about", "settings"].map(item) },
 ];
 
@@ -38,6 +39,9 @@ export const HOME_ITEM: NavItem = { label: "Home", href: "/", icon: "home" };
 
 /** The guide sits straight under Home in the sidebar and the drawer. */
 export const ASK_ITEM: NavItem = item("ask");
+
+/** The full list of numbers, linked from every "If things are bad" box. */
+export const HELP_ITEM: NavItem = item("help");
 
 export const CRISIS_LINES = [
   { name: "Open Arms", number: "1800 011 046", tel: "1800011046" },

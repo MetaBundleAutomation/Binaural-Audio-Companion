@@ -213,3 +213,32 @@ Josh's decision: CRUX becomes the Community Treatment and Educational Platform, 
 - The web address still contains "crux". Changing it is a domain setting in Vercel
 - The Disclaimer was written for a relaxation tool. With "Treatment" in the name and treatment education on the shelves, it needs a proper read by whoever owns the legal wording
 - People who already installed the app keep the old name under their icon until they reinstall it
+
+## 6 November 2026 (late): Les's apps brought inside the platform
+
+Josh's direction: stop linking out to the other apps and make them part of this one, so everything is integrated while the funding conversations go on. The articles will still need a heavy review.
+
+### Finished
+- Nothing on the home screen leaves the app any more. Every feature opens a page inside the platform
+- **Bill Toolkit** is rebuilt here at `/bills` (`src/components/bills/`, `src/lib/bills.ts`): bills with a calendar, paid history by financial year with a print button, a calculator and a unit converter. It was written from scratch by looking at what the original does, not copied from its code. Bills are kept on the device under `crux:bills`
+- **Doctor Questions** at `/questions` (`src/components/DoctorQuestions.tsx`): tick questions, add your own, copy or print the list. The question bank in `src/data/doctorQuestions.ts` is new and general on purpose. It is not the condition-specific list from IBD Compass
+- **Help Now** at `/help`: eight tap-to-call numbers. Each one was checked against the service's own website on 6 November 2026 (`src/lib/help.ts`). It is in the dock, the phone menu, and linked from every "If things are bad" box
+- **Treatment Guides, IBD Compass, IBS Compass and Spectrum Compass** each have a home page inside the app at `/guides/...` (`src/lib/collections.ts`). The page lists every section with a line on what it covers, and shows the tools in this app that go with it. The two drafts carry a Draft notice and are hidden from search engines
+- Ask the Guide knows the new features: appointment questions go to Doctor Questions, bills to the Bill Toolkit, "what number can I call" to Help Now
+- Printing now works: black on white, menus hidden, only the list or the paid-bills record on the page (`@media print` at the end of `globals.css`)
+- All new pages measured for contrast in five themes at three brightness levels (lowest 7.3), checked at phone width, and every button is at least 44px tall
+- Service worker cache is now `crux-v18`
+
+### In progress
+- **The articles themselves have not moved.** Each section on the `/guides/...` pages still opens the article on its original site in a new tab. The source for those four apps is private, and the text was not copied off the live sites. When Les shares the files, each link in `collections.ts` changes to an in-app page and nothing else moves
+
+### What didn't work
+- Three stat boxes side by side on a phone split "$200.59" over two lines. Total owing now takes its own row on a phone
+- The guide answered "I have an appointment with my GP" with the line about not giving medical advice, because "GP" was in the wrong word list. Fixed
+
+### Next
+- Les: share the source for Community Treatment Platform, IBD Compass, IBS Compass and Spectrum Compass (add Josh's GitHub account, or drop the content files into this repo). Say whether it may sit in this public repo
+- The children's calm corner and games from Spectrum Compass were left out on purpose. This app has an anonymous chat room, and nobody has decided yet how children's features and that room should share one app
+- The three AI assistants in the Compass apps were not rebuilt. There is one guide here, and it only points to things in the library
+- The Bill Toolkit here starts empty. Bills saved on the original Bill Toolkit site stay there, and there is no import yet
+- Les planned a paid tier for the original Bill Toolkit. This version is free and inside the platform, so that plan needs a conversation

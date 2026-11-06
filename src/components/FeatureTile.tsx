@@ -33,7 +33,7 @@ const FOCUS =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]";
 
 /** Where a feature was opened from, for the usage numbers. */
-export type OpenedFrom = "home" | "ask";
+export type OpenedFrom = "home" | "ask" | "guides";
 
 /** A link to a feature: in-app pages route normally, separate sites open in a new tab. */
 export function FeatureLink({
@@ -87,8 +87,16 @@ export function featureNotes(feature: Feature): string[] {
   ].filter((note): note is string => note !== null);
 }
 
-/** Home-screen icon: tile above, label below. */
-export function FeatureApp({ feature, from }: { feature: Feature; from: OpenedFrom }) {
+/** Home-screen icon: tile above, label below. `compact` is the dock, four across. */
+export function FeatureApp({
+  feature,
+  from,
+  compact = false,
+}: {
+  feature: Feature;
+  from: OpenedFrom;
+  compact?: boolean;
+}) {
   const notes = featureNotes(feature);
   return (
     <FeatureLink
@@ -97,7 +105,7 @@ export function FeatureApp({ feature, from }: { feature: Feature; from: OpenedFr
       className={`group flex flex-col items-center gap-2 rounded-2xl px-1 py-2 text-center ${FOCUS}`}
     >
       <span className="relative transition-transform duration-200 group-hover:-translate-y-0.5">
-        <FeatureIcon feature={feature} size="lg" />
+        <FeatureIcon feature={feature} size={compact ? "md" : "lg"} />
         {feature.external && (
           <span
             className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full border border-[var(--border-color)] bg-[var(--surface-solid)] text-[var(--text-primary)]"
@@ -107,7 +115,7 @@ export function FeatureApp({ feature, from }: { feature: Feature; from: OpenedFr
           </span>
         )}
       </span>
-      <span className="text-[14px] font-semibold leading-tight text-[var(--text-primary)]">
+      <span className={`font-semibold leading-tight text-[var(--text-primary)] ${compact ? "text-[13px]" : "text-[14px]"}`}>
         {feature.label}
       </span>
       {feature.status === "in-review" && (

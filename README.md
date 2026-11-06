@@ -30,6 +30,10 @@ It is a progressive web app (PWA) that began as three evidence-informed tools:
 | `/body-scan` | Guided body scan |
 | `/brain` | What's happening in your brain, with the quick-check quiz |
 | `/room` | The room: live anonymous chat |
+| `/help` | Help Now: tap-to-call numbers (`src/lib/help.ts`) |
+| `/questions` | Doctor Questions: build a list for an appointment, kept on the device |
+| `/bills` | Bill Toolkit: bills, paid history, calculator and converter, kept on the device |
+| `/guides/[id]` | In-app home for each set of outside guides (`src/lib/collections.ts`) |
 | `/instructions`, `/about`, `/settings`, `/disclaimer` | Guides, who's behind it and live numbers, preferences, legal |
 
 The four audio tools are rendered once by `src/components/ToolStage.tsx` in the root layout, so a session keeps playing while you move between pages; a now-playing bar links back to it.

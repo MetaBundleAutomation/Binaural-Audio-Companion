@@ -580,3 +580,42 @@ input[type="range"]:focus-visible::-moz-range-thumb {
 
 /* Strip breathing-component section margins inside the mode toggle wrapper */
 .breathing-card-host > section { margin-top: 0; margin-bottom: 0; }
+
+/* ── Print ──────────────────────────────────────────────────────────────────
+   The app is light text on dark, which prints as nothing on white paper. For
+   print the colours flip to black on white, the menus and banners go, and a
+   page that marks a `.print-area` prints only that (Doctor Questions, the
+   paid-bills history). `.no-print` hides anything that is only for the screen. */
+@media print {
+  html {
+    --background: #fff !important;
+    --background-light: transparent !important;
+    --background-card: transparent !important;
+    --surface-solid: #fff !important;
+    --text-primary: #000 !important;
+    --text-secondary: #222 !important;
+    --border-color: #888 !important;
+    --primary: #000 !important;
+    --primary-light: #000 !important;
+    color-scheme: light !important;
+  }
+  body {
+    background: #fff !important;
+  }
+  aside,
+  header,
+  footer,
+  [role="note"],
+  .no-print,
+  body > div.fixed,
+  .pointer-events-none.fixed {
+    display: none !important;
+  }
+  .lg\:pl-60 {
+    padding-left: 0 !important;
+  }
+  .card {
+    background: none !important;
+    box-shadow: none !important;
+  }
+}

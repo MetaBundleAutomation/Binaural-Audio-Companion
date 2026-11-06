@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import NavIcon from "@/components/NavIcons";
 import Wordmark from "@/components/Wordmark";
-import { ASK_ITEM, CRISIS_LINES, DONATE_URL, HOME_ITEM, NAV_GROUPS, isNavActive } from "@/lib/nav";
+import { ASK_ITEM, CRISIS_LINES, DONATE_URL, HELP_ITEM, HOME_ITEM, NAV_GROUPS, isNavActive } from "@/lib/nav";
 
 /** The browser's current `#hash`, kept fresh so section links can show as active. */
 export function useHash(): string {
@@ -120,6 +120,9 @@ export default function Sidebar() {
               {line.name} <span className="font-semibold">{line.number}</span>
             </a>
           ))}
+          <Link href={HELP_ITEM.href} className="mt-1 block font-semibold text-[var(--text-primary)] underline underline-offset-4">
+            More numbers
+          </Link>
         </div>
       </div>
     </aside>

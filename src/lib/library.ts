@@ -5,6 +5,9 @@ import type { NavIconName } from "@/components/NavIcons";
  * to. One list feeds the home screen, the sidebar and drawer (through
  * `nav.ts`) and the Ask the Guide chat, so adding a feature is one entry here.
  *
+ * Guides written outside the app get an in-app home page, listed in
+ * `collections.ts`, so a person never lands on another site without warning.
+ *
  * To add content from another specialty, add a `Feature` with `shelf: "care"`
  * (or a new shelf below), an `href`, and `provider` set to who supplied it.
  * Health content that a clinician has not finished reviewing must carry
@@ -125,13 +128,22 @@ export const FEATURES: Feature[] = [
   {
     id: "treatment-guides",
     label: "Treatment Guides",
-    href: "https://community-treatment-platform.vercel.app/",
+    href: "/guides/treatment",
     icon: "compass",
     tagline: "PTSD, pain, sleep and more, explained",
     about:
-      "The Community Treatment Platform: guides for veterans, first responders and their clinicians on PTSD, alcohol and drug use, depression, moral injury, chronic pain, teeth grinding and sleep apnoea, and sexual dysfunction. Each has a plain-language view and a clinician view, and explains how DVA cards and referrals fit in. Information only.",
+      "Guides for veterans, first responders and their clinicians on PTSD, alcohol and drug use, depression, moral injury, chronic pain, teeth grinding and sleep apnoea, and sexual dysfunction. Each has a plain-language view and a clinician view, and explains how DVA cards and referrals fit in. Information only. The index is in this app; each guide opens on the Community Treatment Platform site.",
     shelf: "understand",
-    external: true,
+  },
+  {
+    id: "questions",
+    label: "Doctor Questions",
+    href: "/questions",
+    icon: "clipboard",
+    tagline: "Build a list for your next appointment",
+    about:
+      "A list builder for appointments. The person ticks general questions to ask their doctor, adds their own, then copies or prints the list. It stays on their device. It offers questions, not answers.",
+    shelf: "understand",
   },
 
   // ── Connect ────────────────────────────────────────────────────────────────
@@ -150,13 +162,12 @@ export const FEATURES: Feature[] = [
   {
     id: "ibd-compass",
     label: "IBD Compass",
-    href: "https://ibd-compass.vercel.app/",
+    href: "/guides/ibd",
     icon: "leaf",
     tagline: "Living with Crohn's disease or colitis",
     about:
-      "For people living with Crohn's disease or ulcerative colitis, and their families and carers: treatments and diets with evidence labels, research summaries, and a builder for questions to take to a specialist. Information only.",
+      "For people living with Crohn's disease or ulcerative colitis, and their families and carers: treatments and diets with evidence labels, research summaries and a page on mental health. Information only. The index is in this app; each section opens on the IBD Compass site.",
     shelf: "care",
-    external: true,
     hasAssistant: true,
   },
 
@@ -164,37 +175,34 @@ export const FEATURES: Feature[] = [
   {
     id: "bill-toolkit",
     label: "Bill Toolkit",
-    href: "https://seniors-bill-tracker.vercel.app/",
+    href: "/bills",
     icon: "receipt",
-    tagline: "Large-print bill list and calendar",
+    tagline: "Large-print bills, calendar and calculator",
     about:
-      "A large-print bill list, calendar and printable history of paid bills, made for seniors keeping on top of household bills. Everything stays on the person's own device.",
+      "A large-print list of household bills with a calendar of what is due, a printable history of what has been paid, a calculator and a unit converter. Everything stays on the person's own device.",
     shelf: "everyday",
-    external: true,
   },
 
   // ── In review: drafts a clinician has not finished checking ────────────────
   {
     id: "ibs-compass",
     label: "IBS Compass",
-    href: "https://ibs-compass-nine.vercel.app/",
+    href: "/guides/ibs",
     icon: "leaf",
     tagline: "Irritable bowel syndrome",
     about: "Information for people with irritable bowel syndrome. A draft that is still waiting on clinical review.",
     shelf: "review",
-    external: true,
     status: "in-review",
     hasAssistant: true,
   },
   {
     id: "spectrum-compass",
     label: "Spectrum Compass",
-    href: "https://spectrum-compass.vercel.app/",
+    href: "/guides/spectrum",
     icon: "family",
     tagline: "For parents of children with autism or ADHD",
     about: "Information and calming tools for parents of children with autism or ADHD. A draft that is still waiting on a doctor's review.",
     shelf: "review",
-    external: true,
     status: "in-review",
     hasAssistant: true,
   },
@@ -207,6 +215,16 @@ export const FEATURES: Feature[] = [
     icon: "search",
     tagline: "Say what you need and it points the way",
     about: "The guide itself: a chat that points people to the right tool or page.",
+    shelf: "dock",
+  },
+  {
+    id: "help",
+    label: "Help Now",
+    href: "/help",
+    icon: "phone",
+    tagline: "Numbers to call, one tap each",
+    about:
+      "Phone numbers for immediate help in Australia, each a single tap to call: 000, Open Arms, Lifeline, Suicide Call Back Service, Beyond Blue, 13YARN, MensLine and Safe Zone Support.",
     shelf: "dock",
   },
   {
