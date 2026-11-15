@@ -39,5 +39,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseURL}/instructions`,
       lastModified: new Date(),
     },
+    {
+      url: `${baseURL}/stats`,
+      lastModified: new Date(),
+    },
   ];
 }

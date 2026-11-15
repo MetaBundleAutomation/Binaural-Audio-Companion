@@ -27,6 +27,7 @@ CRUX is a progressive web app (PWA) that combines three evidence-informed tools:
 | `/body-scan` | Guided body scan |
 | `/brain` | What's happening in your brain, with the quick-check quiz |
 | `/room` | The room: live anonymous chat |
+| `/stats` | CRUX in numbers: visits, busiest times and most used tools, from Vercel Web Analytics (`src/lib/stats.ts`) |
 | `/instructions`, `/about`, `/settings`, `/disclaimer` | Guides, who's behind it and live numbers, preferences, legal |
 
 The four audio tools are rendered once by `src/components/ToolStage.tsx` in the root layout, so a session keeps playing while you move between pages; a now-playing bar links back to it.

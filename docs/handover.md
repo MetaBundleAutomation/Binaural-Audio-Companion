@@ -182,3 +182,24 @@ On 6 November the home page became a library of features, a guide chat was added
 - Any medical content from the other apps needs a named clinical reviewer before it is shown to anyone
 - People who installed the app during those few hours may see "CTEP" under the icon until they remove it and add it again
 - The offline cache name is back to `crux-v16`. That is fine: phones pick up the change because the file itself is different
+
+## 16 November 2026: the home page links, and a "CRUX in numbers" page
+
+### Finished
+- Tapping a card on the home page, or Start listening, no longer reloads the app, so sound keeps playing (pull request 19). The links were plain `<a>` tags; they are now Next.js links like the menu
+- New page `/stats`, "How CRUX is going": visits this week and over four weeks, visits per day, the busiest hours of the day (Sydney time), the busiest days of the week, the most used tools and the most played sessions. Linked from the About page ("See how CRUX is going") and the footer. The sidebar and phone menu are unchanged
+- The numbers come from Vercel Web Analytics, read on the server through Vercel's query API (`src/lib/stats.ts`). Nothing new is collected: it reads the events CRUX has sent since 4 November. Results are cached for an hour, which is about 16 API calls an hour however many people open the page
+- Charts are plain SVG in the clinic green (`src/components/stats/ColumnChart.tsx`). Each one can be read by hovering, by tapping, with the arrow keys after tabbing to it, or as a table. Screen readers always get the table
+- Measured: text contrast 8.7 or better in all five themes and three brightness levels, nothing under 12px, no faded text, bar colour above 3:1 against the card in every theme, no sideways scroll at phone width, every button at least 44px
+
+### In progress
+- **Needs a token before it shows real numbers.** Josh: in Vercel, create an access token for the metabundle team, add it to the CRUX project as `VERCEL_ANALYTICS_TOKEN` (Production only), and redeploy. Until then the live page says "Not switched on yet". Preview links show clearly labelled sample numbers so the design can be reviewed
+- Tested against a stand-in for Vercel's service with known answers, not against the real one, because there is no token on this machine. The request shapes follow Vercel's documentation
+
+### What didn't work
+- Nothing
+
+### Next
+- After the token is in, open `/stats` and check the numbers against the Vercel dashboard for the same days
+- A "visit" is one person on one day: Vercel's anonymous visitor code resets daily. The page explains this
+- Vercel's Pro plan allows two properties per custom event. The `tool_start` and `tool_5min` events use two (`tool`, `item`), which is what the page reads

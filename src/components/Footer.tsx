@@ -73,6 +73,12 @@ export default function Footer() {
               >
                 Disclaimer
               </Link>
+              <Link
+                href="/stats"
+                className="block hover:text-[var(--primary)] transition-colors"
+              >
+                CRUX in numbers
+              </Link>
             </div>
           </div>
 
