@@ -111,6 +111,9 @@ export default function About() {
             <div className={CARD}>
               <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--text-primary)] mb-5">Right now</h2>
               <LiveStats />
+              <Link href="/stats" className="btn-ghost mt-6 min-h-11">
+                See how CRUX is going
+              </Link>
             </div>
 
             {/* Support CRUX */}
