@@ -203,3 +203,28 @@ On 6 November the home page became a library of features, a guide chat was added
 - After the token is in, open `/stats` and check the numbers against the Vercel dashboard for the same days
 - A "visit" is one person on one day: Vercel's anonymous visitor code resets daily. The page explains this
 - Vercel's Pro plan allows two properties per custom event. The `tool_start` and `tool_5min` events use two (`tool`, `item`), which is what the page reads
+
+## 16 November 2026 (later): "CRUX in numbers", redesigned for funding proposals
+
+The first version went live this morning and is reading real numbers: Josh had already added the Vercel token. He then asked for listening hours on "Most played" and a stronger design, because the page will be used to win funding.
+
+### Finished
+- **Since launch**: a headline band with visits, sessions started and hours of listening since 4 November 2026, when counting began
+- **Key findings**: plain sentences built from the numbers, with a "Copy these findings" button so they can go straight into a proposal
+- The rest of the page is grouped as Reach, Engagement, When, What people use, Who and Learning
+- **Engagement** adds sessions per visit and a chart of how long sessions last (from the length sent when a session ends)
+- **What people use**: Tools and Most played can be ranked by sessions or by hours listened. Hours per session come from the 5-minute listening event, which already records the item, so no new tracking was needed
+- **Who**: visits by device (phone, computer, tablet) and by country, each as a split bar with names and shares printed beside it. The three colours are from a validated colour-blind-safe set
+- **Learning**: Your Brain checks started and completed, completion rate and average score
+- **Save as PDF or print**: prints black on white with the menus and buttons removed. The print rules are at the end of `globals.css` and apply to any page
+- Measured: text contrast 7.66 or better in all five themes and three brightness levels, nothing under 12px, no faded text, no sideways scroll on a phone, no overlapping chart labels, every button at least 44px
+
+### In progress
+- The new figures (device, country, session length, brain check, hours per item) were tested against a stand-in for Vercel's service with known answers. They have not yet been seen with the real numbers. Each one hides itself if its call fails, and the page then says some numbers couldn't be loaded
+
+### What didn't work
+- At phone width two labels touched on the session-length chart. The labels are now minutes only and the heading says "in minutes"
+
+### Next
+- Returning visitors and how many different people use CRUX over a month can't come from Vercel, because its visitor code resets daily. The app's own visit log (Supabase) records an anonymous id per device and would give both. It is built but not switched on
+- About 30 Vercel API calls an hour. If Vercel ever rate-limits, raise `revalidate` in `src/app/stats/page.tsx`

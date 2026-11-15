@@ -580,3 +580,45 @@ input[type="range"]:focus-visible::-moz-range-thumb {
 
 /* Strip breathing-component section margins inside the mode toggle wrapper */
 .breathing-card-host > section { margin-top: 0; margin-bottom: 0; }
+
+/* ── Print and "Save as PDF" ───────────────────────────────────────────────
+   The app is light text on dark, which prints as nothing on white paper. For
+   print the colours flip to dark on white, the menus, banners and other fixed
+   chrome go, and `.no-print` hides anything that only works on a screen
+   (buttons, switches). Used by the "CRUX in numbers" page's PDF button. */
+@media print {
+  html {
+    --background: #fff !important;
+    --background-light: transparent !important;
+    --background-card: transparent !important;
+    --surface-solid: #fff !important;
+    --text-primary: #000 !important;
+    --text-secondary: #333 !important;
+    --border-color: #bbb !important;
+    --primary: #00603c !important;
+    --primary-light: #00603c !important;
+    --accent-2: #00804f !important;
+    color-scheme: light !important;
+  }
+  body {
+    background: #fff !important;
+  }
+  aside,
+  header,
+  footer,
+  .fixed,
+  .no-print {
+    display: none !important;
+  }
+  .lg\:pl-60 {
+    padding-left: 0 !important;
+  }
+  .card,
+  .glow {
+    background: none !important;
+    box-shadow: none !important;
+  }
+  .break-inside-avoid {
+    break-inside: avoid;
+  }
+}

@@ -4,8 +4,16 @@
  * They come from Vercel Web Analytics, read on the server through Vercel's
  * Web Analytics query API (https://vercel.com/docs/analytics/web-analytics-api).
  * The browser never talks to Vercel and never sees the token. Responses are
- * cached for an hour, so the page costs a handful of API calls an hour however
+ * cached for an hour, so the page costs about 30 API calls an hour however
  * many people open it.
+ *
+ * Nothing new is collected for this page. It reads the events CRUX already
+ * sends (src/lib/analytics.ts):
+ *   tool_start  { tool, item }   a session started
+ *   tool_5min   { tool, item }   every 5 minutes of a session  → listening time
+ *   tool_stop   { tool, length } a session ended, length bucketed
+ *   quiz_start, quiz_complete { score }  the Your Brain check
+ * plus Vercel's own page-view counts, device type and country.
  *
  * Settings (server-side environment variables, never NEXT_PUBLIC_):
  *   VERCEL_ANALYTICS_TOKEN    a Vercel access token for the metabundle team. Required.
@@ -24,8 +32,11 @@
 
 export const STATS_REVALIDATE_SECONDS = 3600;
 
-/** How many days the charts cover. Four whole weeks, so every weekday counts equally. */
+/** How many days the detailed charts cover. Four whole weeks, so every weekday counts equally. */
 export const WINDOW_DAYS = 28;
+
+/** The day Vercel Web Analytics was switched on for CRUX, so "since launch" counts begin. */
+export const COUNTING_SINCE = "2026-11-04";
 
 const DAY_MS = 86_400_000;
 const HOUR_MS = 3_600_000;
@@ -63,6 +74,16 @@ const ITEM_LABELS: Record<string, string> = {
   deeper: "Deeper",
 };
 
+/** The session-length buckets sent with tool_stop, shortest first. */
+export const LENGTH_BUCKETS = [
+  { key: "<1m", label: "Under 1 min", minMinutes: 0 },
+  { key: "1-5m", label: "1 to 5 min", minMinutes: 1 },
+  { key: "5-15m", label: "5 to 15 min", minMinutes: 5 },
+  { key: "15-30m", label: "15 to 30 min", minMinutes: 15 },
+  { key: "30-60m", label: "30 to 60 min", minMinutes: 30 },
+  { key: "60m+", label: "Over an hour", minMinutes: 60 },
+] as const;
+
 export interface DayCount {
   /** YYYY-MM-DD, the UTC day the count belongs to. */
   day: string;
@@ -70,41 +91,60 @@ export interface DayCount {
 }
 
 export interface ToolCount {
-  tool: ToolKey;
-  label: string;
+  key: string;
+  name: string;
   sessions: number;
   /** Listening time, from the 5-minute heartbeat, so runs under 5 minutes add nothing. */
   hours: number;
 }
 
-export interface ItemCount {
-  tool: ToolKey;
-  toolLabel: string;
-  item: string;
-  sessions: number;
+export interface ItemCount extends ToolCount {
+  /** The tool it belongs to. */
+  detail: string;
+}
+
+export interface SplitPart {
+  key: string;
+  label: string;
+  visits: number;
 }
 
 export interface StatsData {
   mode: "live" | "sample";
   /** When these numbers were fetched (ISO). */
   generatedAt: string;
+
+  /** Totals since COUNTING_SINCE. Null where that call failed. */
+  launch: { visits: number | null; sessions: number | null; hours: number | null };
+
   visits7d: number;
   visitsPrevious7d: number;
   visits28d: number;
-  /** Visits since Vercel started counting, or null if that call failed. */
-  visitsSinceStart: number | null;
   sessions28d: number;
   listeningHours28d: number;
+
   /** One entry per day, oldest first, WINDOW_DAYS long. */
   daily: DayCount[];
   /** 24 entries, midnight first, Sydney time. Visits active in each hour, added up over the window. */
   byHour: number[];
   /** 7 entries, Monday first, Sydney time. */
   byWeekday: number[];
-  /** Ranked by sessions started, busiest first. */
+
+  /** Every tool with any use, busiest first by sessions. */
   tools: ToolCount[];
-  /** The five most started sessions across all tools. */
-  topItems: ItemCount[];
+  /** The most used sessions across all tools, by sessions or by hours (up to 8). */
+  items: ItemCount[];
+  /** Sessions ended in each length bucket, in LENGTH_BUCKETS order. Empty if unavailable. */
+  sessionLengths: number[];
+
+  /** Visits by kind of device, biggest first. */
+  devices: SplitPart[];
+  /** Visits by country, biggest first. */
+  countries: SplitPart[];
+
+  /** The Your Brain check, since launch. */
+  quiz: { started: number | null; completed: number | null; averageScore: number | null; outOf: number | null };
+
   /** True when some of the calls failed and their sections are missing. */
   partial: boolean;
 }
@@ -155,7 +195,7 @@ async function query(
     signal: AbortSignal.timeout(15_000),
   });
   if (!response.ok) {
-    // The status only. Never log the token or the address, which carries no secret but is noise.
+    // The status only. Never log the token.
     throw new Error(`analytics ${response.status}`);
   }
   const body: unknown = await response.json();
@@ -174,13 +214,7 @@ async function aggregate(
   filter?: string,
   limit = 100,
 ): Promise<Row[]> {
-  const data = await query(cfg, `/v1/query/web-analytics/${kind}/aggregate`, {
-    by,
-    since,
-    until,
-    filter,
-    limit,
-  });
+  const data = await query(cfg, `/v1/query/web-analytics/${kind}/aggregate`, { by, since, until, filter, limit });
   return Array.isArray(data) ? data.filter((row): row is Row => typeof row === "object" && row !== null) : [];
 }
 
@@ -205,11 +239,12 @@ function timeOf(row: Row): number | null {
 }
 
 /**
- * The group value of an event row grouped by `eventData/<key>`. The docs show
- * it under "eventData"; the other spellings are accepted in case that changes.
+ * The group value of a row grouped by `key` (a visit dimension such as
+ * "deviceType") or by `eventData/<key>`. The docs show event groups under
+ * "eventData"; the other spellings are accepted in case that changes.
  */
 function groupValue(row: Row, key: string): string | null {
-  const candidates = [row[`eventData/${key}`], row.eventData, row[key]];
+  const candidates = [row[key], row[`eventData/${key}`], row.eventData];
   for (const candidate of candidates) {
     if (typeof candidate === "string" && candidate) return candidate;
     if (typeof candidate === "object" && candidate !== null) {
@@ -257,6 +292,48 @@ function prettyItem(tool: ToolKey, item: string): string {
     .slice(0, 60);
 }
 
+const DEVICE_LABELS: Record<string, string> = {
+  mobile: "Phone",
+  smartphone: "Phone",
+  phone: "Phone",
+  desktop: "Computer",
+  computer: "Computer",
+  laptop: "Computer",
+  tablet: "Tablet",
+};
+
+function countryName(code: string): string {
+  try {
+    const name = new Intl.DisplayNames(["en-AU"], { type: "region" }).of(code.toUpperCase());
+    if (name && name !== code.toUpperCase()) return name;
+  } catch {
+    // Not a region code: fall through.
+  }
+  return code;
+}
+
+/** Keep the biggest `keep` parts and fold the rest into "Other", so a split never needs more than 3 colours. */
+function foldParts(parts: SplitPart[], keep: number): SplitPart[] {
+  const sorted = [...parts].sort((a, b) => b.visits - a.visits).filter((p) => p.visits > 0);
+  if (sorted.length <= keep + 1) return sorted;
+  const rest = sorted.slice(keep).reduce((total, p) => total + p.visits, 0);
+  return [...sorted.slice(0, keep), { key: "other", label: "Other", visits: rest }];
+}
+
+/** Merge rows that map to the same label (e.g. "mobile" and "Mobile"). */
+function mergeParts(rows: Row[], key: string, label: (raw: string) => string): SplitPart[] {
+  const merged = new Map<string, SplitPart>();
+  for (const row of rows) {
+    const raw = groupValue(row, key);
+    if (!raw || raw.toLowerCase() === "others") continue;
+    const name = label(raw);
+    const existing = merged.get(name);
+    if (existing) existing.visits += num(row.visitors);
+    else merged.set(name, { key: name.toLowerCase().replace(/\s+/g, "-"), label: name, visits: num(row.visitors) });
+  }
+  return [...merged.values()];
+}
+
 // ── The live numbers ─────────────────────────────────────────────────────────
 
 async function liveStats(cfg: ApiConfig, now: number): Promise<StatsResult> {
@@ -264,6 +341,7 @@ async function liveStats(cfg: ApiConfig, now: number): Promise<StatsResult> {
   // Five weeks of days: four for the chart, one more for "the week before".
   const dailySince = today - (WINDOW_DAYS + 7 - 1) * DAY_MS;
   const windowSince = today - (WINDOW_DAYS - 1) * DAY_MS;
+  const launch = Date.parse(`${COUNTING_SINCE}T00:00:00Z`);
 
   // Hours come back one bucket each, so they are fetched four days at a time
   // to stay inside the API's 100-row limit.
@@ -272,18 +350,33 @@ async function liveStats(cfg: ApiConfig, now: number): Promise<StatsResult> {
     hourChunks.push({ since: start, until: Math.min(now, start + 4 * DAY_MS - 1) });
   }
 
-  const startFilter = "eventName eq 'tool_start'";
+  const STARTS = "eventName eq 'tool_start'";
+  const BEATS = "eventName eq 'tool_5min'";
+  const forTool = (filter: string, tool: ToolKey) => `${filter} and eventData/tool eq ${quote(tool)}`;
 
-  const [dailyRes, hourlyRes, sinceStartRes, toolStartsRes, heartbeatsRes, ...itemRes] = await Promise.allSettled([
-    aggregate(cfg, "visits", "day", dailySince, now),
-    Promise.all(hourChunks.map((c) => aggregate(cfg, "visits", "hour", c.since, c.until))),
-    count(cfg, "visits", {}),
-    aggregate(cfg, "events", "eventData/tool", windowSince, now, startFilter, 20),
-    aggregate(cfg, "events", "eventData/tool", windowSince, now, "eventName eq 'tool_5min'", 20),
-    ...TOOL_KEYS.map((tool) =>
-      aggregate(cfg, "events", "eventData/item", windowSince, now, `${startFilter} and eventData/tool eq ${quote(tool)}`, 5),
-    ),
+  const settled = await Promise.allSettled([
+    /* 0 */ aggregate(cfg, "visits", "day", dailySince, now),
+    /* 1 */ Promise.all(hourChunks.map((c) => aggregate(cfg, "visits", "hour", c.since, c.until))),
+    /* 2 */ count(cfg, "visits", {}),
+    /* 3 */ count(cfg, "events", { filter: STARTS }),
+    /* 4 */ count(cfg, "events", { filter: BEATS }),
+    /* 5 */ aggregate(cfg, "events", "eventData/tool", windowSince, now, STARTS, 20),
+    /* 6 */ aggregate(cfg, "events", "eventData/tool", windowSince, now, BEATS, 20),
+    /* 7 */ aggregate(cfg, "events", "eventData/length", windowSince, now, "eventName eq 'tool_stop'", 20),
+    /* 8 */ aggregate(cfg, "visits", "deviceType", windowSince, now, undefined, 10),
+    /* 9 */ aggregate(cfg, "visits", "country", windowSince, now, undefined, 10),
+    /* 10 */ count(cfg, "events", { filter: "eventName eq 'quiz_start'" }),
+    /* 11 */ count(cfg, "events", { filter: "eventName eq 'quiz_complete'" }),
+    /* 12 */ aggregate(cfg, "events", "eventData/score", launch, now, "eventName eq 'quiz_complete'", 50),
+    /* 13 */ Promise.all(TOOL_KEYS.map((t) => aggregate(cfg, "events", "eventData/item", windowSince, now, forTool(STARTS, t), 10))),
+    /* 14 */ Promise.all(TOOL_KEYS.map((t) => aggregate(cfg, "events", "eventData/item", windowSince, now, forTool(BEATS, t), 10))),
   ]);
+
+  const [
+    dailyRes, hourlyRes, launchVisitsRes, launchStartsRes, launchBeatsRes,
+    toolStartsRes, toolBeatsRes, lengthsRes, devicesRes, countriesRes,
+    quizStartRes, quizDoneRes, quizScoreRes, itemStartsRes, itemBeatsRes,
+  ] = settled;
 
   // The daily numbers are the spine of the page. Without them, show the error state.
   if (dailyRes.status === "rejected") {
@@ -292,14 +385,12 @@ async function liveStats(cfg: ApiConfig, now: number): Promise<StatsResult> {
   }
 
   let partial = false;
-  const failed = (label: string, result: PromiseSettledResult<unknown>) => {
-    if (result.status === "rejected") {
-      partial = true;
-      console.error(`[stats] ${label} failed:`, (result.reason as Error)?.message ?? "unknown");
-      return true;
-    }
-    return false;
-  };
+  function ok<T>(label: string, result: PromiseSettledResult<T>): T | null {
+    if (result.status === "fulfilled") return result.value;
+    partial = true;
+    console.error(`[stats] ${label} failed:`, (result.reason as Error)?.message ?? "unknown");
+    return null;
+  }
 
   // Days
   const perDay = new Map<string, number>();
@@ -312,65 +403,106 @@ async function liveStats(cfg: ApiConfig, now: number): Promise<StatsResult> {
     allDays.push({ day: utcDayKey(t), visits: perDay.get(utcDayKey(t)) ?? 0 });
   }
   const daily = allDays.slice(-WINDOW_DAYS);
-  const sum = (list: DayCount[]) => list.reduce((total, d) => total + d.visits, 0);
+  const sumDays = (list: DayCount[]) => list.reduce((total, d) => total + d.visits, 0);
 
   // Hours and weekdays, in Sydney time
   const byHour = new Array<number>(24).fill(0);
   const byWeekday = new Array<number>(7).fill(0);
-  if (!failed("hourly visits", hourlyRes) && hourlyRes.status === "fulfilled") {
-    for (const row of hourlyRes.value.flat()) {
-      const t = timeOf(row);
-      const visits = num(row.visitors);
-      if (t === null || visits === 0) continue;
-      const local = sydneyHourAndWeekday(t);
-      if (!local) continue;
-      byHour[local.hour] += visits;
-      byWeekday[local.weekday] += visits;
-    }
+  for (const row of ok("hourly visits", hourlyRes)?.flat() ?? []) {
+    const t = timeOf(row);
+    const visits = num(row.visitors);
+    if (t === null || visits === 0) continue;
+    const local = sydneyHourAndWeekday(t);
+    if (!local) continue;
+    byHour[local.hour] += visits;
+    byWeekday[local.weekday] += visits;
   }
 
   // Tools
-  const sessionsByTool = new Map<ToolKey, number>();
-  const heartbeatsByTool = new Map<ToolKey, number>();
   const isTool = (value: string | null): value is ToolKey => value !== null && value in TOOL_LABELS;
-  if (!failed("tool starts", toolStartsRes) && toolStartsRes.status === "fulfilled") {
-    for (const row of toolStartsRes.value) {
+  const byTool = (rows: Row[] | null) => {
+    const totals = new Map<ToolKey, number>();
+    for (const row of rows ?? []) {
       const tool = groupValue(row, "tool");
-      if (isTool(tool)) sessionsByTool.set(tool, (sessionsByTool.get(tool) ?? 0) + num(row.count));
+      if (isTool(tool)) totals.set(tool, (totals.get(tool) ?? 0) + num(row.count));
     }
-  }
-  if (!failed("listening time", heartbeatsRes) && heartbeatsRes.status === "fulfilled") {
-    for (const row of heartbeatsRes.value) {
-      const tool = groupValue(row, "tool");
-      if (isTool(tool)) heartbeatsByTool.set(tool, (heartbeatsByTool.get(tool) ?? 0) + num(row.count));
-    }
-  }
+    return totals;
+  };
+  const toolStarts = byTool(ok("tool starts", toolStartsRes));
+  const toolBeats = byTool(ok("listening time", toolBeatsRes));
   const tools: ToolCount[] = TOOL_KEYS.map((tool) => ({
-    tool,
-    label: TOOL_LABELS[tool],
-    sessions: sessionsByTool.get(tool) ?? 0,
-    hours: ((heartbeatsByTool.get(tool) ?? 0) * 5) / 60,
+    key: tool,
+    name: TOOL_LABELS[tool],
+    sessions: toolStarts.get(tool) ?? 0,
+    hours: ((toolBeats.get(tool) ?? 0) * 5) / 60,
   }))
     .filter((t) => t.sessions > 0 || t.hours > 0)
     .sort((a, b) => b.sessions - a.sessions || b.hours - a.hours);
 
-  // Most started sessions across all tools
-  const items: ItemCount[] = [];
-  itemRes.forEach((result, index) => {
-    const tool = TOOL_KEYS[index];
-    if (failed(`items for ${tool}`, result) || result.status !== "fulfilled") return;
-    for (const row of result.value) {
-      const item = groupValue(row, "item");
-      const sessions = num(row.count);
-      if (!item || item.toLowerCase() === "others" || sessions === 0) continue;
-      items.push({ tool, toolLabel: TOOL_LABELS[tool], item: prettyItem(tool, item), sessions });
-    }
-  });
-  items.sort((a, b) => b.sessions - a.sessions);
+  // Items: sessions and hours, per tool, merged
+  const itemMap = new Map<string, ItemCount>();
+  const addItems = (results: Row[][] | null, field: "sessions" | "hours") => {
+    results?.forEach((rows, index) => {
+      const tool = TOOL_KEYS[index];
+      for (const row of rows) {
+        const raw = groupValue(row, "item");
+        const value = num(row.count);
+        if (!raw || raw.toLowerCase() === "others" || value === 0) continue;
+        const name = prettyItem(tool, raw);
+        const key = `${tool}:${name}`;
+        const item = itemMap.get(key) ?? { key, name, detail: TOOL_LABELS[tool], sessions: 0, hours: 0 };
+        if (field === "sessions") item.sessions += value;
+        else item.hours += (value * 5) / 60;
+        itemMap.set(key, item);
+      }
+    });
+  };
+  addItems(ok("items by sessions", itemStartsRes), "sessions");
+  addItems(ok("items by hours", itemBeatsRes), "hours");
+  const allItems = [...itemMap.values()];
+  const topBySessions = [...allItems].sort((a, b) => b.sessions - a.sessions).slice(0, 8);
+  const topByHours = [...allItems].sort((a, b) => b.hours - a.hours).slice(0, 8);
+  const items = [...new Map([...topBySessions, ...topByHours].map((i) => [i.key, i])).values()];
 
-  let visitsSinceStart: number | null = null;
-  if (!failed("visits since start", sinceStartRes) && sinceStartRes.status === "fulfilled") {
-    visitsSinceStart = num(sinceStartRes.value.visitors);
+  // Session lengths
+  const lengthRows = ok("session lengths", lengthsRes);
+  const sessionLengths = lengthRows
+    ? LENGTH_BUCKETS.map((bucket) =>
+        lengthRows.filter((row) => groupValue(row, "length") === bucket.key).reduce((total, row) => total + num(row.count), 0),
+      )
+    : [];
+
+  // Devices and countries
+  const devicesRows = ok("devices", devicesRes);
+  const devices = devicesRows
+    ? foldParts(mergeParts(devicesRows, "deviceType", (raw) => DEVICE_LABELS[raw.toLowerCase()] ?? raw), 2)
+    : [];
+  const countryRows = ok("countries", countriesRes);
+  const countries = countryRows ? foldParts(mergeParts(countryRows, "country", countryName), 2) : [];
+
+  // Launch totals
+  const launchVisits = ok("visits since launch", launchVisitsRes);
+  const launchStarts = ok("sessions since launch", launchStartsRes);
+  const launchBeats = ok("listening since launch", launchBeatsRes);
+
+  // The Your Brain check
+  const quizStarted = ok("quiz starts", quizStartRes);
+  const quizDone = ok("quiz completions", quizDoneRes);
+  const scores = ok("quiz scores", quizScoreRes);
+  let averageScore: number | null = null;
+  let outOf: number | null = null;
+  if (scores) {
+    let total = 0;
+    let n = 0;
+    for (const row of scores) {
+      const m = /^(\d+)\s*\/\s*(\d+)$/.exec(groupValue(row, "score") ?? "");
+      const times = num(row.count);
+      if (!m || times === 0) continue;
+      total += Number(m[1]) * times;
+      n += times;
+      outOf = Math.max(outOf ?? 0, Number(m[2]));
+    }
+    if (n > 0) averageScore = total / n;
   }
 
   return {
@@ -378,17 +510,30 @@ async function liveStats(cfg: ApiConfig, now: number): Promise<StatsResult> {
     data: {
       mode: "live",
       generatedAt: new Date(now).toISOString(),
-      visits7d: sum(allDays.slice(-7)),
-      visitsPrevious7d: sum(allDays.slice(-14, -7)),
-      visits28d: sum(daily),
-      visitsSinceStart,
+      launch: {
+        visits: launchVisits ? num(launchVisits.visitors) : null,
+        sessions: launchStarts ? num(launchStarts.count) : null,
+        hours: launchBeats ? (num(launchBeats.count) * 5) / 60 : null,
+      },
+      visits7d: sumDays(allDays.slice(-7)),
+      visitsPrevious7d: sumDays(allDays.slice(-14, -7)),
+      visits28d: sumDays(daily),
       sessions28d: tools.reduce((total, t) => total + t.sessions, 0),
       listeningHours28d: tools.reduce((total, t) => total + t.hours, 0),
       daily,
       byHour,
       byWeekday,
       tools,
-      topItems: items.slice(0, 5),
+      items,
+      sessionLengths,
+      devices,
+      countries,
+      quiz: {
+        started: quizStarted ? num(quizStarted.count) : null,
+        completed: quizDone ? num(quizDone.count) : null,
+        averageScore,
+        outOf,
+      },
       partial,
     },
   };
@@ -408,7 +553,6 @@ function seeded(seed: number): () => number {
 function sampleStats(now: number): StatsData {
   const random = seeded(2026);
   const today = startOfUtcDay(now);
-  // Evenings and late nights busiest, as you might expect for a sleep and calm app.
   const hourShape = [5, 4, 3, 2, 2, 2, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 6, 7, 8, 10, 12, 11, 8];
   const weekdayShape = [1, 0.95, 0.95, 1, 0.9, 1.05, 1.15];
 
@@ -427,33 +571,54 @@ function sampleStats(now: number): StatsData {
   const byWeekday = weekdayShape.map((share) => Math.round(((visits28d * 1.6) / weekdayTotal) * share));
 
   const tools: ToolCount[] = [
-    { tool: "noise" as ToolKey, sessions: 214, hours: 96.5 },
-    { tool: "binaural" as ToolKey, sessions: 168, hours: 61.2 },
-    { tool: "box-breathing" as ToolKey, sessions: 97, hours: 4.8 },
-    { tool: "body-scan" as ToolKey, sessions: 52, hours: 9.6 },
-    { tool: "coherence" as ToolKey, sessions: 31, hours: 2.1 },
-  ].map((t) => ({ ...t, label: TOOL_LABELS[t.tool] }));
+    { key: "noise", name: TOOL_LABELS.noise, sessions: 214, hours: 96.5 },
+    { key: "binaural", name: TOOL_LABELS.binaural, sessions: 168, hours: 61.2 },
+    { key: "box-breathing", name: TOOL_LABELS["box-breathing"], sessions: 97, hours: 4.8 },
+    { key: "body-scan", name: TOOL_LABELS["body-scan"], sessions: 52, hours: 9.6 },
+    { key: "coherence", name: TOOL_LABELS.coherence, sessions: 31, hours: 2.1 },
+  ];
+  const item = (tool: ToolKey, name: string, sessions: number, hours: number): ItemCount => ({
+    key: `${tool}:${name}`,
+    name,
+    detail: TOOL_LABELS[tool],
+    sessions,
+    hours,
+  });
 
   return {
     mode: "sample",
     generatedAt: new Date(now).toISOString(),
+    launch: { visits: visits28d + 41, sessions: 603, hours: 181.4 },
     visits7d: allDays.slice(-7).reduce((total, d) => total + d.visits, 0),
     visitsPrevious7d: allDays.slice(-14, -7).reduce((total, d) => total + d.visits, 0),
     visits28d,
-    visitsSinceStart: visits28d + 41,
     sessions28d: tools.reduce((total, t) => total + t.sessions, 0),
     listeningHours28d: tools.reduce((total, t) => total + t.hours, 0),
     daily,
     byHour,
     byWeekday,
     tools,
-    topItems: [
-      { tool: "noise", toolLabel: TOOL_LABELS.noise, item: "Heavy Rain", sessions: 88 },
-      { tool: "binaural", toolLabel: TOOL_LABELS.binaural, item: "Sleep", sessions: 71 },
-      { tool: "noise", toolLabel: TOOL_LABELS.noise, item: "Ocean Waves", sessions: 46 },
-      { tool: "box-breathing", toolLabel: TOOL_LABELS["box-breathing"], item: "Les's voice", sessions: 44 },
-      { tool: "binaural", toolLabel: TOOL_LABELS.binaural, item: "Anxiety", sessions: 39 },
+    items: [
+      item("noise", "Heavy Rain", 88, 52.3),
+      item("binaural", "Sleep", 71, 38.0),
+      item("noise", "Ocean Waves", 46, 21.7),
+      item("box-breathing", "Les's voice", 44, 2.5),
+      item("binaural", "Anxiety", 39, 12.4),
+      item("noise", "Pure Tone", 21, 14.9),
+      item("body-scan", "Ben", 30, 6.1),
     ],
+    sessionLengths: [96, 141, 172, 88, 41, 24],
+    devices: [
+      { key: "phone", label: "Phone", visits: 402 },
+      { key: "computer", label: "Computer", visits: 71 },
+      { key: "tablet", label: "Tablet", visits: 22 },
+    ],
+    countries: [
+      { key: "australia", label: "Australia", visits: 451 },
+      { key: "new-zealand", label: "New Zealand", visits: 19 },
+      { key: "other", label: "Other", visits: 25 },
+    ],
+    quiz: { started: 64, completed: 41, averageScore: 6.8, outOf: 9 },
     partial: false,
   };
 }
