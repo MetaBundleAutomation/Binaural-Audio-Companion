@@ -97,8 +97,12 @@ function RankedBars({ rows, label }: { rows: BarRow[]; label: string }) {
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
             <span className="text-[16px] font-semibold leading-snug text-[var(--text-primary)]">
               {row.name}
+              {/* The space keeps the two names apart for screen readers and copy-paste. */}
               {row.detail && (
-                <span className="ml-2 text-[14px] font-normal text-[var(--text-secondary)]">{row.detail}</span>
+                <>
+                  {" "}
+                  <span className="ml-1 text-[14px] font-normal text-[var(--text-secondary)]">{row.detail}</span>
+                </>
               )}
             </span>
             <span className="text-[14px] text-[var(--text-secondary)]" style={{ fontVariantNumeric: "tabular-nums" }}>
