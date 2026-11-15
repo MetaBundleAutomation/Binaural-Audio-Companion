@@ -1,7 +1,11 @@
+import Link from "next/link";
 import LaunchRedirect from "@/components/LaunchRedirect";
 import NavIcon from "@/components/NavIcons";
 import { NAV_GROUPS } from "@/lib/nav";
 
+// Every link on this page is a <Link>, not a plain <a>. A plain anchor reloads
+// the whole app, which stops any sound or session that is running.
+//
 // The home grid shows every tool, learning and community link; "More" (About,
 // Settings) lives in the sidebar only.
 const HOME_GRID_GROUPS = new Set(["Tools", "Learn", "Community"]);
@@ -26,13 +30,13 @@ export default function Home() {
             Audio sessions and guided meditations to help you feel calmer, focus more clearly throughout your day, or ease into sleep.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <a href="/binaural" className="btn-primary">
+            <Link href="/binaural" className="btn-primary">
               Start listening
               <NavIcon name="arrow" className="h-4 w-4" />
-            </a>
-            <a href="/brain" className="btn-secondary">
+            </Link>
+            <Link href="/brain" className="btn-secondary">
               What&apos;s the loop?
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -41,7 +45,7 @@ export default function Home() {
       <section aria-label="Tools" className="max-w-[1400px] mx-auto px-5 pb-10 md:pb-14">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {HOME_GRID_ITEMS.map(item => (
-            <a key={item.href} href={item.href} className="card card-hover flex flex-col p-6">
+            <Link key={item.href} href={item.href} className="card card-hover flex flex-col p-6">
               <span
                 className="grid h-11 w-11 place-items-center rounded-xl text-[var(--on-accent)] shadow-lg"
                 style={{ background: "var(--btn-primary-bg)" }}
@@ -61,7 +65,7 @@ export default function Home() {
                 Open
                 <NavIcon name="arrow" className="h-4 w-4 text-[var(--accent-2)]" />
               </span>
-            </a>
+            </Link>
           ))}
         </div>
       </section>
