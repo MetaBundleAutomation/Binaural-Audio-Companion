@@ -36,6 +36,12 @@ interface Props {
   unit: [string, string];
   /** Heading for the label column of the table. */
   labelHeading: string;
+  /**
+   * Centre every axis label under its own column. For categories (weekdays,
+   * length bands). Time series leave it off, so the first and last labels sit
+   * at the chart's edges and never run past them.
+   */
+  centerTicks?: boolean;
 }
 
 const TOP_PAD = 24; // room for the peak label
@@ -77,7 +83,7 @@ function barPath(x: number, top: number, width: number, height: number, radius: 
   ].join(" ");
 }
 
-export default function ColumnChart({ title, summary, columns, unit, labelHeading }: Props) {
+export default function ColumnChart({ title, summary, columns, unit, labelHeading, centerTicks = false }: Props) {
   const hostRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   const [active, setActive] = useState<number | null>(null);
@@ -243,8 +249,8 @@ export default function ColumnChart({ title, summary, columns, unit, labelHeadin
             {/* x-axis labels */}
             {columns.map((column, i) => {
               if (!column.tick) return null;
-              const isFirst = i === 0;
-              const isLast = i === count - 1;
+              const isFirst = !centerTicks && i === 0;
+              const isLast = !centerTicks && i === count - 1;
               const x = isFirst ? plotLeft : isLast ? plotRight : barCentre(i);
               const anchor = isFirst ? "start" : isLast ? "end" : "middle";
               return (
@@ -278,7 +284,7 @@ export default function ColumnChart({ title, summary, columns, unit, labelHeadin
         onClick={() => setShowTable((v) => !v)}
         aria-expanded={showTable}
         aria-controls={tableId}
-        className="btn-ghost mt-4 min-h-11"
+        className="no-print btn-ghost mt-4 min-h-11"
       >
         {showTable ? "Hide the table" : "Show as a table"}
       </button>
