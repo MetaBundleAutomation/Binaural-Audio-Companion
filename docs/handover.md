@@ -1,3 +1,42 @@
+## 16 November 2026 — CRUX Wheel mock-up
+
+This is a **separate working copy** for the "wheel" idea, so the live site is never at risk. It is a mock-up to show a doctor who specialises in veteran care. Nothing here is clinically reviewed; every health card is marked DRAFT on screen.
+
+### Setup (so anyone can pick it up)
+- Folder: `/home/les/dev/crux-wheel`, a fresh clone of the live repo on branch **`wheel-mockup`** (the local `main` branch was deleted here on purpose, so there is no way to push to live out of habit). The live site still deploys from `main` only.
+- Runs on **port 3003** (`crux-wheel` entry in `/home/les/dev/.claude/launch.json`). On iPad: `http://192.168.8.206:3003/explore` (needs `sudo ufw allow from 192.168.8.0/24 to any port 3003 proto tcp` once, and the dev server running).
+- `.env.local` here deliberately leaves out the Supabase keys, so the mock-up cannot touch the live chat Room or stats.
+- Source briefs: `CRUX-wheel-mockup-build-brief.md`, `CRUX-wheel-design-brief.md`, `crux-wheel-plan.md` (in `~/Downloads`).
+
+### Finished
+- **Explore button** on the home page (`src/app/page.tsx`): one quiet card below the tool grid; nothing existing moved. The label lives in one constant, `WHEEL_LABEL` in `src/lib/wheel.ts`, so it is a one-word change to rename.
+- **The wheel** (`src/app/explore/page.tsx`): CRUX in the centre (tap to return home) with eight spokes around it, joined by faint spoke lines. Phone-first, no sideways scroll, uses CRUX's own colour tokens. Spoke icons are in `src/components/WheelIcons.tsx` (kept separate from the nav icons so CRUX is untouched).
+- **Eight spoke pages** (`src/app/explore/[spoke]/page.tsx`, one dynamic route): Food & Eating, Movement, Sleep & Light, Mind & Stress, Body & Pain, Supplements & Alternatives, Treatments & Getting Help, Connection & Support.
+- **Reusable topic card** (`src/components/TopicCard.tsx`) with the full brief layout: short version → science + evidence badge → good points ✅ → watch-outs ⚠️ → who it may suit → quick tip → talk to your doctor → sources (collapsed). The three-level evidence badge (`src/components/EvidenceBadge.tsx`) uses a coloured dot **and** words, so it never relies on colour alone.
+- **One draft example card per spoke**, all transcribed from the build brief. Supplements carries the standing "Check before you mix" safety note; Sleep, Mind and Body link back to CRUX's own tools (breathing, noise, brain section).
+- **All card content is data** (`src/lib/topics.ts`). The doctor's edits go there — no component code to touch. Adding more topics to a spoke is just more entries in the same list.
+- **Crisis page** (`src/app/crisis/page.tsx`): the "Need to talk to someone now?" link on the wheel and every spoke page goes here. Australian lines (Open Arms, Lifeline, 000) are the ones CRUX already uses; US/UK are a draft list marked "verify before launch". No number was invented.
+- Patterns reused from Les's other apps: the evidence-badge idea and crisis-block style from **community-treatment-platform**, and the content shape (description / evidence / worth-knowing / ask-doctor) from **ibs-compass**.
+- Verified: `npx tsc --noEmit` passes, no console errors, checked on phone (375px) and desktop.
+
+### In progress / not done
+- **Nothing has been pushed.** It is all local on `wheel-mockup`. A push would give a private Vercel preview link to send the doctor (branch only, never live) — waiting on Les's say-so.
+- Not yet seen on the iPad or by the doctor.
+- The existing CRUX was not changed at all: no nav/sidebar edits, no wording changes.
+
+### What didn't work / watch-outs
+- The build brief's path `~/projects/binaural-audio-companion` is old; work now lives under `/home/les/dev`.
+- `crux-wheel-plan.md` says the brain-science section is "built locally, not yet pushed", but it is already live on `main`, so Mind & Stress reuses it as-is.
+- The live repo's `main` is **not** branch-protected and Les's account has admin, so a stray push from a `main` checkout could reach veterans. Deleting local `main` here is the guard; turning on GitHub branch protection (Josh + Les) would be belt-and-braces.
+
+### Next
+- Les: view on iPad, then show the doctor to react to shape, tone and content.
+- Doctor review per spoke; edits go in `src/lib/topics.ts`. Only add a "reviewed" marker once a section is actually signed off.
+- When ready: push `wheel-mockup` for a Vercel preview link (confirm with Les first).
+- Later, per the brief: pelvic-health card from Phoebe Armfield (needs her article + written consent), a practitioner-articles area, an audio library, and outward links to IBD/IBS Compass and the Community Treatment Platform.
+- Final name for the wheel (working name "Explore") and verified crisis numbers per country before anything goes live.
+- Handover to Josh once the doctor approves.
+
 ## 17 October 2026
 
 ### Finished

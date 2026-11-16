@@ -2,6 +2,7 @@ import Link from "next/link";
 import LaunchRedirect from "@/components/LaunchRedirect";
 import NavIcon from "@/components/NavIcons";
 import { NAV_GROUPS } from "@/lib/nav";
+import { WHEEL_LABEL, WHEEL_HREF, WHEEL_TAGLINE } from "@/lib/wheel";
 
 // Every link on this page is a <Link>, not a plain <a>. A plain anchor reloads
 // the whole app, which stops any sound or session that is running.
@@ -68,6 +69,35 @@ export default function Home() {
             </Link>
           ))}
         </div>
+      </section>
+
+      {/* Explore entry — the quiet doorway into the wheel. Added, not replacing
+          anything; sits between the tool grid and the closing affirmation. */}
+      <section aria-label="Explore more" className="max-w-[1400px] mx-auto px-5 pb-10 md:pb-14">
+        <Link
+          href={WHEEL_HREF}
+          className="card card-hover flex items-center gap-4 p-6 sm:p-7"
+        >
+          <span
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-[var(--on-accent)] shadow-lg"
+            style={{ background: "var(--btn-primary-bg)" }}
+            aria-hidden="true"
+          >
+            <NavIcon name="heart" className="h-5 w-5" />
+          </span>
+          <span className="flex flex-col">
+            <span className="text-[17px] font-semibold text-[var(--text-primary)]">
+              {WHEEL_LABEL}
+            </span>
+            <span className="mt-1 text-[14px] leading-relaxed text-[var(--text-secondary)]">
+              {WHEEL_TAGLINE}
+            </span>
+          </span>
+          <span className="ml-auto hidden sm:inline-flex items-center gap-1.5 text-[14px] font-medium text-[var(--text-primary)]">
+            Open
+            <NavIcon name="arrow" className="h-4 w-4 text-[var(--accent-2)]" />
+          </span>
+        </Link>
       </section>
 
       {/* Closing affirmation — a quiet bookend to the greeting at the top */}
