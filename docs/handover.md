@@ -19,10 +19,17 @@ This is a **separate working copy** for the "wheel" idea, so the live site is ne
 - Patterns reused from Les's other apps: the evidence-badge idea and crisis-block style from **community-treatment-platform**, and the content shape (description / evidence / worth-knowing / ask-doctor) from **ibs-compass**.
 - Verified: `npx tsc --noEmit` passes, no console errors, checked on phone (375px) and desktop.
 
+### Deployed preview (16 Nov)
+- **Public link to share with the doctor and Josh: https://crux-wheel.vercel.app** (opens to the wheel at `/explore`). No login needed.
+- Deployed to a **separate Vercel project on Les's own account** (`les-projects-3f6a235d/crux-wheel`), not Josh's `metabundle` project, so it is fully under Les's control and nowhere near the live site.
+- Branch `wheel-mockup` is pushed to GitHub. `vercel link` auto-connected Les's new project to the shared repo `MetaBundleAutomation/Binaural-Audio-Companion`, so Les's project will now also build on pushes to that repo (a separate URL — it does **not** touch crux.metabundle.ai, which is Josh's project deploying from `main`). Disconnect in the Vercel project's Git settings if unwanted.
+- **Not indexed by search engines:** the project has `NEXT_PUBLIC_ALLOW_INDEXING=false` set, which turns on `noindex`/`nofollow` and a `Disallow: /` robots.txt (see `src/app/layout.tsx` and `src/app/robots.ts`). The flag is unset on the live site, so `main` stays indexable.
+- Josh's `metabundle` preview also exists (`binaural-audio-companion-git-wheel-mockup-metabundle.vercel.app`) but is behind Vercel login — Josh can view it, the doctor cannot. The crux-wheel.vercel.app link above is the one to send.
+
 ### In progress / not done
-- **Nothing has been pushed.** It is all local on `wheel-mockup`. A push would give a private Vercel preview link to send the doctor (branch only, never live) — waiting on Les's say-so.
 - Not yet seen on the iPad or by the doctor.
-- The existing CRUX was not changed at all: no nav/sidebar edits, no wording changes.
+- The existing CRUX was not changed, apart from the env-gated `noindex` safeguard in `layout.tsx`/`robots.ts` (off on live). No nav/sidebar/wording changes.
+- **Before the wheel ever goes to the live site:** remove or leave `NEXT_PUBLIC_ALLOW_INDEXING` unset so the real pages can be indexed.
 
 ### What didn't work / watch-outs
 - The build brief's path `~/projects/binaural-audio-companion` is old; work now lives under `/home/les/dev`.
