@@ -56,6 +56,9 @@ export const HOME_ITEM: NavItem = { label: "Home", href: "/", icon: "home" };
 export const CRISIS_LINES = [
   { name: "Open Arms", number: "1800 011 046", tel: "1800011046" },
   { name: "Lifeline",  number: "13 11 14",     tel: "131114" },
+  // Added from the Community Treatment Platform's crisis block (real AU lines).
+  { name: "Suicide Call Back Service", number: "1300 659 467", tel: "1300659467" },
+  { name: "Beyond Blue", number: "1300 22 4636", tel: "1300224636" },
 ];
 
 export const DONATE_URL = process.env.NEXT_PUBLIC_DONATE_URL || null;

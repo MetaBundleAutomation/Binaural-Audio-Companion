@@ -1,3 +1,46 @@
+## 16 November 2026 (later): Conditions — Community Treatment Platform ported into the wheel
+
+Goal (Les): bring Les's other two apps — **Community Treatment Platform (CTP)** and **IBS Compass** — into the crux-wheel mock-up, "essentially combining the two web apps into crux-wheel". This session did the **CTP half**. IBS is scoped but **not built yet** (see below). All of this is in the `wheel-mockup` branch only, DRAFT, preview-only — nowhere near `main`.
+
+### Decisions made first (grilled through, Les said yes to all)
+- **Placement:** Conditions are a **separate area, not a spoke**. The 8 spokes are lifestyle *approaches*; conditions are *diagnoses*. New entry tile below the wheel → `/explore/conditions`. The ring is untouched.
+- **Audience:** all three CTP views kept — **Veteran / First responder / Clinician**, as a toggle. Default is **Veteran** (calm first; the doctor taps Clinician).
+- **Fidelity:** faithful port into a **new condition data model** (not squeezed into the gentle TopicCard idiom). Clinical nuance (off-label, TGA scheduling, MBS items) preserved verbatim.
+- **Source of truth:** this is a **dated snapshot** of CTP (16 Nov 2026) with a visible provenance note. CTP is where the doctor is reviewing this content; edits there will NOT flow here. Reconciling to one source is a **later decision** — do not assume they stay in sync.
+- **Draft marking:** per-condition "Copied from CTP… Not yet clinically reviewed" line + the wheel's global DRAFT banner. `lastReviewed` is unset on every condition (never claim a review that hasn't happened).
+- **Scope:** all **7** CTP conditions, including **Sexual Dysfunction** (Les: the doctor rates it as important as the others).
+- **Evidence scale:** kept CTP's **4-level** scale for conditions (strong / promising / traditional / anecdotal), separate from the wheel's own 3-level scale.
+- **Crisis:** reuse the one `/crisis` page. Added Suicide Call Back Service + Beyond Blue to it (real AU lines CTP already uses).
+- **Cross-links:** condition↔condition kept; condition→spoke links added (e.g. Chronic Pain → Body & Pain, MDD → Movement). Spoke→condition left for later so the 8 lifestyle cards weren't touched.
+
+### Finished (CTP)
+- **All 7 conditions** ported as data: `src/lib/conditions.ts` — PTSD, Alcohol & Drug Use, MDD, Moral Injury, Chronic Pain / MSK Injury, Bruxism / OSA, Sexual Dysfunction. Each has clinician/veteran/firstResponder content (sections, evidence badges, referral pathways), key points per audience, sources (href where CTP's references page confirms a link, label-only otherwise), related conditions and related spokes. The doctor edits content **here** — no component code to touch.
+- **`src/components/ConditionView.tsx`** (client): the Veteran/First responder/Clinician toggle and everything that changes with it. Selected tab is bold + underlined (not colour alone).
+- **`src/components/ConditionEvidenceBadge.tsx`**: CTP's 4-level badge in CRUX tokens, dot **and** words.
+- **Routes:** `src/app/explore/conditions/page.tsx` (index) and `src/app/explore/conditions/[slug]/page.tsx` (one page per condition, static-generated).
+- **`src/app/explore/page.tsx`**: a "Conditions — for veterans & first responders" entry tile added **below** the wheel. Ring unchanged.
+- **`src/lib/nav.ts`**: Suicide Call Back Service + Beyond Blue added to `CRISIS_LINES`.
+- **Honoured CTP's content rules:** the word **"addiction" never appears** in any user-facing text or in a URL (`/explore/conditions/alcohol-and-drug-use`); Australian spelling; key points only restate page content.
+- **Verified:** `npx tsc --noEmit` clean; `next build` → 37/37 pages, all 7 conditions prerendered; on a **production server** the Veteran↔Clinician toggle hydrates and switches, evidence badges and amber callouts render, clinical detail is faithful.
+
+### In progress / not done
+- **IBS Compass is NOT built yet.** It's scoped and waiting on 3 decisions (Les to answer next session):
+  1. **Its own section** ("IBS / Gut health", a second tile below the wheel), *not* a card in the Conditions list — recommended, because IBS is single-audience and multi-topic and has no clinician/first-responder split.
+  2. **Content topics only** — Treatments, Diet, Alternatives, Mental Health, Doctor Questions. **Skip** the Mindfulness audio page (overlaps CRUX's own tools) and the AI Assistant (needs an Anthropic API key + rate-limiting infra).
+  3. **Keep each IBS topic's own evidence system** (Treatments group by stage; Alternatives Tier 1–4; Diet A–F) rather than forcing one scale — the gradings were calibrated for honesty.
+  - IBS is single-audience ("people managing IBS", not "patients"), AU-localised, all-draft. Source files: `/home/les/dev/ibs-compass`, clean data in `lib/treatments.ts`; diet/alternatives arrays are co-located in their page `.tsx` and need lifting out.
+- **Not committed to or near `main`.** CTP source lives at `/home/les/dev/community-treatment-platform`.
+
+### What didn't work / watch-outs
+- **Local `pnpm dev` HMR is broken app-wide.** Next 15.5.28's `static-paths-worker` throws `Cannot find module './vendor-chunks/@supabase+auth-js@2.118.0.js'` and the client bundle 404s — this hits **untouched** pages (`/`, `/explore/sleep`) too, so it's a pre-existing dependency/pnpm issue, **not** these changes. `next build` and `next start` are completely fine (that's how the work was verified), so **Vercel deploys build normally**. Worth a clean `pnpm install` / dependency look when someone has time.
+- **Snapshot drift:** the conditions here are a copy. If the doctor edits CTP, this won't update on its own, and could show the doctor a stale version of their own words. The provenance note says so; decide single-source later.
+- **Still unreviewed medical content.** Before any of this goes beyond the doctor-review preview it needs a named clinical reviewer — same rule as the rest of the wheel.
+
+### Next
+- Les: answer the 3 IBS questions, then build IBS "the same way" (its own section).
+- Decide with the clinic/doctor whether CRUX and CTP should share one source of truth for conditions, or stay separate snapshots.
+- Later: spoke→condition back-links; consider porting CTP's linked references for the 4 conditions that are label-only here.
+
 ## 16 November 2026 — CRUX Wheel mock-up
 
 This is a **separate working copy** for the "wheel" idea, so the live site is never at risk. It is a mock-up to show a doctor who specialises in veteran care. Nothing here is clinically reviewed; every health card is marked DRAFT on screen.

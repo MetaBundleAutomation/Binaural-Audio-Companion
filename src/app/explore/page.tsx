@@ -114,8 +114,46 @@ export default function ExplorePage() {
         </nav>
       </div>
 
+      {/* Conditions — a separate area from the lifestyle spokes. The ring is
+          approaches; this is diagnoses, so it sits below the wheel, not on it. */}
+      <div className="mx-auto mt-12 max-w-2xl">
+        <Link
+          href="/explore/conditions"
+          className="card flex items-center gap-4 p-5 text-left transition-transform duration-300 motion-safe:hover:scale-[1.01]"
+        >
+          <span
+            className="grid h-12 w-12 shrink-0 place-items-center rounded-full border text-[var(--primary)]"
+            style={{ background: "var(--surface-solid)", borderColor: "var(--border-color)" }}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-6 w-6"
+              aria-hidden="true"
+            >
+              {/* Heart with a pulse line — conditions / clinical. */}
+              <path d="M12 20s-7-4.6-7-9.4A3.6 3.6 0 0 1 12 8a3.6 3.6 0 0 1 7 2.6C19 15.4 12 20 12 20z" />
+              <path d="M6 12.5h2.5l1.2-2 2 4 1.3-2.5H16" />
+            </svg>
+          </span>
+          <span>
+            <span className="block text-lg font-semibold tracking-tight text-[var(--text-primary)]">
+              Conditions
+            </span>
+            <span className="block text-sm leading-relaxed text-[var(--text-secondary)]">
+              For veterans &amp; first responders: PTSD, pain, sleep, mood and more
+              — plain-language and clinician views.
+            </span>
+          </span>
+        </Link>
+      </div>
+
       {/* Safety link + a note that more is planned. */}
-      <div className="mx-auto mt-12 flex max-w-2xl flex-col items-center gap-4 text-center">
+      <div className="mx-auto mt-8 flex max-w-2xl flex-col items-center gap-4 text-center">
         <Link href="/crisis" className="btn-secondary">
           Need to talk to someone now?
         </Link>
