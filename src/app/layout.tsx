@@ -59,14 +59,13 @@ export const metadata: Metadata = {
     "Australian veterans",
     "military mental health",
   ],
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-    },
-  },
+  // Indexing is on by default (live site). Set NEXT_PUBLIC_ALLOW_INDEXING=false
+  // on a deploy to keep it out of search engines — used for the wheel mock-up
+  // so draft, unreviewed content never reaches Google. Unset on live → indexed.
+  robots:
+    process.env.NEXT_PUBLIC_ALLOW_INDEXING === "false"
+      ? { index: false, follow: false, googleBot: { index: false, follow: false } }
+      : { index: true, follow: true, googleBot: { index: true, follow: true } },
   icons: {
     icon: [
       { url: "/crux-icon.svg", type: "image/svg+xml" },
